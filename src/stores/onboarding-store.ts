@@ -30,8 +30,14 @@ export const useOnboardingStore = create<OnboardingStore>((set) => ({
 
   toggleDietary: (pref) =>
     set((state) => {
-      // Remove 'none' if a real preference is selected
-      const filtered = state.dietary.filter((d) => d !== "none");
+      if (pref === "none") {
+        return { dietary: ["none"] };
+      }
+
+      // Remove 'none' if a real preference is selected.
+      const filtered = state.dietary.filter(
+        (d): d is Exclude<DietaryPreference, "none"> => d !== "none"
+      );
       const exists = filtered.includes(pref);
       return {
         dietary: exists

@@ -33,7 +33,8 @@ export function StepHousehold({ onNext, onBack }: Props) {
         How many people are you shopping for?
       </h1>
       <p className="text-navy-muted text-sm leading-relaxed mb-8">
-        We'll scale ingredient quantities and cost estimates to your household.
+        We&apos;ll scale ingredient quantities and cost estimates to your
+        household.
       </p>
 
       <div className="grid grid-cols-5 gap-2 mb-4">

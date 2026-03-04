@@ -24,8 +24,8 @@ const config: Config = {
         danger: "#D94F4F",
       },
       fontFamily: {
-        heading: ["Plus Jakarta Sans", "sans-serif"],
-        body: ["DM Sans", "sans-serif"],
+        heading: ["var(--font-heading)", "sans-serif"],
+        body: ["var(--font-body)", "sans-serif"],
       },
       boxShadow: {
         card: "0 2px 24px rgba(30,45,78,0.08)",

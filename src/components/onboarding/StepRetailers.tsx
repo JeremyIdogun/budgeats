@@ -67,7 +67,8 @@ export function StepRetailers({ onNext, onBack }: Props) {
         Where do you usually shop?
       </h1>
       <p className="text-navy-muted text-sm leading-relaxed mb-8">
-        We'll compare prices across your chosen retailers to find the best deal.
+        We&apos;ll compare prices across your chosen retailers to find the best
+        deal.
       </p>
 
       <div className="grid grid-cols-3 gap-2 mb-6">
@@ -106,7 +107,7 @@ export function StepRetailers({ onNext, onBack }: Props) {
         disabled={selected.length === 0}
         className="w-full py-4 rounded-[14px] bg-navy text-white font-heading font-bold text-base hover:bg-[#162340] hover:-translate-y-px transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
       >
-        Let's go →
+        Let&apos;s go →
       </button>
     </div>
   );

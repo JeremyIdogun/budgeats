@@ -37,7 +37,7 @@ export function StepDietary({ onNext, onBack }: Props) {
         Any dietary preferences?
       </h1>
       <p className="text-navy-muted text-sm leading-relaxed mb-8">
-        We'll filter meal suggestions and flag incompatible ingredients
+        We&apos;ll filter meal suggestions and flag incompatible ingredients
         automatically.
       </p>
 

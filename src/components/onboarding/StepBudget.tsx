@@ -16,10 +16,11 @@ export function StepBudget({ onNext }: Props) {
         Step 1 of 4
       </p>
       <h1 className="font-heading text-3xl font-extrabold text-navy leading-tight mb-2">
-        What's your weekly food budget?
+        What&apos;s your weekly food budget?
       </h1>
       <p className="text-navy-muted text-sm leading-relaxed mb-9">
-        We'll use this to guide your meal planning and flag when you're on
+        We&apos;ll use this to guide your meal planning and flag when you&apos;re
+        on
         track.
       </p>
 
@@ -42,7 +43,7 @@ export function StepBudget({ onNext }: Props) {
         step={5}
         value={budget}
         onChange={(e) => setBudget(parseInt(e.target.value))}
-        className="w-full accent-navy mb-2"
+        className="budget-range mb-2"
       />
       <div className="flex justify-between text-xs text-navy-muted mb-6">
         <span>£20</span>
