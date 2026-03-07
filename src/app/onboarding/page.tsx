@@ -9,6 +9,7 @@ import { StepSuccess } from "@/components/onboarding/StepSuccess";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { BrandLogo } from "@/components/BrandLogo";
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
@@ -16,6 +17,8 @@ export default function OnboardingPage() {
   const [step, setStep] = useState<Step>(1);
   const store = useOnboardingStore();
   const router = useRouter();
+  const currentStep = Math.min(step, 4);
+  const progress = (currentStep / 4) * 100;
 
   // Save profile to Supabase when step 4 is completed
   async function handleRetailersComplete() {
@@ -26,7 +29,7 @@ export default function OnboardingPage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.push("/login");
+        router.push("/login?next=/dashboard");
         return;
       }
 
@@ -54,40 +57,54 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex flex-col px-3 pt-3 md:px-6 md:pt-4">
-      <div className="flex-1 flex items-start justify-center">
-        <div className="bg-white rounded-[42px] shadow-card w-full max-w-5xl p-8 md:p-14 lg:p-20 relative overflow-hidden">
-          {/* Top accent line */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-coral to-coral-light" />
+    <div className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+        <header className="flex items-center justify-between">
+          <BrandLogo />
+          <div className="w-28 md:w-40">
+            <p className="mb-2 text-right text-xs font-medium uppercase tracking-[0.12em] text-navy-muted">
+              Step {currentStep} of 4
+            </p>
+            <div className="h-1.5 rounded-full bg-cream-dark">
+              <div
+                className="h-full rounded-full bg-navy transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        </header>
 
-          <div className="mx-auto w-full max-w-3xl">
-            {step === 1 && <StepBudget onNext={() => setStep(2)} />}
-            {step === 2 && (
-              <StepHousehold
-                onNext={() => setStep(3)}
-                onBack={() => setStep(1)}
-              />
-            )}
-            {step === 3 && (
-              <StepDietary
-                onNext={() => setStep(4)}
-                onBack={() => setStep(2)}
-              />
-            )}
-            {step === 4 && (
-              <StepRetailers
-                onNext={handleRetailersComplete}
-                onBack={() => setStep(3)}
-              />
-            )}
-            {step === 5 && <StepSuccess />}
+        <div className="flex-1">
+          <div className="relative w-full rounded-[32px] border border-cream-dark bg-white p-8 md:p-12 lg:p-14">
+            <div className="mx-auto w-full max-w-3xl">
+              {step === 1 && <StepBudget onNext={() => setStep(2)} />}
+              {step === 2 && (
+                <StepHousehold
+                  onNext={() => setStep(3)}
+                  onBack={() => setStep(1)}
+                />
+              )}
+              {step === 3 && (
+                <StepDietary
+                  onNext={() => setStep(4)}
+                  onBack={() => setStep(2)}
+                />
+              )}
+              {step === 4 && (
+                <StepRetailers
+                  onNext={handleRetailersComplete}
+                  onBack={() => setStep(3)}
+                />
+              )}
+              {step === 5 && <StepSuccess />}
+            </div>
           </div>
         </div>
-      </div>
 
-      <p className="text-center pt-14 pb-6 text-[14px] md:text-[22px] text-navy-muted">
-        Your data is stored securely and never sold. · budgEAts © 2025
-      </p>
+        <p className="pb-2 text-center text-sm text-navy-muted">
+          Your data is stored securely and never sold. · budgEAts © 2025
+        </p>
+      </div>
     </div>
   );
 }
