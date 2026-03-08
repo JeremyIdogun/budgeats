@@ -13,11 +13,11 @@ export const metadata: Metadata = {
   description: "Plan meals, track food spending, and optimise grocery costs.",
   icons: {
     icon: [
+      { url: "/favicon.png", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/brand-logo-concept-e.png", type: "image/png" },
     ],
-    shortcut: ["/favicon.svg"],
-    apple: [{ url: "/brand-logo-concept-e.png" }],
+    shortcut: ["/favicon.png"],
+    apple: [{ url: "/favicon.png" }],
   },
 };
 

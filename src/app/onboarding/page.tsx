@@ -58,7 +58,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <header className="flex items-center justify-between">
           <BrandLogo />
           <div className="w-28 md:w-40">
@@ -75,8 +75,8 @@ export default function OnboardingPage() {
         </header>
 
         <div className="flex-1">
-          <div className="relative w-full rounded-[32px] border border-cream-dark bg-white p-8 md:p-12 lg:p-14">
-            <div className="mx-auto w-full max-w-3xl">
+          <div className="relative mx-auto w-full max-w-3xl rounded-[32px] border border-cream-dark bg-white p-6 md:p-8 lg:p-10">
+            <div className="mx-auto w-full max-w-2xl">
               {step === 1 && <StepBudget onNext={() => setStep(2)} />}
               {step === 2 && (
                 <StepHousehold

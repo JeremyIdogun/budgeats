@@ -19,10 +19,16 @@ const initialState: OnboardingState = {
   retailers: [],
 };
 
+const MIN_BUDGET = 20;
+
 export const useOnboardingStore = create<OnboardingStore>((set) => ({
   ...initialState,
 
-  setBudget: (budget) => set({ budget }),
+  setBudget: (budget) =>
+    set((state) => {
+      if (!Number.isFinite(budget)) return { budget: state.budget };
+      return { budget: Math.max(MIN_BUDGET, Math.round(budget)) };
+    }),
 
   setPeriod: (period) => set({ period }),
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -40,26 +41,6 @@ export function LoginClient() {
 
     router.replace(nextPath);
     router.refresh();
-  }
-
-  async function handleCreateAccount() {
-    setLoading(true);
-    setError(null);
-    setInfo(null);
-
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    setLoading(false);
-
-    if (signUpError) {
-      setError(signUpError.message);
-      return;
-    }
-
-    setInfo("Account created. If email confirmation is enabled, verify then sign in.");
   }
 
   return (
@@ -119,13 +100,12 @@ export function LoginClient() {
             </button>
           </form>
 
-          <button
-            onClick={handleCreateAccount}
-            disabled={loading || !email || !password}
-            className="mt-3 w-full rounded-xl border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            Create account
-          </button>
+          <p className="mt-4 text-center text-sm text-navy-muted">
+            New here?{" "}
+            <Link href="/signup" className="font-semibold text-navy hover:underline">
+              Create an account
+            </Link>
+          </p>
         </section>
       </div>
     </main>
