@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -75,7 +75,6 @@ function InstagramIcon() {
 
 export default function SignupPage() {
   const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -89,6 +88,7 @@ export default function SignupPage() {
     event.preventDefault();
     setLoading(true);
     setError(null);
+    const supabase = createClient();
 
     const { error: signUpError } = await supabase.auth.signUp({
       email,
@@ -109,6 +109,7 @@ export default function SignupPage() {
   async function handleOAuthSignUp(provider: "google" | "facebook") {
     setOauthLoading(provider);
     setError(null);
+    const supabase = createClient();
 
     const redirectTo = `${window.location.origin}/auth/callback?next=/onboarding`;
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
