@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -9,7 +9,6 @@ import { BrandLogo } from "@/components/BrandLogo";
 export function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = useMemo(() => createClient(), []);
 
   const requestedNext = searchParams.get("next");
   const nextPath =
@@ -26,6 +25,7 @@ export function LoginClient() {
     setLoading(true);
     setError(null);
     setInfo(null);
+    const supabase = createClient();
 
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email,
