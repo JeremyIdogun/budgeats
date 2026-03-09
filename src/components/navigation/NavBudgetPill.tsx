@@ -22,23 +22,22 @@ export function NavBudgetPill() {
   }, [spentPence, budgetPence]);
 
   const color = getBudgetColor(utilisationPct);
-  const progressWidth = Math.min(utilisationPct, 100);
+  const remainingPence = budgetPence - spentPence;
 
   return (
-    <div className="min-w-56 rounded-xl border border-cream-dark bg-white px-4 py-3">
-      <p className="text-sm font-semibold text-navy">
-        {formatPence(spentPence)} of {formatPence(budgetPence)}
-      </p>
-      <div className="mt-2 h-1.5 rounded-full bg-cream-dark">
-        <div
-          className="h-full rounded-full transition-all"
-          style={{
-            width: `${progressWidth}%`,
-            background: color,
-          }}
-        />
-      </div>
-      <p className="mt-1 text-xs text-navy-muted">{Math.round(utilisationPct)}% used</p>
+    <div className="flex items-center gap-2 rounded-full border border-cream-dark bg-white px-3 py-1.5 text-xs">
+      <span
+        className="h-2 w-2 rounded-full"
+        style={{
+          backgroundColor: color,
+        }}
+      />
+      <span className="font-semibold text-navy">
+        {Math.round(utilisationPct)}% ·{" "}
+        {remainingPence >= 0
+          ? `${formatPence(remainingPence)} left`
+          : `${formatPence(Math.abs(remainingPence))} over`}
+      </span>
     </div>
   );
 }

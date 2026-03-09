@@ -6,6 +6,17 @@ function sanitizeNextPath(next: string | null): string {
   return next;
 }
 
+function redirectWithCookies(
+  source: NextResponse,
+  destination: URL,
+): NextResponse {
+  const target = NextResponse.redirect(destination);
+  source.cookies.getAll().forEach(({ name, value }) => {
+    target.cookies.set(name, value);
+  });
+  return target;
+}
+
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
@@ -35,9 +46,30 @@ export async function GET(request: NextRequest) {
 
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
-    response = NextResponse.redirect(
+    response = redirectWithCookies(
+      response,
       new URL("/login?error=oauth_callback", requestUrl.origin),
     );
+    return response;
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    const { data: profile, error: profileError } = await supabase
+      .from("user_profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (!profileError && !profile) {
+      response = redirectWithCookies(
+        response,
+        new URL("/onboarding", requestUrl.origin),
+      );
+    }
   }
 
   return response;
