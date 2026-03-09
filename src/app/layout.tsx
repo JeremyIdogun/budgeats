@@ -12,10 +12,7 @@ export const metadata: Metadata = {
   title: "budgEAts",
   description: "Plan meals, track food spending, and optimise grocery costs.",
   icons: {
-    icon: [
-      { url: "/favicon.png", type: "image/png" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
-    ],
+    icon: [{ url: "/favicon.png", type: "image/png" }],
     shortcut: ["/favicon.png"],
     apple: [{ url: "/favicon.png" }],
   },
