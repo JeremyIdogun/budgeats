@@ -7,12 +7,12 @@ interface Props {
   onNext: () => void;
 }
 
-const MIN_BUDGET = 20;
-const BASE_MAX_BUDGET = 300;
-const STEP = 5;
-const MAX_BUFFER = 100;
+export const MIN_BUDGET = 20;
+export const BASE_MAX_BUDGET = 300;
+export const STEP = 5;
+export const MAX_BUFFER = 100;
 
-function roundUpToStep(value: number) {
+export function roundUpToStep(value: number) {
   return Math.ceil(value / STEP) * STEP;
 }
 

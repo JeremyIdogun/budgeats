@@ -10,12 +10,20 @@ import { useOnboardingStore } from "@/stores/onboarding-store";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/BrandLogo";
+import { useBudgeAtsStore } from "@/store";
+import { createEmptyWeekPlan, getCurrentWeekStartDateIso } from "@/lib/planner";
+import { poundsToPence } from "@/utils/currency";
+import type { DietaryTag, RetailerId, UserProfile } from "@/models";
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
 export default function OnboardingPage() {
   const [step, setStep] = useState<Step>(1);
   const store = useOnboardingStore();
+  const setCanonicalUser = useBudgeAtsStore((state) => state.setUser);
+  const setCurrentWeekPlan = useBudgeAtsStore(
+    (state) => state.setCurrentWeekPlan,
+  );
   const router = useRouter();
   const currentStep = Math.min(step, 4);
   const progress = (currentStep / 4) * 100;
@@ -32,6 +40,34 @@ export default function OnboardingPage() {
         router.push("/login?next=/dashboard");
         return;
       }
+
+      if (!store.household || store.retailers.length === 0) {
+        return;
+      }
+
+      const dietaryPreferences = store.dietary.filter(
+        (tag): tag is DietaryTag => tag !== "none",
+      );
+      const preferredRetailers = store.retailers as RetailerId[];
+      const canonicalUser: UserProfile = {
+        id: user.id,
+        createdAt: new Date().toISOString(),
+        budget: {
+          amount: poundsToPence(store.budget),
+          period: store.period,
+        },
+        household: {
+          size: store.household,
+        },
+        dietaryPreferences,
+        preferredRetailers,
+        currency: "GBP",
+        region: "UK",
+      };
+      setCanonicalUser(canonicalUser);
+      setCurrentWeekPlan(
+        createEmptyWeekPlan(user.id, getCurrentWeekStartDateIso()),
+      );
 
       // Convert pounds to pence for storage
       const weekly_budget_pence =
@@ -96,7 +132,7 @@ export default function OnboardingPage() {
                   onBack={() => setStep(3)}
                 />
               )}
-              {step === 5 && <StepSuccess />}
+              {step === 5 && <StepSuccess onComplete={store.reset} />}
             </div>
           </div>
         </div>

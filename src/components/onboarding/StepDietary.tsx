@@ -8,7 +8,7 @@ interface Props {
   onBack: () => void;
 }
 
-const preferences: { id: DietaryPreference; emoji: string; label: string }[] = [
+export const DIETARY_PREFERENCES: { id: DietaryPreference; emoji: string; label: string }[] = [
   { id: "vegetarian", emoji: "🥦", label: "Vegetarian" },
   { id: "vegan", emoji: "🌱", label: "Vegan" },
   { id: "halal", emoji: "☪️", label: "Halal" },
@@ -42,7 +42,7 @@ export function StepDietary({ onNext, onBack }: Props) {
       </p>
 
       <div className="flex flex-wrap gap-2 mb-8">
-        {preferences.map(({ id, emoji, label }) => (
+        {DIETARY_PREFERENCES.map(({ id, emoji, label }) => (
           <button
             key={id}
             onClick={() => toggleDietary(id)}

@@ -1,0 +1,243 @@
+[
+  {
+    "id": "porridge-with-berries",
+    "name": "Porridge with Berries",
+    "emoji": "🥣",
+    "type": "breakfast",
+    "prepTimeMinutes": 10,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      { "ingredientId": "rolled-oats", "quantity": 100, "unit": "g" },
+      { "ingredientId": "greek-yogurt", "quantity": 200, "unit": "g" },
+      { "ingredientId": "frozen-berries", "quantity": 150, "unit": "g" },
+      { "ingredientId": "bananas", "quantity": 1, "unit": "unit" }
+    ]
+  },
+  {
+    "id": "eggs-on-toast",
+    "name": "Eggs on Toast",
+    "emoji": "🍳",
+    "type": "breakfast",
+    "prepTimeMinutes": 12,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "eggs", "quantity": 4, "unit": "unit" },
+      { "ingredientId": "wholemeal-bread", "quantity": 0.5, "unit": "unit" },
+      { "ingredientId": "butter", "quantity": 20, "unit": "g" }
+    ]
+  },
+  {
+    "id": "banana-yogurt-parfait",
+    "name": "Banana Yogurt Parfait",
+    "emoji": "🍌",
+    "type": "breakfast",
+    "prepTimeMinutes": 8,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      { "ingredientId": "greek-yogurt", "quantity": 250, "unit": "g" },
+      { "ingredientId": "bananas", "quantity": 2, "unit": "unit" },
+      { "ingredientId": "rolled-oats", "quantity": 40, "unit": "g" }
+    ]
+  },
+  {
+    "id": "peanut-butter-toast",
+    "name": "Peanut Butter Toast",
+    "emoji": "🍞",
+    "type": "breakfast",
+    "prepTimeMinutes": 6,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "wholemeal-bread", "quantity": 0.5, "unit": "unit" },
+      { "ingredientId": "peanut-butter", "quantity": 60, "unit": "g" },
+      { "ingredientId": "bananas", "quantity": 1, "unit": "unit" }
+    ]
+  },
+  {
+    "id": "veggie-omelette",
+    "name": "Veggie Omelette",
+    "emoji": "🧀",
+    "type": "breakfast",
+    "prepTimeMinutes": 15,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian", "gluten-free"],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "eggs", "quantity": 4, "unit": "unit" },
+      { "ingredientId": "spinach", "quantity": 120, "unit": "g" },
+      { "ingredientId": "cheddar-cheese", "quantity": 80, "unit": "g" },
+      { "ingredientId": "butter", "quantity": 15, "unit": "g" }
+    ]
+  },
+  {
+    "id": "chickpea-wraps",
+    "name": "Chickpea Wraps",
+    "emoji": "🌯",
+    "type": "lunch",
+    "prepTimeMinutes": 15,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      { "ingredientId": "tortilla-wraps", "quantity": 4, "unit": "unit" },
+      { "ingredientId": "chickpeas", "quantity": 1, "unit": "unit" },
+      { "ingredientId": "cucumber", "quantity": 1, "unit": "unit" },
+      { "ingredientId": "spinach", "quantity": 60, "unit": "g" }
+    ]
+  },
+  {
+    "id": "tuna-pasta-salad",
+    "name": "Tuna Pasta Salad",
+    "emoji": "🥗",
+    "type": "lunch",
+    "prepTimeMinutes": 18,
+    "basePortions": 2,
+    "dietaryTags": [],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "pasta", "quantity": 250, "unit": "g" },
+      { "ingredientId": "tuna", "quantity": 2, "unit": "unit" },
+      { "ingredientId": "cherry-tomatoes", "quantity": 200, "unit": "g" },
+      { "ingredientId": "cucumber", "quantity": 1, "unit": "unit" }
+    ]
+  },
+  {
+    "id": "veggie-rice-bowl",
+    "name": "Veggie Rice Bowl",
+    "emoji": "🍚",
+    "type": "lunch",
+    "prepTimeMinutes": 14,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      { "ingredientId": "microwave-rice", "quantity": 2, "unit": "unit" },
+      { "ingredientId": "mixed-veg", "quantity": 500, "unit": "g" },
+      { "ingredientId": "soy-sauce", "quantity": 30, "unit": "ml" },
+      { "ingredientId": "eggs", "quantity": 2, "unit": "unit" }
+    ]
+  },
+  {
+    "id": "tomato-soup-toastie",
+    "name": "Tomato Soup & Toastie",
+    "emoji": "🍅",
+    "type": "lunch",
+    "prepTimeMinutes": 16,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "tomato-soup", "quantity": 600, "unit": "ml" },
+      { "ingredientId": "wholemeal-bread", "quantity": 0.5, "unit": "unit" },
+      { "ingredientId": "cheddar-cheese", "quantity": 120, "unit": "g" },
+      { "ingredientId": "butter", "quantity": 20, "unit": "g" }
+    ]
+  },
+  {
+    "id": "chicken-salad-wrap",
+    "name": "Chicken Salad Wrap",
+    "emoji": "🥙",
+    "type": "lunch",
+    "prepTimeMinutes": 20,
+    "basePortions": 2,
+    "dietaryTags": [],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "tortilla-wraps", "quantity": 4, "unit": "unit" },
+      { "ingredientId": "chicken-breast", "quantity": 400, "unit": "g" },
+      { "ingredientId": "lettuce", "quantity": 200, "unit": "g" },
+      { "ingredientId": "cucumber", "quantity": 1, "unit": "unit" }
+    ]
+  },
+  {
+    "id": "spaghetti-bolognese",
+    "name": "Spaghetti Bolognese",
+    "emoji": "🍝",
+    "type": "dinner",
+    "prepTimeMinutes": 35,
+    "basePortions": 2,
+    "dietaryTags": [],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "beef-mince-500g", "quantity": 250, "unit": "g" },
+      { "ingredientId": "pasta", "quantity": 250, "unit": "g" },
+      { "ingredientId": "tinned-tomatoes", "quantity": 400, "unit": "g" },
+      { "ingredientId": "onion", "quantity": 1, "unit": "unit" },
+      { "ingredientId": "garlic", "quantity": 2, "unit": "unit" },
+      { "ingredientId": "olive-oil", "quantity": 15, "unit": "ml", "optional": true }
+    ]
+  },
+  {
+    "id": "lentil-curry",
+    "name": "Lentil Curry",
+    "emoji": "🍛",
+    "type": "dinner",
+    "prepTimeMinutes": 30,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      { "ingredientId": "red-lentils", "quantity": 250, "unit": "g" },
+      { "ingredientId": "coconut-milk", "quantity": 400, "unit": "ml" },
+      { "ingredientId": "onion", "quantity": 1, "unit": "unit" },
+      { "ingredientId": "garlic", "quantity": 2, "unit": "unit" },
+      { "ingredientId": "spinach", "quantity": 100, "unit": "g" }
+    ]
+  },
+  {
+    "id": "salmon-greens",
+    "name": "Salmon & Greens",
+    "emoji": "🐟",
+    "type": "dinner",
+    "prepTimeMinutes": 28,
+    "basePortions": 2,
+    "dietaryTags": ["gluten-free"],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "salmon-fillets", "quantity": 2, "unit": "unit" },
+      { "ingredientId": "green-beans", "quantity": 300, "unit": "g" },
+      { "ingredientId": "baby-potatoes", "quantity": 600, "unit": "g" },
+      { "ingredientId": "lemon", "quantity": 1, "unit": "unit" }
+    ]
+  },
+  {
+    "id": "tomato-basil-pasta",
+    "name": "Tomato Basil Pasta",
+    "emoji": "🍅",
+    "type": "dinner",
+    "prepTimeMinutes": 22,
+    "basePortions": 2,
+    "dietaryTags": ["vegetarian"],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      { "ingredientId": "pasta", "quantity": 250, "unit": "g" },
+      { "ingredientId": "passata", "quantity": 500, "unit": "ml" },
+      { "ingredientId": "parmesan", "quantity": 80, "unit": "g" },
+      { "ingredientId": "garlic", "quantity": 2, "unit": "unit" },
+      { "ingredientId": "olive-oil", "quantity": 15, "unit": "ml" }
+    ]
+  },
+  {
+    "id": "chicken-traybake",
+    "name": "Chicken Traybake",
+    "emoji": "🍗",
+    "type": "dinner",
+    "prepTimeMinutes": 40,
+    "basePortions": 2,
+    "dietaryTags": [],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      { "ingredientId": "chicken-breast", "quantity": 500, "unit": "g" },
+      { "ingredientId": "baby-potatoes", "quantity": 800, "unit": "g" },
+      { "ingredientId": "broccoli", "quantity": 300, "unit": "g" },
+      { "ingredientId": "olive-oil", "quantity": 20, "unit": "ml" }
+    ]
+  }
+]

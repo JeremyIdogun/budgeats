@@ -7,7 +7,7 @@ interface Props {
   onBack: () => void;
 }
 
-const retailers = [
+export const RETAILER_OPTIONS = [
   {
     id: "tesco",
     label: "Tesco",
@@ -67,12 +67,12 @@ export function StepRetailers({ onNext, onBack }: Props) {
         Where do you usually shop?
       </h1>
       <p className="text-navy-muted text-sm leading-relaxed mb-8">
-        We&apos;ll compare prices across your chosen retailers to find the best
-        deal.
+        We&apos;ll estimate your basket across these stores and highlight the
+        cheapest option each week.
       </p>
 
       <div className="grid grid-cols-3 gap-2 mb-6">
-        {retailers.map(({ id, label, initial, bg, color }) => {
+        {RETAILER_OPTIONS.map(({ id, label, initial, bg, color }) => {
           const isSelected = selected.includes(id);
           return (
             <button

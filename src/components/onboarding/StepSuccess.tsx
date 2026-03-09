@@ -3,7 +3,11 @@
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { useRouter } from "next/navigation";
 
-export function StepSuccess() {
+interface StepSuccessProps {
+  onComplete?: () => void;
+}
+
+export function StepSuccess({ onComplete }: StepSuccessProps) {
   const { budget, period, household, dietary, retailers } =
     useOnboardingStore();
   const router = useRouter();
@@ -22,6 +26,11 @@ export function StepSuccess() {
     { label: dietLabel, highlight: false },
     { label: retailersLabel, highlight: false },
   ];
+
+  function handleContinue() {
+    onComplete?.();
+    router.push("/dashboard");
+  }
 
   return (
     <div className="text-center py-5">
@@ -50,7 +59,7 @@ export function StepSuccess() {
       </div>
 
       <button
-        onClick={() => router.push("/dashboard")}
+        onClick={handleContinue}
         className="w-full py-4 rounded-[14px] bg-teal text-white font-heading font-bold text-base hover:-translate-y-px transition-all"
       >
         Go to my dashboard →

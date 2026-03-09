@@ -7,7 +7,7 @@ interface Props {
   onBack: () => void;
 }
 
-const options = [
+export const HOUSEHOLD_OPTIONS = [
   { size: 1, label: "Just me" },
   { size: 2, label: "Couple" },
   { size: 3, label: "Small" },
@@ -38,7 +38,7 @@ export function StepHousehold({ onNext, onBack }: Props) {
       </p>
 
       <div className="grid grid-cols-5 gap-2 mb-4">
-        {options.map(({ size, label }) => (
+        {HOUSEHOLD_OPTIONS.map(({ size, label }) => (
           <button
             key={size}
             onClick={() => setHousehold(size)}
