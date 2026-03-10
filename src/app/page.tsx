@@ -1,3 +1,4 @@
+import { ComingSoonPage } from "@/components/coming-soon/ComingSoonPage";
 import Link from "next/link";
 import { BrandLogo } from "@/components/BrandLogo";
 
@@ -17,6 +18,10 @@ const highlights = [
 ];
 
 export default function HomePage() {
+  if (process.env.NEXT_PUBLIC_COMING_SOON === "true") {
+    return <ComingSoonPage />;
+  }
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-cream text-navy">
       <div
