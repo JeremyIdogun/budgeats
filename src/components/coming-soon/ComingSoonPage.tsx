@@ -1,57 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
-/* ── Logo ── */
-function ForkCoin({ size = "md" }: { size?: "sm" | "md" }) {
-  const w = size === "sm" ? 22 : 26;
-  const h = size === "sm" ? 28 : 34;
-  const svgW = size === "sm" ? 15 : 18;
-  const svgH = size === "sm" ? 22 : 28;
-  const coinW = size === "sm" ? 16 : 20;
-  const coinH = size === "sm" ? 16 : 20;
-  const coinFs = size === "sm" ? 8 : 10;
-
-  return (
-    <span
-      className="relative mx-0.5 inline-flex items-end"
-      style={{ width: w, height: h }}
-      aria-hidden="true"
-    >
-      <svg
-        viewBox="0 0 20 30"
-        fill="none"
-        className="absolute top-0 left-1/2 -translate-x-1/2"
-        style={{ width: svgW, height: svgH }}
-      >
-        <rect x="4" y="0" width="3" height="16" rx="1.5" fill="#E8693A" />
-        <rect x="8.5" y="0" width="3" height="16" rx="1.5" fill="#E8693A" />
-        <rect x="13" y="0" width="3" height="16" rx="1.5" fill="#E8693A" />
-        <path d="M4 14 Q10 20 16 14 L16 30 Q10 32 4 30 Z" fill="#E8693A" />
-      </svg>
-      <span
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-center justify-center rounded-full bg-teal font-bold text-white"
-        style={{ width: coinW, height: coinH, fontSize: coinFs, zIndex: 2 }}
-      >
-        £
-      </span>
-    </span>
-  );
-}
-
-function Logo({ light = false }: { light?: boolean }) {
-  const color = light ? "text-white" : "text-navy";
-  return (
-    <span
-      className={`flex items-center gap-0 font-heading text-xl font-bold tracking-tight ${color}`}
-      style={{ fontFamily: "var(--font-display, sans-serif)", letterSpacing: "-0.3px" }}
-    >
-      <span>budg</span>
-      <ForkCoin size="md" />
-      <span>Ats</span>
-    </span>
-  );
-}
+import Image from "next/image";
 
 /* ── Waitlist form ── */
 function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
@@ -199,7 +149,9 @@ export function ComingSoonPage() {
       {/* ── Nav ── */}
       <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-12">
         <a href="#" className="no-underline">
-          <Logo />
+          <span className="relative block h-8 overflow-hidden md:h-10" style={{ aspectRatio: "758/232" }}>
+            <Image src="/brand-logo-transparent.png" alt="budgEAts" fill priority className="object-contain" sizes="(min-width: 768px) 130px, 104px" />
+          </span>
         </a>
         <div className="rounded-full bg-teal-light px-4 py-1.5 text-xs font-semibold tracking-wide text-navy">
           Coming Soon
@@ -381,7 +333,9 @@ export function ComingSoonPage() {
       {/* ── Footer ── */}
       <footer className="relative z-10 flex flex-wrap items-center justify-between gap-4 bg-navy px-6 py-8 text-center md:px-12">
         <a href="#" className="no-underline">
-          <Logo light />
+          <span className="relative block h-7 overflow-hidden" style={{ aspectRatio: "758/232" }}>
+            <Image src="/brand-logo-transparent.png" alt="budgEAts" fill className="object-contain brightness-0 invert" sizes="104px" />
+          </span>
         </a>
         <ul className="flex list-none gap-6">
           <li>
