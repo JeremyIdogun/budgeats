@@ -67,33 +67,22 @@ const FEATURES = [
   {
     title: "Meal planning with live budget impact",
     desc: "Plan your entire week on a 7-day grid. Your budget bar updates in real time as you add meals — no more end-of-week surprises.",
-    iconBg: "#FFF2EC",
-    icon: "📋",
-    wide: true,
   },
   {
     title: "Smart shopping list",
     desc: "Your plan converts into a deduplicated, retailer-split list showing the cheapest option across Aldi, Tesco, Sainsbury's and more.",
-    iconBg: "#F0FAFA",
-    icon: "🛒",
   },
   {
     title: "Ingredient-level prices",
     desc: "Unit price normalisation and brand vs own-label comparison across the UK's major supermarkets — before you leave the house.",
-    iconBg: "#F0FAFA",
-    icon: "📊",
   },
   {
     title: "Smart swap suggestions",
     desc: "Going over budget? budgEAts suggests cheaper meal or ingredient alternatives so you stay on track without compromise.",
-    iconBg: "#FFF2EC",
-    icon: "💡",
   },
   {
     title: "Waste risk alerts",
     desc: "Buying a full bag of spinach but only using 80g? We flag it and suggest how to use it up before it goes bad.",
-    iconBg: "#F0FAFA",
-    icon: "⏳",
   },
 ] as const;
 
@@ -148,7 +137,7 @@ export function ComingSoonPage() {
       />
 
       {/* ── Nav ── */}
-      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-12">
+      <nav className="relative z-20 mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5 md:px-6">
         <BrandLogo />
         <div className="rounded-full bg-teal-light px-4 py-1.5 text-xs font-semibold tracking-wide text-navy">
           Coming Soon
@@ -156,7 +145,7 @@ export function ComingSoonPage() {
       </nav>
 
       {/* ── Hero ── */}
-      <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pb-20 pt-32 text-center">
+      <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pb-20 pt-12 text-center">
         {/* Eyebrow */}
         <div
           className="mb-8 inline-flex items-center gap-2 rounded-full border border-cream-dark bg-white px-5 py-2 text-xs font-semibold uppercase tracking-widest text-navy-muted"
@@ -262,11 +251,8 @@ export function ComingSoonPage() {
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           {/* Wide card */}
           <div className="reveal rounded-2xl border border-cream-dark bg-white p-8 transition-all hover:-translate-y-1 hover:border-teal-light hover:shadow-card-hover md:col-span-2">
-            <div
-              className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
-              style={{ background: "#FFF2EC" }}
-            >
-              📋
+            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full border border-coral/25 bg-coral/10 text-sm font-bold tracking-wide text-coral">
+              01
             </div>
             <h3
               className="mb-3 text-lg font-bold text-navy"
@@ -281,16 +267,19 @@ export function ComingSoonPage() {
             </p>
           </div>
 
-          {FEATURES.slice(1).map((f) => (
+          {FEATURES.slice(1).map((f, index) => (
             <div
               key={f.title}
               className="reveal rounded-2xl border border-cream-dark bg-white p-8 transition-all hover:-translate-y-1 hover:border-teal-light hover:shadow-card-hover"
             >
               <div
-                className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
-                style={{ background: f.iconBg }}
+                className={`mb-5 flex h-12 w-12 items-center justify-center rounded-full border text-sm font-bold tracking-wide ${
+                  index % 2 === 0
+                    ? "border-teal/25 bg-teal/10 text-teal"
+                    : "border-coral/25 bg-coral/10 text-coral"
+                }`}
               >
-                {f.icon}
+                {String(index + 2).padStart(2, "0")}
               </div>
               <h3
                 className="mb-3 text-lg font-bold text-navy"
