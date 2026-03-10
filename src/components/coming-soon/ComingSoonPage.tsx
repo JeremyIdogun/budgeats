@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { BrandLogo } from "@/components/BrandLogo";
 
 /* ── Waitlist form ── */
 function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
@@ -148,11 +149,7 @@ export function ComingSoonPage() {
 
       {/* ── Nav ── */}
       <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-12">
-        <a href="#" className="no-underline">
-          <span className="relative block h-8 overflow-hidden md:h-10" style={{ aspectRatio: "758/232" }}>
-            <Image src="/brand-logo-transparent.png" alt="budgEAts" fill priority className="object-contain" sizes="(min-width: 768px) 130px, 104px" />
-          </span>
-        </a>
+        <BrandLogo />
         <div className="rounded-full bg-teal-light px-4 py-1.5 text-xs font-semibold tracking-wide text-navy">
           Coming Soon
         </div>
@@ -332,11 +329,9 @@ export function ComingSoonPage() {
 
       {/* ── Footer ── */}
       <footer className="relative z-10 flex flex-wrap items-center justify-between gap-4 bg-navy px-6 py-8 text-center md:px-12">
-        <a href="#" className="no-underline">
-          <span className="relative block h-7 overflow-hidden" style={{ aspectRatio: "758/232" }}>
-            <Image src="/brand-logo-transparent.png" alt="budgEAts" fill className="object-contain brightness-0 invert" sizes="104px" />
-          </span>
-        </a>
+        <span className="relative block h-7 aspect-[758/232] overflow-hidden">
+          <Image src="/brand-logo-transparent.png" alt="budgEAts" fill className="object-contain brightness-0 invert" sizes="104px" />
+        </span>
         <ul className="flex list-none gap-6">
           <li>
             <a href="#" className="text-xs text-white/50 transition hover:text-white/90">
