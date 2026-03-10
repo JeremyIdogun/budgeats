@@ -5,6 +5,25 @@ const COMING_SOON = process.env.NEXT_PUBLIC_COMING_SOON === "true";
 
 // Routes allowed through in coming-soon mode
 const ALLOWED_PREFIXES = ["/_next", "/api", "/favicon", "/robots", "/sitemap"];
+const STATIC_FILE_EXTENSIONS = [
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".svg",
+  ".gif",
+  ".webp",
+  ".ico",
+  ".woff",
+  ".woff2",
+  ".ttf",
+  ".otf",
+  ".css",
+  ".js",
+  ".map",
+  ".txt",
+  ".xml",
+  ".json",
+];
 
 export function middleware(request: NextRequest) {
   if (!COMING_SOON) return NextResponse.next();
@@ -14,6 +33,7 @@ export function middleware(request: NextRequest) {
   // Allow root and static/system paths
   if (
     pathname === "/" ||
+    STATIC_FILE_EXTENSIONS.some((extension) => pathname.endsWith(extension)) ||
     ALLOWED_PREFIXES.some((prefix) => pathname.startsWith(prefix))
   ) {
     return NextResponse.next();
