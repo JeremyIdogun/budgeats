@@ -58,6 +58,17 @@ export function StepSuccess({ onComplete }: StepSuccessProps) {
         ))}
       </div>
 
+      <div className="mb-6 rounded-2xl border border-teal/30 bg-teal/5 px-5 py-4 text-left">
+        <p className="text-sm font-semibold text-navy">
+          Your Logismos advisor is ready
+        </p>
+        <p className="mt-1 text-sm text-navy-muted">
+          Plan 3 meals on the dashboard and Logismos will start giving you
+          personalised cook-or-eat-out recommendations — and reward you with
+          LoavishPoints for every smart decision.
+        </p>
+      </div>
+
       <button
         onClick={handleContinue}
         className="w-full py-4 rounded-[14px] bg-teal text-white font-heading font-bold text-base hover:-translate-y-px transition-all"

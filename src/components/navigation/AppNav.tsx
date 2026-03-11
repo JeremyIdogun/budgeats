@@ -6,11 +6,12 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { NavBudgetPill } from "@/components/navigation/NavBudgetPill";
 
 const NAV_LINKS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/planner", label: "Meal Planner" },
-  { href: "/shopping", label: "Shopping List" },
-  { href: "/insights", label: "Insights" },
-  { href: "/settings", label: "Settings" },
+  { href: "/dashboard", label: "Dashboard", icon: null },
+  { href: "/planner", label: "Meal Planner", icon: null },
+  { href: "/shopping", label: "Shopping List", icon: null },
+  { href: "/insights", label: "Insights", icon: null },
+  { href: "/settings", label: "Settings", icon: null },
+  { href: "/rewards", label: "Rewards", icon: "⭐" },
 ];
 
 export function AppNav() {
@@ -43,7 +44,14 @@ export function AppNav() {
                     : "text-navy-muted hover:text-navy"
                 }`}
               >
-                {link.label}
+                {link.icon ? (
+                  <>
+                    <span className="sm:hidden">{link.icon}</span>
+                    <span className="hidden sm:inline">{link.icon} {link.label}</span>
+                  </>
+                ) : (
+                  link.label
+                )}
               </Link>
             );
           })}

@@ -17,4 +17,10 @@ export interface UserProfile {
   preferredRetailers: RetailerId[];
   currency: "GBP";
   region: "UK";
+  calendarSyncEnabled?: boolean; // default false
+  geoAwarenessEnabled?: boolean; // default false
+  energyCheckInEnabled?: boolean; // default true
+  logismosEnabled?: boolean; // default true
+  loavishPointsBalance?: number; // pence equivalent
+  logismosScore?: number | null; // 0–100; null until 7 days
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
+import { LogismosCard } from "@/components/logismos/LogismosCard";
 import {
   addDays,
   buildLibraryWeekPlan,
@@ -134,6 +135,21 @@ export function DashboardOverview({
 
   const todayIndex = getTodayDayIndex(weekKey);
 
+  const logismosEnabled = effectiveUser?.logismosEnabled !== false;
+
+  const hourOfDay = new Date().getHours();
+  const currentMealType = hourOfDay < 11 ? "breakfast" : hourOfDay < 16 ? "lunch" : "dinner";
+  const cookableMealsForToday = useMemo(
+    () =>
+      dashboardLibraryMeals.filter((meal) => {
+        if (meal.type !== currentMealType) return false;
+        const userPrefs = effectiveUser?.dietaryPreferences ?? [];
+        if (userPrefs.length === 0) return true;
+        return userPrefs.every((pref) => meal.dietaryTags.includes(pref));
+      }),
+    [dashboardLibraryMeals, currentMealType, effectiveUser?.dietaryPreferences],
+  );
+
   const overagePence = Math.max(spentPence - weeklyBudgetPence, 0);
 
   return (
@@ -203,6 +219,16 @@ export function DashboardOverview({
             </div>
           </section>
         </div>
+
+        {logismosEnabled && plannedMealCount >= 3 && (
+          <section className="mt-5">
+            <LogismosCard
+              householdSize={householdSize}
+              weeklyBudgetPence={weeklyBudgetPence}
+              cookableMeals={cookableMealsForToday}
+            />
+          </section>
+        )}
 
         <section className="mt-5 rounded-2xl border border-cream-dark bg-white p-5">
           <p className="text-sm font-semibold text-navy">Quick actions</p>

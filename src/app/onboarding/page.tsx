@@ -84,6 +84,12 @@ export default function OnboardingPage() {
         dietary_preferences: store.dietary,
         preferred_retailer_ids: store.retailers,
         updated_at: new Date().toISOString(),
+        // Logismos defaults
+        logismos_enabled: true,
+        energy_check_in_enabled: true,
+        calendar_sync_enabled: false,
+        loavish_points_balance: 0,
+        streak_days: 0,
       });
 
       setStep(5);

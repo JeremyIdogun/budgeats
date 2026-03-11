@@ -211,6 +211,9 @@ export function InsightsClient({
         <section className="mb-4">
           <h1 className="text-2xl font-semibold text-navy md:text-3xl">Insights</h1>
           <p className="text-sm text-navy-muted">Current week snapshot based on your plan.</p>
+          <Link href="/decisions" className="mt-1 inline-block text-sm text-teal underline">
+            See your decision history →
+          </Link>
         </section>
 
         {!hasMeals ? (

@@ -67,6 +67,19 @@ export const selectTodaysMeals = (state: BudgeAtsState): DayPlan => {
   return todayIndex >= 0 ? (state.currentWeekPlan.days[todayIndex] ?? {}) : {};
 };
 
+export const selectDaysRemainingInWeek = (): number => {
+  const today = new Date().getDay(); // 0=Sun
+  const mon = today === 0 ? 6 : today - 1; // Mon=0
+  return Math.max(1, 7 - mon);
+};
+
+export const selectWasteRiskIngredientIds = (state: BudgeAtsState): string[] => {
+  // Phase I stub: return empty array
+  // Phase II: compare shopping list purchase dates against current date
+  void state;
+  return [];
+};
+
 export const selectDashboardAlertState = (
   state: BudgeAtsState,
 ): "under-planned" | "on-track" | "over-budget" => {

@@ -5,3 +5,4 @@ export * from "./meal";
 export * from "./user";
 export * from "./plan";
 export * from "./shopping";
+export * from "./logismos";
