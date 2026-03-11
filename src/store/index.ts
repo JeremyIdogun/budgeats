@@ -35,6 +35,9 @@ export interface BudgeAtsState {
   logismosScore: number | null;
   streakDays: number;
 
+  // Weekly budget nudge
+  budgetNudgeDismissedForWeek: string | null; // weekStartDate of last dismissed nudge
+
   setUser: (user: UserProfile) => void;
   setCurrentWeekPlan: (weekPlan: WeekPlan | null) => void;
   setMeals: (meals: Meal[]) => void;
@@ -51,6 +54,10 @@ export interface BudgeAtsState {
   dismissRecommendation: () => void;
   addPoints: (points: number) => void;
   setLogismosScore: (score: number | null) => void;
+
+  // Weekly budget actions
+  setWeekBudgetOverride: (pence: number) => void;
+  dismissBudgetNudge: (weekStartDate: string) => void;
 }
 
 const storage = createJSONStorage(() => {
@@ -87,6 +94,9 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
       loavishPoints: 0,
       logismosScore: null,
       streakDays: 0,
+
+      // Weekly budget nudge
+      budgetNudgeDismissedForWeek: null,
 
       setUser: (user) => set({ user }),
       setCurrentWeekPlan: (currentWeekPlan) => set({ currentWeekPlan }),
@@ -125,6 +135,16 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
       dismissRecommendation: () => set({ currentRecommendation: null }),
       addPoints: (points) => set((state) => ({ loavishPoints: state.loavishPoints + points })),
       setLogismosScore: (score) => set({ logismosScore: score }),
+
+      // Weekly budget actions
+      setWeekBudgetOverride: (pence) =>
+        set((state) => {
+          const weekPlan = ensureWeekPlan(state);
+          return {
+            currentWeekPlan: { ...weekPlan, budgetOverridePence: pence, updatedAt: new Date().toISOString() },
+          };
+        }),
+      dismissBudgetNudge: (weekStartDate) => set({ budgetNudgeDismissedForWeek: weekStartDate }),
     }),
     {
       name: "budgeats-storage",
@@ -136,6 +156,7 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
         logismosScore: state.logismosScore,
         streakDays: state.streakDays,
         energyLevel: state.energyLevel,
+        budgetNudgeDismissedForWeek: state.budgetNudgeDismissedForWeek,
       }),
     },
   ),

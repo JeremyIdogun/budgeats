@@ -5,6 +5,7 @@ import { useEffect, useMemo } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
 import { LogismosCard } from "@/components/logismos/LogismosCard";
+import { WeeklyBudgetNudge } from "@/components/dashboard/WeeklyBudgetNudge";
 import {
   addDays,
   buildLibraryWeekPlan,
@@ -18,6 +19,7 @@ import { useBudgeAtsStore, type BudgeAtsState } from "@/store";
 import {
   selectBudgetUtilisationPct,
   selectDashboardAlertState,
+  selectEffectiveWeeklyBudgetPence,
   selectPlannedMealCount,
   selectWeekSpendPence,
 } from "@/store/selectors";
@@ -107,23 +109,38 @@ export function DashboardOverview({
     ],
   );
 
+  const storeWeekStartDate = storeState.currentWeekPlan?.weekStartDate;
+  const storeBudgetOverridePence = storeState.currentWeekPlan?.budgetOverridePence;
+
   useEffect(() => {
-    setCurrentWeekPlan(libraryWeekPlan);
-  }, [libraryWeekPlan, setCurrentWeekPlan]);
+    const weekPlanWithOverride =
+      storeWeekStartDate === libraryWeekPlan.weekStartDate && storeBudgetOverridePence !== undefined
+        ? { ...libraryWeekPlan, budgetOverridePence: storeBudgetOverridePence }
+        : libraryWeekPlan;
+
+    setCurrentWeekPlan(weekPlanWithOverride);
+  }, [libraryWeekPlan, setCurrentWeekPlan, storeWeekStartDate, storeBudgetOverridePence]);
+
+  const effectiveWeekPlan =
+    storeState.currentWeekPlan?.weekStartDate === weekKey
+      ? storeState.currentWeekPlan
+      : libraryWeekPlan;
 
   const selectorState = useMemo<BudgeAtsState>(
     () => ({
       ...storeState,
       user: effectiveUser,
-      currentWeekPlan: libraryWeekPlan,
+      currentWeekPlan: effectiveWeekPlan,
       meals: dashboardLibraryMeals,
     }),
-    [storeState, effectiveUser, libraryWeekPlan, dashboardLibraryMeals],
+    [storeState, effectiveUser, effectiveWeekPlan, dashboardLibraryMeals],
   );
 
   const spentPence = selectWeekSpendPence(selectorState);
   const utilisationPct = selectBudgetUtilisationPct(selectorState);
-  const remainingPence = weeklyBudgetPence - spentPence;
+  // Use the per-week override if the user has set one, otherwise fall back to the profile default
+  const effectiveBudgetPence = selectEffectiveWeeklyBudgetPence(selectorState);
+  const remainingPence = effectiveBudgetPence - spentPence;
   const plannedMealCount = selectPlannedMealCount(selectorState);
   const alertState = selectDashboardAlertState(selectorState);
 
@@ -150,14 +167,19 @@ export function DashboardOverview({
     [dashboardLibraryMeals, currentMealType, effectiveUser?.dietaryPreferences],
   );
 
-  const overagePence = Math.max(spentPence - weeklyBudgetPence, 0);
+  const overagePence = Math.max(spentPence - effectiveBudgetPence, 0);
 
   return (
     <main className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
       <div className="mx-auto max-w-7xl">
         <AppNav />
 
-        <div className="grid gap-5 lg:grid-cols-[340px_1fr]">
+        <WeeklyBudgetNudge
+          weekStartDate={weekKey}
+          defaultBudgetPence={weeklyBudgetPence}
+        />
+
+        <div className="grid gap-5 lg:grid-cols-[340px_1fr] mt-5">
           <section className="rounded-2xl border border-cream-dark bg-white p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
               Weekly Budget
@@ -193,7 +215,7 @@ export function DashboardOverview({
             <p className="text-sm font-semibold text-navy">Week summary</p>
             <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-7">
               {weekDays.map((date, index) => {
-                const mealCount = Object.values(libraryWeekPlan.days[index]).filter(Boolean).length;
+                const mealCount = Object.values(effectiveWeekPlan.days[index]).filter(Boolean).length;
                 const isToday = todayIndex === index;
 
                 return (
@@ -224,7 +246,7 @@ export function DashboardOverview({
           <section className="mt-5">
             <LogismosCard
               householdSize={householdSize}
-              weeklyBudgetPence={weeklyBudgetPence}
+              weeklyBudgetPence={effectiveBudgetPence}
               cookableMeals={cookableMealsForToday}
             />
           </section>
@@ -260,7 +282,7 @@ export function DashboardOverview({
               <p className="text-sm text-navy">
                 <span className="mr-2">⚠️</span>
                 You&apos;ve planned {plannedMealCount} meals this week. Aim for at least 14
-                to stay within your {formatPence(weeklyBudgetPence)} budget.
+                to stay within your {formatPence(effectiveBudgetPence)} budget.
               </p>
               <Link
                 href="/planner"

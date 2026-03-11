@@ -18,4 +18,5 @@ export interface WeekPlan {
   days: [DayPlan, DayPlan, DayPlan, DayPlan, DayPlan, DayPlan, DayPlan];
   createdAt: string;
   updatedAt: string;
+  budgetOverridePence?: number; // one-time weekly adjustment; falls back to UserProfile default
 }

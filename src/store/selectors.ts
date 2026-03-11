@@ -20,16 +20,22 @@ export const selectWeekSpendPence = (state: BudgeAtsState): number => {
   );
 };
 
+// Returns this week's budget: override if set, otherwise profile default
+export const selectEffectiveWeeklyBudgetPence = (state: BudgeAtsState): number => {
+  return state.currentWeekPlan?.budgetOverridePence ?? state.user?.budget.amount ?? 0;
+};
+
 export const selectBudgetRemainingPence = (state: BudgeAtsState): number => {
   if (!state.user) return 0;
   const spent = selectWeekSpendPence(state);
-  return deriveBudgetRemainingPence(state.user.budget.amount, spent);
+  return deriveBudgetRemainingPence(selectEffectiveWeeklyBudgetPence(state), spent);
 };
 
 export const selectBudgetUtilisationPct = (state: BudgeAtsState): number => {
-  if (!state.user) return 0;
+  const budget = selectEffectiveWeeklyBudgetPence(state);
+  if (budget <= 0) return 0;
   const spent = selectWeekSpendPence(state);
-  return deriveBudgetUtilisationPct(state.user.budget.amount, spent);
+  return deriveBudgetUtilisationPct(budget, spent);
 };
 
 export const selectCheapestRetailer = (state: BudgeAtsState): RetailerId | null => {
@@ -84,7 +90,7 @@ export const selectDashboardAlertState = (
   state: BudgeAtsState,
 ): "under-planned" | "on-track" | "over-budget" => {
   const spent = selectWeekSpendPence(state);
-  const budget = state.user?.budget.amount ?? 0;
+  const budget = selectEffectiveWeeklyBudgetPence(state);
   const count = selectPlannedMealCount(state);
   if (budget > 0 && spent > budget) return "over-budget";
   if (count < 14) return "under-planned";
