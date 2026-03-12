@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
 import { computeAcceptedThisMonth, computeLogismosScore } from "@/lib/points";
 import { useBudgeAtsStore } from "@/store";
@@ -9,6 +9,15 @@ import { useDecisionStore } from "@/store/decisions";
 interface ScoreBand {
   label: string;
   color: string;
+}
+
+interface RewardsSummary {
+  pointsBalance: number;
+  pointsByCategory: Record<string, number>;
+  logismosScore: number | null;
+  acceptedThisMonth: number;
+  monthly: Array<{ weekLabel: string; points: number; accepted: number }>;
+  streakDays: number;
 }
 
 function getScoreBand(score: number): ScoreBand {
@@ -30,16 +39,47 @@ export default function RewardsPage() {
   const loavishPoints = useBudgeAtsStore((s) => s.loavishPoints);
   const streakDays = useBudgeAtsStore((s) => s.streakDays);
   const entries = useDecisionStore((s) => s.entries);
+  const [summary, setSummary] = useState<RewardsSummary | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(true);
   const [showProModal, setShowProModal] = useState(false);
   const [proToast, setProToast] = useState(false);
 
-  const logismosScore = computeLogismosScore(entries);
+  useEffect(() => {
+    let cancelled = false;
+    async function loadSummary() {
+      setSummaryLoading(true);
+      try {
+        const response = await fetch("/api/rewards/summary", { cache: "no-store" });
+        if (!response.ok) return;
+        const payload = (await response.json()) as { data?: RewardsSummary };
+        if (!cancelled && payload.data) {
+          setSummary(payload.data);
+        }
+      } finally {
+        if (!cancelled) {
+          setSummaryLoading(false);
+        }
+      }
+    }
+    void loadSummary();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const logismosScore = summary?.logismosScore ?? computeLogismosScore(entries);
   const scoreBand = logismosScore !== null ? getScoreBand(logismosScore) : null;
   const tier = getTierBadge(logismosScore);
+  const acceptedThisMonth = summary?.acceptedThisMonth ?? computeAcceptedThisMonth(entries);
+  const displayedPoints = summary?.pointsBalance ?? loavishPoints;
+  const displayedStreak = summary?.streakDays ?? streakDays;
+  const pointsByCategory = summary?.pointsByCategory ?? {};
+  const monthly = useMemo(() => summary?.monthly ?? [], [summary]);
+  const maxMonthlyPoints = useMemo(
+    () => Math.max(1, ...monthly.map((bucket) => bucket.points)),
+    [monthly],
+  );
 
-  const acceptedThisMonth = computeAcceptedThisMonth(entries);
-
-  // Score ring SVG values
   const radius = 58;
   const circumference = 2 * Math.PI * radius;
   const scoreProgress = logismosScore !== null ? logismosScore : 0;
@@ -59,13 +99,12 @@ export default function RewardsPage() {
     setShowProModal(false);
     setProToast(true);
     setTimeout(() => setProToast(false), 3000);
-    console.log("[Logismos] Pro upgrade CTA clicked");
   }
 
   const achievements = [
     { icon: "🍳", label: "First Cook", unlocked: entries.some((e) => e.recommendation_type === "cook" && e.recommendation_accepted) },
-    { icon: "🔥", label: "3-Day Streak", unlocked: streakDays >= 3 },
-    { icon: "💰", label: "Budget Hero", unlocked: loavishPoints >= 100 },
+    { icon: "🔥", label: "3-Day Streak", unlocked: displayedStreak >= 3 },
+    { icon: "💰", label: "Budget Hero", unlocked: displayedPoints >= 100 },
     { icon: "🌱", label: "Waste Warrior", unlocked: false },
     { icon: "⭐", label: "Loavish Star", unlocked: logismosScore !== null && logismosScore >= 86 },
     { icon: "🏆", label: "Smart Spender", unlocked: logismosScore !== null && logismosScore >= 66 },
@@ -81,29 +120,50 @@ export default function RewardsPage() {
           <p className="text-sm text-navy-muted">Your LoavishPoints &amp; Logismos Score.</p>
         </section>
 
-        {/* Pro toast */}
         {proToast && (
-          <div className="mb-4 rounded-xl bg-navy px-4 py-3 text-sm font-semibold text-white text-center">
+          <div className="mb-4 rounded-xl bg-navy px-4 py-3 text-center text-sm font-semibold text-white">
             Pro coming soon — you&apos;ll be first to know!
           </div>
         )}
 
-        {/* 1. Points balance + tier badge */}
         <section className="rounded-2xl border border-cream-dark bg-white p-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
                 LoavishPoints
               </p>
-              <p className="mt-1 text-4xl font-semibold text-navy">{loavishPoints}</p>
+              <p className="mt-1 text-4xl font-semibold text-navy">{displayedPoints}</p>
             </div>
             <span className="rounded-full bg-cream px-4 py-2 text-sm font-semibold text-navy">
               {tier}
             </span>
           </div>
+          {summaryLoading && (
+            <p className="mt-2 text-xs text-navy-muted">Refreshing rewards summary...</p>
+          )}
         </section>
 
-        {/* 2. Logismos Score ring */}
+        <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
+            Points Breakdown
+          </p>
+          <div className="mt-3 space-y-2">
+            {Object.entries(pointsByCategory).length === 0 && (
+              <p className="text-sm text-navy-muted">No points events yet.</p>
+            )}
+            {Object.entries(pointsByCategory)
+              .sort((a, b) => b[1] - a[1])
+              .map(([event, points]) => (
+                <div key={event} className="flex items-center justify-between rounded-lg bg-cream px-3 py-2">
+                  <span className="text-xs font-semibold uppercase tracking-[0.08em] text-navy-muted">
+                    {event.replaceAll("_", " ")}
+                  </span>
+                  <span className="text-sm font-semibold text-navy">{points} pts</span>
+                </div>
+              ))}
+          </div>
+        </section>
+
         <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             Logismos Score
@@ -147,7 +207,6 @@ export default function RewardsPage() {
           </p>
         </section>
 
-        {/* 3. Monthly summary */}
         <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             This Month
@@ -157,27 +216,45 @@ export default function RewardsPage() {
             <span className="font-semibold text-teal">{acceptedThisMonth} smart decision{acceptedThisMonth !== 1 ? "s" : ""}</span>{" "}
             this month.
           </p>
+          {monthly.length > 0 && (
+            <div className="mt-4 grid grid-cols-4 gap-2">
+              {monthly.map((bucket) => {
+                const heightPct = Math.max(8, Math.round((bucket.points / maxMonthlyPoints) * 100));
+                return (
+                  <div key={bucket.weekLabel} className="flex flex-col items-center gap-1">
+                    <div className="flex h-24 w-full items-end rounded bg-cream px-1">
+                      <div
+                        className="w-full rounded bg-teal/70"
+                        style={{ height: `${heightPct}%` }}
+                        title={`${bucket.points} pts · ${bucket.accepted} accepted`}
+                      />
+                    </div>
+                    <p className="text-[10px] text-navy-muted">{bucket.weekLabel}</p>
+                    <p className="text-[10px] font-semibold text-navy">{bucket.points}</p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </section>
 
-        {/* 4. Streak tracker */}
         <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             Streak
           </p>
           <div className="mt-2 flex items-center gap-6">
             <div>
-              <p className="text-3xl font-semibold text-navy">{streakDays}</p>
+              <p className="text-3xl font-semibold text-navy">{displayedStreak}</p>
               <p className="text-xs text-navy-muted">Current streak</p>
             </div>
             <div className="h-10 w-px bg-cream-dark" />
             <div>
-              <p className="text-3xl font-semibold text-navy-muted">{streakDays}</p>
+              <p className="text-3xl font-semibold text-navy-muted">{displayedStreak}</p>
               <p className="text-xs text-navy-muted">Personal best</p>
             </div>
           </div>
         </section>
 
-        {/* 5. Achievements */}
         <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             Achievements
@@ -199,7 +276,6 @@ export default function RewardsPage() {
           </div>
         </section>
 
-        {/* 6. Pro upgrade CTA */}
         <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -218,7 +294,6 @@ export default function RewardsPage() {
         </section>
       </div>
 
-      {/* Pro stub modal */}
       {showProModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/40 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-card-hover">

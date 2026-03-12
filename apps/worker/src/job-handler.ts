@@ -6,6 +6,7 @@ import type {
   RetailerContext,
 } from "../../../packages/retailer-connectors/src/types";
 import { recordIngestionRun, type IngestionRunSink, type IngestionRunStatus } from "./ingestion-runs";
+import { logEvent } from "./logger";
 
 export interface IngestionPersistence {
   resolveRetailerIdBySlug(slug: string): Promise<string>;
@@ -51,6 +52,7 @@ function uniqueByRetailerProductId(rows: RawProduct[]): RawProduct[] {
 
 export async function runIngestionJob(input: RunIngestionJobInput): Promise<IngestionJobResult> {
   const startedAt = input.now ?? new Date();
+  const startedAtMs = Date.now();
   const errors: string[] = [];
   let productsScraped = 0;
 
@@ -110,6 +112,17 @@ export async function runIngestionJob(input: RunIngestionJobInput): Promise<Inge
       errors: errors.length > 0 ? { errors } : null,
     });
 
+    logEvent({
+      event: "ingestion.run.completed",
+      retailer_id: retailerId,
+      duration_ms: Date.now() - startedAtMs,
+      products_scraped: productsScraped,
+      matched: productsScraped,
+      review_queue: 0,
+      unmatched: 0,
+      errors: errors.length,
+    });
+
     return {
       retailerId,
       startedAt: startedAt.toISOString(),
@@ -131,6 +144,18 @@ export async function runIngestionJob(input: RunIngestionJobInput): Promise<Inge
       status: "failed",
       productsScraped,
       errors: { errors },
+    });
+
+    logEvent({
+      event: "ingestion.run.failed",
+      retailer_id: retailerId,
+      duration_ms: Date.now() - startedAtMs,
+      products_scraped: productsScraped,
+      matched: 0,
+      review_queue: 0,
+      unmatched: 0,
+      errors: errors.length,
+      error: failureMessage,
     });
 
     return {

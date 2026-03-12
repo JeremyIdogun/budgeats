@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { listReviewQueue, setMatchDecision } from "@/lib/product-match-review";
+import { cacheDeleteByPrefix } from "@/lib/server/cache";
 
 interface ReviewDecisionBody {
   retailerProductId?: unknown;
@@ -37,6 +38,9 @@ export async function POST(request: Request) {
 
   try {
     const updated = setMatchDecision({ retailerProductId, decision });
+    cacheDeleteByPrefix("pricing:ingredient");
+    cacheDeleteByPrefix("pricing:meal");
+    cacheDeleteByPrefix("pricing:basket");
     return NextResponse.json({
       data: updated,
       explanation: `Set ${retailerProductId} to ${decision}.`,

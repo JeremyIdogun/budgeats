@@ -7,6 +7,7 @@ import {
   resolveIngredientPricing,
   toRetailerId,
 } from "@/lib/pricing-engine-adapter";
+import { withCache } from "@/lib/server/cache";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -35,13 +36,21 @@ export async function GET(request: Request) {
   ) as RetailerId[];
 
   try {
-    const priced = resolveIngredientPricing({
-      ingredient,
-      prices,
-      preferredRetailers,
-      loyaltyEnabled,
-      forcedRetailerId: retailer ?? undefined,
-    });
+    const cacheKey = [
+      "pricing:ingredient",
+      ingredientId,
+      retailer ?? "mixed",
+      loyaltyEnabled ? "loyalty:on" : "loyalty:off",
+    ].join(":");
+
+    const priced = await withCache(cacheKey, 6 * 60 * 60 * 1000, async () =>
+      resolveIngredientPricing({
+        ingredient,
+        prices,
+        preferredRetailers,
+        loyaltyEnabled,
+        forcedRetailerId: retailer ?? undefined,
+      }));
 
     return NextResponse.json({
       data: priced,

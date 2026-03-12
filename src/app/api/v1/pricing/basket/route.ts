@@ -4,6 +4,7 @@ import mealsData from "@/data/meals.json";
 import pricesData from "@/data/prices.json";
 import type { Ingredient, IngredientPrice, Meal, RetailerId } from "@/models";
 import { computeBasketPricing, toRetailerId } from "@/lib/pricing-engine-adapter";
+import { withCache } from "@/lib/server/cache";
 
 interface BasketRequestBody {
   mealIds?: unknown;
@@ -67,13 +68,22 @@ export async function POST(request: Request) {
   const retailerIds = requestedRetailers.length > 0 ? requestedRetailers : fallbackRetailers;
 
   try {
-    const priced = computeBasketPricing({
-      meals,
-      ingredients: ingredientsData as Ingredient[],
-      prices: pricesData as IngredientPrice[],
-      retailerIds,
-      loyaltyPrefs: parseLoyaltyPrefs(body.loyaltyPrefs),
-    });
+    const loyaltyPrefs = parseLoyaltyPrefs(body.loyaltyPrefs);
+    const cacheKey = [
+      "pricing:basket",
+      [...mealIds].sort().join(","),
+      [...retailerIds].sort().join(","),
+      JSON.stringify(loyaltyPrefs),
+    ].join(":");
+
+    const priced = await withCache(cacheKey, 6 * 60 * 60 * 1000, async () =>
+      computeBasketPricing({
+        meals,
+        ingredients: ingredientsData as Ingredient[],
+        prices: pricesData as IngredientPrice[],
+        retailerIds,
+        loyaltyPrefs,
+      }));
 
     return NextResponse.json({
       data: priced,

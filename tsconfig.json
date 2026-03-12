@@ -21,7 +21,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@loavish/pricing-engine": ["./packages/pricing-engine/src/index.ts"],
-      "@loavish/matching-engine": ["./packages/matching-engine/src/index.ts"]
+      "@loavish/matching-engine": ["./packages/matching-engine/src/index.ts"],
+      "@loavish/logismos": ["./packages/logismos/src/index.ts"]
     }
   },
   "include": [

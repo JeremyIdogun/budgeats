@@ -4,6 +4,7 @@ import mealsData from "@/data/meals.json";
 import pricesData from "@/data/prices.json";
 import type { Ingredient, IngredientPrice, Meal, RetailerId } from "@/models";
 import { computeMealPricing, parseBooleanFlag, toRetailerId } from "@/lib/pricing-engine-adapter";
+import { withCache } from "@/lib/server/cache";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -37,15 +38,22 @@ export async function GET(request: Request) {
   ) as RetailerId[];
 
   try {
-    const priced = computeMealPricing({
-      meal,
-      ingredients: ingredientsData as Ingredient[],
-      prices: pricesData as IngredientPrice[],
-      preferredRetailers: preferredRetailers.length > 0 ? preferredRetailers : (["tesco"] as RetailerId[]),
-      loyaltyEnabled,
-      householdSize: 2,
-      forcedRetailerId: retailer ?? undefined,
-    });
+    const cacheKey = [
+      "pricing:meal",
+      mealId,
+      retailer ?? "mixed",
+      loyaltyEnabled ? "loyalty:on" : "loyalty:off",
+    ].join(":");
+    const priced = await withCache(cacheKey, 6 * 60 * 60 * 1000, async () =>
+      computeMealPricing({
+        meal,
+        ingredients: ingredientsData as Ingredient[],
+        prices: pricesData as IngredientPrice[],
+        preferredRetailers: preferredRetailers.length > 0 ? preferredRetailers : (["tesco"] as RetailerId[]),
+        loyaltyEnabled,
+        householdSize: 2,
+        forcedRetailerId: retailer ?? undefined,
+      }));
 
     return NextResponse.json({
       data: priced,

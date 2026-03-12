@@ -4,17 +4,18 @@ import { buildProviderSchedules, ingestionSchedules, shouldRunOnDemand } from ".
 
 describe("ingestion schedule definitions", () => {
   it("includes all required periodic jobs", () => {
-    assert.equal(ingestionSchedules.length, 3);
+    assert.equal(ingestionSchedules.length, 4);
     assert.equal(ingestionSchedules[0].id, "full-category-refresh");
     assert.equal(ingestionSchedules[1].id, "offers-refresh");
     assert.equal(ingestionSchedules[2].id, "top-ingredient-refresh");
+    assert.equal(ingestionSchedules[3].id, "price-alerts-check");
   });
 
   it("maps schedules to trigger-dev and bullmq descriptors", () => {
     const triggerJobs = buildProviderSchedules("trigger-dev");
     const bullJobs = buildProviderSchedules("bullmq");
-    assert.equal(triggerJobs.length, 3);
-    assert.equal(bullJobs.length, 3);
+    assert.equal(triggerJobs.length, 4);
+    assert.equal(bullJobs.length, 4);
     assert.equal(triggerJobs[0].provider, "trigger-dev");
     assert.equal(bullJobs[0].provider, "bullmq");
   });

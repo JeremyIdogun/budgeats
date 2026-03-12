@@ -1,5 +1,9 @@
 export interface IngestionScheduleDefinition {
-  id: "full-category-refresh" | "offers-refresh" | "top-ingredient-refresh";
+  id:
+    | "full-category-refresh"
+    | "offers-refresh"
+    | "top-ingredient-refresh"
+    | "price-alerts-check";
   cron: string;
   description: string;
 }
@@ -21,6 +25,11 @@ export const ingestionSchedules: IngestionScheduleDefinition[] = [
     id: "top-ingredient-refresh",
     cron: "0 */3 * * *",
     description: "Top-ingredient refresh every 3 hours",
+  },
+  {
+    id: "price-alerts-check",
+    cron: "0 */6 * * *",
+    description: "Price alert sweep every 6 hours",
   },
 ];
 
