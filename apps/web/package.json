@@ -1,0 +1,11 @@
+{
+  "name": "@loavish/web",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "pnpm --dir ../.. dev",
+    "build": "pnpm --dir ../.. build",
+    "start": "pnpm --dir ../.. start",
+    "lint": "pnpm --dir ../.. lint"
+  }
+}
