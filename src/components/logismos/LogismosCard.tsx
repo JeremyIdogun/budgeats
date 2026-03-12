@@ -6,7 +6,7 @@ import { generateRecommendation, type CookableMeal } from "@/lib/logismos";
 import { POINTS } from "@/lib/points";
 import { getTodayDayIndex } from "@/lib/planner";
 import type { Ingredient, IngredientPrice, Meal, MealType } from "@/models";
-import type { DecisionLogEntry } from "@/models/logismos";
+import type { ContextSignals, DecisionLogEntry, LogismosRecommendation } from "@/models/logismos";
 import { useBudgeAtsStore } from "@/store";
 import {
   selectBudgetRemainingPence,
@@ -88,36 +88,79 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
       .filter((m) => m.estimatedCostPence <= budgetRemainingPence);
   }, [cookableMeals, store.ingredients, store.prices, householdSize, preferredRetailer, budgetRemainingPence]);
 
-  const recommendation = useMemo(() => {
-    return generateRecommendation(
-      {
-        calendarEventSoon: false, // Phase I stub
-        timeWindowMinutes: 120, // Phase I stub: ample time
-        energyLevel: store.energyLevel,
-        wasteRiskIngredients,
-        budgetRemainingPence,
-        daysRemainingInWeek,
-        dayOfWeek,
-        hourOfDay,
-      },
+  const contextSignals = useMemo<ContextSignals>(
+    () => ({
+      calendarEventSoon: false, // Phase I stub
+      timeWindowMinutes: 120, // Phase I stub: ample time
+      energyLevel: store.energyLevel,
+      wasteRiskIngredients,
+      budgetRemainingPence,
+      daysRemainingInWeek,
+      dayOfWeek,
+      hourOfDay,
+    }),
+    [
+      store.energyLevel,
+      wasteRiskIngredients,
+      budgetRemainingPence,
+      daysRemainingInWeek,
+      dayOfWeek,
+      hourOfDay,
+    ],
+  );
+
+  const localRecommendation = useMemo(
+    () => generateRecommendation(contextSignals, cookableMealsWithCost, householdSize),
+    [
+      contextSignals,
       cookableMealsWithCost,
       householdSize,
-    );
+    ],
+  );
+
+  const [recommendation, setRecommendation] = useState<LogismosRecommendation>(localRecommendation);
+
+  useEffect(() => {
+    setRecommendation(localRecommendation);
+  }, [localRecommendation]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchRecommendation() {
+      try {
+        const response = await fetch("/api/logismos/recommendation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contextSignals,
+            cookableMeals: cookableMealsWithCost,
+            householdSize,
+          }),
+        });
+        if (!response.ok) return;
+        const payload = (await response.json()) as { data?: LogismosRecommendation };
+        if (!cancelled && payload.data) {
+          setRecommendation(payload.data);
+        }
+      } catch {
+        // Fall back to local recommendation when network/API fails.
+      }
+    }
+
+    void fetchRecommendation();
+    return () => {
+      cancelled = true;
+    };
   }, [
-    store.energyLevel,
-    wasteRiskIngredients,
-    budgetRemainingPence,
-    daysRemainingInWeek,
-    dayOfWeek,
-    hourOfDay,
+    contextSignals,
     cookableMealsWithCost,
     householdSize,
   ]);
 
-  // Sync recommendation into store
   useEffect(() => {
     store.setRecommendation(recommendation);
-  }, [recommendation]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [recommendation, store]);
 
   const recommendedMeal = useMemo(
     () => cookableMealsWithCost.find((m) => m.id === recommendation.mealId) ?? null,
@@ -151,14 +194,39 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
     };
   }
 
-  function handleAccept(meal: CookableMeal | null) {
+  async function handleAccept(meal: CookableMeal | null) {
     const isCook = meal !== null;
-    const points = isCook ? POINTS.ACCEPT_COOK_RECOMMENDATION : POINTS.ACCEPT_EAT_OUT_RECOMMENDATION;
+    const fallbackPoints: number = isCook
+      ? POINTS.ACCEPT_COOK_RECOMMENDATION
+      : POINTS.ACCEPT_EAT_OUT_RECOMMENDATION;
+    let awardedPoints = fallbackPoints;
+
+    try {
+      const response = await fetch("/api/logismos/accept", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recommendationType: recommendation.type,
+          recommendationJson: recommendation,
+          explanation: recommendation.reason,
+          addedMealToPlan: isCook,
+        }),
+      });
+      if (response.ok) {
+        const payload = (await response.json()) as {
+          data?: { pointsAwarded?: number };
+        };
+        awardedPoints = payload.data?.pointsAwarded ?? fallbackPoints;
+      }
+    } catch {
+      awardedPoints = fallbackPoints;
+    }
+
     const costPence = meal?.estimatedCostPence ?? recommendation.eatOutEstimatePence;
-    const entry = buildEntry(true, meal?.id ?? null, costPence, points);
+    const entry = buildEntry(true, meal?.id ?? null, costPence, awardedPoints);
 
     store.acceptRecommendation();
-    store.addPoints(points);
+    store.addPoints(awardedPoints);
     addDecisionEntry(entry);
 
     if (isCook && meal) {
@@ -171,14 +239,27 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
           portions: householdSize,
         });
       }
-      showToast(`Meal added to your plan. +${points} pts!`);
+      showToast(`Meal added to your plan. +${awardedPoints} pts!`);
     } else {
-      showToast(`Noted! +${points} pts!`);
+      showToast(`Noted! +${awardedPoints} pts!`);
     }
     setDismissed(true);
   }
 
-  function handleDismiss() {
+  async function handleDismiss() {
+    try {
+      await fetch("/api/logismos/dismiss", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recommendationType: recommendation.type,
+          recommendationJson: recommendation,
+          explanation: recommendation.reason,
+        }),
+      });
+    } catch {
+      // noop - keep local UX flow
+    }
     store.dismissRecommendation();
     setShowAlternatives(true);
   }

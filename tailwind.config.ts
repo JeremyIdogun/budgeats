@@ -24,6 +24,7 @@ const config: Config = {
         danger: "#D94F4F",
       },
       fontFamily: {
+        display: ["var(--font-display)", "sans-serif"],
         heading: ["var(--font-heading)", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
       },

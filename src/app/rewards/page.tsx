@@ -138,12 +138,12 @@ export default function RewardsPage() {
             <>
               <p className="-mt-28 text-center text-3xl font-semibold text-navy-muted">—</p>
               <p className="mt-16 text-center text-sm text-navy-muted">
-                Make 7 decisions to unlock your score
+                Make 3 decisions to unlock your score
               </p>
             </>
           )}
           <p className="mt-2 text-center text-xs text-navy-muted">
-            {logismosScore !== null ? "Based on last 28 days" : `${entries.length} / 7 decisions logged`}
+            {logismosScore !== null ? "Based on last 28 days" : `${entries.length} / 3 decisions logged`}
           </p>
         </section>
 

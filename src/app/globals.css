@@ -4,7 +4,7 @@
 :root {
   --background: #f7f5f2;
   --foreground: #1e2d4e;
-  --font-heading: var(--font-ui);
+  --font-heading: var(--font-display);
   --font-body: var(--font-ui);
 }
 

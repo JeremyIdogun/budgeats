@@ -62,6 +62,8 @@ interface DashboardShoppingItem {
   group: string;
   bestOfferRetailerId: RetailerId | null;
   bestOfferPence: number | null;
+  productUrl?: string;
+  substituteSuggestion?: string | null;
   priced: boolean;
 }
 
@@ -501,6 +503,8 @@ export function DashboardClient({
     group: item.category,
     bestOfferRetailerId: item.cheapestRetailerId,
     bestOfferPence: item.cheapestPricePence,
+    productUrl: item.productUrl,
+    substituteSuggestion: item.substituteSuggestion ?? null,
     priced: true,
   }));
 
@@ -989,14 +993,27 @@ export function DashboardClient({
                               <span className="block text-xs font-medium text-navy-muted">
                                 {amountLabel(item.amount, item.unit)}
                               </span>
-                              <span className="block text-[11px] text-teal">
-                                {item.bestOfferRetailerId && item.bestOfferPence !== null
-                                  ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
-                                  : "No store price yet"}
+                                <span className="block text-[11px] text-teal">
+                                  {item.bestOfferRetailerId && item.bestOfferPence !== null
+                                    ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
+                                    : "No store price yet"}
+                                </span>
+                                {item.substituteSuggestion && (
+                                  <span className="block text-[11px] text-coral">{item.substituteSuggestion}</span>
+                                )}
+                                {item.productUrl && (
+                                  <a
+                                    href={item.productUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="block text-[11px] text-navy underline underline-offset-2"
+                                  >
+                                    Open product
+                                  </a>
+                                )}
                               </span>
-                            </span>
-                          </label>
-                        ))}
+                            </label>
+                          ))}
                       </div>
                     </div>
                   ))}
