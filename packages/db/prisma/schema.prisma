@@ -23,8 +23,24 @@ model Retailer {
   meal_cost_snaps MealCostSnapshot[]
   preferences     UserRetailerPreference[]
   alerts          PriceAlert[]
+  ingestion_runs  IngestionRun[]
 
   @@map("retailers")
+}
+
+model IngestionRun {
+  id               String   @id @default(uuid()) @db.Uuid
+  retailer_id      String   @db.Uuid
+  started_at       DateTime
+  completed_at     DateTime?
+  status           String
+  products_scraped Int      @default(0)
+  errors_json      Json?
+  created_at       DateTime @default(now())
+  retailer         Retailer @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+
+  @@index([retailer_id, started_at])
+  @@map("ingestion_runs")
 }
 
 model RetailerContext {
