@@ -38,14 +38,14 @@ export default function HomePage() {
       <div className="relative mx-auto flex w-full max-w-6xl flex-col px-6 py-8 md:px-10 md:py-10">
         <header className="flex items-center justify-between">
           <Link href="/" aria-label="Loavish home" className="inline-flex items-center">
-            <span className="relative block h-10 w-[210px] md:h-14 md:w-[330px]">
+            <span className="relative block w-[240px] aspect-[520/230] md:w-[340px]">
               <Image
-                src="/loavish-logotype.svg"
+                src="/loavish-wordmark.svg"
                 alt="Loavish"
                 fill
                 priority
                 className="object-contain object-left"
-                sizes="(min-width: 768px) 330px, 210px"
+                sizes="(min-width: 768px) 340px, 240px"
               />
             </span>
           </Link>
