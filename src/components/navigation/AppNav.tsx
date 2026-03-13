@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { href: "/insights", label: "Insights", icon: null },
   { href: "/settings", label: "Settings", icon: null },
   { href: "/rewards", label: "Rewards", icon: "⭐" },
+  { href: "/admin", label: "Admin", icon: null },
 ];
 
 export function AppNav() {
