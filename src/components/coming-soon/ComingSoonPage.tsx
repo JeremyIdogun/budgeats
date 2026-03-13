@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { BrandLogo } from "@/components/BrandLogo";
+import Link from "next/link";
 
 /* ── Waitlist form ── */
 function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
@@ -149,7 +149,18 @@ export function ComingSoonPage() {
 
       {/* ── Nav ── */}
       <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-12">
-        <BrandLogo />
+        <Link href="/" aria-label="Loavish home" className="inline-flex items-center">
+          <span className="relative block h-10 w-[190px] md:h-14 md:w-[280px]">
+            <Image
+              src="/loavish-wordmark.svg"
+              alt="Loavish"
+              fill
+              priority
+              className="object-contain object-left"
+              sizes="(min-width: 768px) 280px, 190px"
+            />
+          </span>
+        </Link>
         <div className="rounded-full bg-teal-light px-4 py-1.5 text-xs font-semibold tracking-wide text-navy">
           Coming Soon
         </div>
@@ -329,8 +340,8 @@ export function ComingSoonPage() {
 
       {/* ── Footer ── */}
       <footer className="relative z-10 flex flex-wrap items-center justify-between gap-4 bg-navy px-6 py-8 text-center md:px-12">
-        <span className="relative block h-7 aspect-[758/232] overflow-hidden">
-          <Image src="/loavish-brand-logo.svg" alt="Loavish" fill className="object-contain brightness-0 invert" sizes="104px" />
+        <span className="relative block h-10 w-[190px] md:h-11 md:w-[220px]">
+          <Image src="/loavish-wordmark-white.svg" alt="Loavish" fill className="object-contain object-left" sizes="(min-width: 768px) 220px, 190px" />
         </span>
         <ul className="flex list-none gap-6">
           <li>
