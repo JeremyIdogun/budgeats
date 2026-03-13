@@ -62,7 +62,7 @@ export default function HomePage() {
             Eat well and stay on budget without overthinking groceries.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy-muted">
-            budgEAts helps you set a budget, pick your household needs, and get a
+            Loavish helps you set a budget, pick your household needs, and get a
             clean plan you can follow each week.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
