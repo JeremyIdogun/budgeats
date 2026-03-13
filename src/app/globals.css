@@ -21,6 +21,16 @@ body {
   font-family: var(--font-body), Arial, Helvetica, sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), Arial, Helvetica, sans-serif;
+  letter-spacing: -0.01em;
+}
+
 /* ── Coming soon page animations ── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
