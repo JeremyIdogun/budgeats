@@ -1,12 +1,32 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#1E2D4E"/>
-  <path
-    d="M22 13v12m7-12v12m7-12v12M22 25h14v20a7 7 0 0 1-7 7 7 7 0 0 1-7-7V25Z"
-    fill="none"
-    stroke="#ffffff"
-    stroke-width="3.5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <circle cx="29" cy="48" r="9" fill="#3DBFB8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Loavish icon">
+  <defs>
+    <linearGradient id="loavishBg" x1="8" y1="6" x2="52" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#263B67" />
+      <stop offset="1" stop-color="#1B2C4D" />
+    </linearGradient>
+    <linearGradient id="loavishPlate" x1="17" y1="44" x2="52" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#58D5CD" />
+      <stop offset="1" stop-color="#2FAEA8" />
+    </linearGradient>
+    <linearGradient id="loavishLoaf" x1="19" y1="20" x2="49" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3B44B" />
+      <stop offset="1" stop-color="#D78929" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="15" fill="url(#loavishBg)" />
+
+  <path d="M11.5 51.2C19.6 46.9 27.3 45.7 32 45.7C36.7 45.7 44.4 46.9 52.5 51.2V55.5C44.2 52.7 37.1 51.6 32 51.6C26.9 51.6 19.8 52.7 11.5 55.5V51.2Z" fill="#153637" />
+  <path d="M14.5 43.1C20.3 38 26 35.4 32 35.4C38 35.4 43.7 38 49.5 43.1C42.9 44.8 37.5 45.7 32 45.7C26.5 45.7 21.1 44.8 14.5 43.1Z" fill="url(#loavishPlate)" />
+
+  <path d="M18.3 24.1C21.3 20.9 25.8 19 32 19C38.2 19 42.7 20.9 45.7 24.1C48.2 27.1 49.5 30.5 49.5 33.3C49.5 35.2 48.8 36.9 48 38.4C43.9 40.1 38.2 41.2 32 41.2C25.8 41.2 20.1 40.1 16 38.4C15.2 36.9 14.5 35.2 14.5 33.3C14.5 30.5 15.8 27.1 18.3 24.1Z" fill="url(#loavishLoaf)" />
+
+  <path d="M25 24.5L23 30.5" stroke="#FFF7EC" stroke-width="1.6" stroke-linecap="round" />
+  <path d="M32 23L30.7 30.8" stroke="#FFF7EC" stroke-width="1.6" stroke-linecap="round" />
+  <path d="M39 24.5L38.1 30.5" stroke="#FFF7EC" stroke-width="1.6" stroke-linecap="round" />
+
+  <path d="M26.5 15.5C28.1 13.2 30 11.6 32 10.4" stroke="#EC7B4A" stroke-width="1.3" stroke-linecap="round" />
+  <path d="M37.5 15.5C35.9 13.2 34 11.6 32 10.4" stroke="#EC7B4A" stroke-width="1.3" stroke-linecap="round" />
+
+  <circle cx="48.2" cy="48" r="3" fill="#5AD8D0" />
 </svg>

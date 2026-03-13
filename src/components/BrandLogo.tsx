@@ -11,12 +11,12 @@ export function BrandLogo({ href = "/", className = "" }: BrandLogoProps) {
     <Link
       href={href}
       className={`inline-flex items-center ${className}`}
-      aria-label="budgEAts home"
+      aria-label="Loavish home"
     >
       <span className="relative block h-8 aspect-[758/232] overflow-hidden md:h-10">
         <Image
-          src="/brand-logo-transparent.png"
-          alt="budgEAts"
+          src="/loavish-brand-logo.svg"
+          alt="Loavish"
           fill
           priority
           className="object-contain"

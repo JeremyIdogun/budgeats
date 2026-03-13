@@ -15,12 +15,26 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "budgEAts",
-  description: "Plan meals, track food spending, and optimise grocery costs.",
+  metadataBase: new URL("https://loavish.app"),
+  title: "Loavish",
+  description: "Plan meals, track food spending, and optimize grocery costs.",
+  applicationName: "Loavish",
+  openGraph: {
+    title: "Loavish",
+    description: "Plan meals, track food spending, and optimize grocery costs.",
+    siteName: "Loavish",
+    type: "website",
+    locale: "en_GB",
+  },
+  twitter: {
+    card: "summary",
+    title: "Loavish",
+    description: "Plan meals, track food spending, and optimize grocery costs.",
+  },
   icons: {
-    icon: [{ url: "/favicon.png", type: "image/png" }],
-    shortcut: ["/favicon.png"],
-    apple: [{ url: "/favicon.png" }],
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: ["/favicon.svg"],
+    apple: [{ url: "/favicon.svg" }],
   },
 };
 

@@ -85,7 +85,7 @@ const FEATURES = [
   },
   {
     title: "Smart swap suggestions",
-    desc: "Going over budget? budgEAts suggests cheaper meal or ingredient alternatives so you stay on track without compromise.",
+    desc: "Going over budget? Loavish suggests cheaper meal or ingredient alternatives so you stay on track without compromise.",
     iconBg: "#FFF2EC",
     icon: "💡",
   },
@@ -188,7 +188,7 @@ export function ComingSoonPage() {
           className="mb-12 max-w-xl text-lg leading-relaxed text-navy-muted"
           style={{ animation: "fadeUp 0.6s 0.2s ease both" }}
         >
-          budgEAts breaks your food spend down to the ingredient level &mdash; so
+          Loavish breaks your food spend down to the ingredient level &mdash; so
           you can plan meals, compare retailers, and hit your grocery budget every
           week.
         </p>
@@ -244,7 +244,7 @@ export function ComingSoonPage() {
       {/* ── Features ── */}
       <section className="relative z-10 mx-auto max-w-5xl px-6 pb-24">
         <p className="mb-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-teal">
-          What budgEAts does
+          What Loavish does
         </p>
         <h2
           className="reveal mb-14 text-center text-navy"
@@ -330,7 +330,7 @@ export function ComingSoonPage() {
       {/* ── Footer ── */}
       <footer className="relative z-10 flex flex-wrap items-center justify-between gap-4 bg-navy px-6 py-8 text-center md:px-12">
         <span className="relative block h-7 aspect-[758/232] overflow-hidden">
-          <Image src="/brand-logo-transparent.png" alt="budgEAts" fill className="object-contain brightness-0 invert" sizes="104px" />
+          <Image src="/loavish-brand-logo.svg" alt="Loavish" fill className="object-contain brightness-0 invert" sizes="104px" />
         </span>
         <ul className="flex list-none gap-6">
           <li>
@@ -345,7 +345,7 @@ export function ComingSoonPage() {
           </li>
           <li>
             <a
-              href="mailto:hello@budgeats.app"
+              href="mailto:hello@loavish.app"
               className="text-xs text-white/50 transition hover:text-white/90"
             >
               Contact
@@ -353,7 +353,7 @@ export function ComingSoonPage() {
           </li>
         </ul>
         <span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
-          &copy; 2025 budgEAts. All rights reserved.
+          &copy; 2025 Loavish. All rights reserved.
         </span>
       </footer>
     </div>

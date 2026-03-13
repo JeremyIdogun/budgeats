@@ -144,7 +144,7 @@ export default function OnboardingPage() {
         </div>
 
         <p className="pb-2 text-center text-sm text-navy-muted">
-          Your data is stored securely and never sold. · budgEAts © 2025
+          Your data is stored securely and never sold. · Loavish © 2025
         </p>
       </div>
     </div>
