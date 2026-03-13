@@ -80,20 +80,10 @@ export default function RewardsPage() {
     [monthly],
   );
 
-  const radius = 58;
-  const circumference = 2 * Math.PI * radius;
-  const scoreProgress = logismosScore !== null ? logismosScore : 0;
-  const dashOffset = circumference - (scoreProgress / 100) * circumference;
-  const ringStroke =
-    logismosScore === null
-      ? "#EDEBE7"
-      : logismosScore <= 40
-        ? "#6B7A99"
-        : logismosScore <= 65
-          ? "#E8693A"
-          : logismosScore <= 85
-            ? "#3DBFB8"
-            : "#5D9B00";
+  const scoreProgress =
+    logismosScore !== null
+      ? Math.min(Math.max(logismosScore, 0), 100)
+      : 0;
 
   function handleProClick() {
     setShowProModal(false);
@@ -102,12 +92,15 @@ export default function RewardsPage() {
   }
 
   const achievements = [
-    { icon: "🍳", label: "First Cook", unlocked: entries.some((e) => e.recommendation_type === "cook" && e.recommendation_accepted) },
-    { icon: "🔥", label: "3-Day Streak", unlocked: displayedStreak >= 3 },
-    { icon: "💰", label: "Budget Hero", unlocked: displayedPoints >= 100 },
-    { icon: "🌱", label: "Waste Warrior", unlocked: false },
-    { icon: "⭐", label: "Loavish Star", unlocked: logismosScore !== null && logismosScore >= 86 },
-    { icon: "🏆", label: "Smart Spender", unlocked: logismosScore !== null && logismosScore >= 66 },
+    {
+      label: "First Cook",
+      unlocked: entries.some((e) => e.recommendation_type === "cook" && e.recommendation_accepted),
+    },
+    { label: "3-Day Streak", unlocked: displayedStreak >= 3 },
+    { label: "Budget Hero", unlocked: displayedPoints >= 100 },
+    { label: "Waste Warrior", unlocked: false },
+    { label: "Loavish Star", unlocked: logismosScore !== null && logismosScore >= 86 },
+    { label: "Smart Spender", unlocked: logismosScore !== null && logismosScore >= 66 },
   ];
 
   return (
@@ -121,12 +114,12 @@ export default function RewardsPage() {
         </section>
 
         {proToast && (
-          <div className="mb-4 rounded-xl bg-navy px-4 py-3 text-center text-sm font-semibold text-white">
+          <div className="mb-4 rounded-lg bg-navy px-4 py-3 text-center text-sm font-semibold text-white">
             Pro coming soon — you&apos;ll be first to know!
           </div>
         )}
 
-        <section className="rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="rounded-lg border border-cream-dark bg-white p-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
@@ -143,7 +136,7 @@ export default function RewardsPage() {
           )}
         </section>
 
-        <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="mt-4 rounded-lg border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             Points Breakdown
           </p>
@@ -164,50 +157,36 @@ export default function RewardsPage() {
           </div>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="mt-4 rounded-lg border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             Logismos Score
           </p>
-          <div className="mt-4 flex items-center justify-center">
-            <svg viewBox="0 0 140 140" className="h-44 w-44 -rotate-90" aria-hidden>
-              <circle cx="70" cy="70" r={radius} stroke="#EDEBE7" strokeWidth="12" fill="none" />
-              <circle
-                cx="70"
-                cy="70"
-                r={radius}
-                stroke={ringStroke}
-                strokeWidth="12"
-                fill="none"
-                strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={dashOffset}
-                className="transition-all duration-300"
-              />
-            </svg>
+          <div className="mt-4 h-1 rounded-full bg-cream-dark">
+            <div
+              className="h-1 rounded-full bg-teal transition-opacity duration-150"
+              style={{ width: `${scoreProgress}%` }}
+            />
           </div>
           {logismosScore !== null ? (
             <>
-              <p className={`-mt-28 text-center text-3xl font-semibold ${scoreBand?.color ?? "text-navy"}`}>
+              <p className={`mt-4 text-center text-3xl font-semibold ${scoreBand?.color ?? "text-navy"}`}>
                 {logismosScore}
               </p>
-              <p className={`mt-16 text-center text-sm font-semibold ${scoreBand?.color ?? "text-navy"}`}>
+              <p className={`mt-1 text-center text-sm font-semibold ${scoreBand?.color ?? "text-navy"}`}>
                 {scoreBand?.label}
               </p>
             </>
           ) : (
-            <>
-              <p className="-mt-28 text-center text-3xl font-semibold text-navy-muted">—</p>
-              <p className="mt-16 text-center text-sm text-navy-muted">
-                Make 3 decisions to unlock your score
-              </p>
-            </>
+            <p className="mt-4 text-center text-sm text-navy-muted">
+              Not enough data yet
+            </p>
           )}
           <p className="mt-2 text-center text-xs text-navy-muted">
             {logismosScore !== null ? "Based on last 28 days" : `${entries.length} / 3 decisions logged`}
           </p>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="mt-4 rounded-lg border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             This Month
           </p>
@@ -222,9 +201,9 @@ export default function RewardsPage() {
                 const heightPct = Math.max(8, Math.round((bucket.points / maxMonthlyPoints) * 100));
                 return (
                   <div key={bucket.weekLabel} className="flex flex-col items-center gap-1">
-                    <div className="flex h-24 w-full items-end rounded bg-cream px-1">
+                    <div className="flex h-24 w-full items-end rounded-lg bg-cream px-1">
                       <div
-                        className="w-full rounded bg-teal/70"
+                        className="w-full rounded-lg bg-teal/70"
                         style={{ height: `${heightPct}%` }}
                         title={`${bucket.points} pts · ${bucket.accepted} accepted`}
                       />
@@ -238,7 +217,7 @@ export default function RewardsPage() {
           )}
         </section>
 
-        <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="mt-4 rounded-lg border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             Streak
           </p>
@@ -255,7 +234,7 @@ export default function RewardsPage() {
           </div>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="mt-4 rounded-lg border border-cream-dark bg-white p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
             Achievements
           </p>
@@ -263,20 +242,22 @@ export default function RewardsPage() {
             {achievements.map((achievement) => (
               <div
                 key={achievement.label}
-                className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center ${
+                className={`flex flex-col items-center gap-1 rounded-lg border p-3 text-center ${
                   achievement.unlocked
                     ? "border-teal/30 bg-teal/5"
                     : "border-cream-dark opacity-40"
                 }`}
               >
-                <span className="text-2xl">{achievement.icon}</span>
+                <span
+                  className={`h-5 w-5 rounded-lg ${achievement.unlocked ? "bg-teal/20" : "bg-cream-dark"}`}
+                />
                 <p className="text-xs font-semibold text-navy leading-tight">{achievement.label}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="mt-4 rounded-lg border border-cream-dark bg-white p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="font-semibold text-navy">Upgrade to Loavish Pro</p>
@@ -286,7 +267,7 @@ export default function RewardsPage() {
             </div>
             <button
               onClick={() => setShowProModal(true)}
-              className="shrink-0 rounded-xl bg-navy px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#172744]"
+              className="shrink-0 rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
             >
               Upgrade
             </button>
@@ -296,26 +277,26 @@ export default function RewardsPage() {
 
       {showProModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/40 px-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-card-hover">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-card">
             <p className="text-lg font-semibold text-navy">Loavish Pro</p>
             <ul className="mt-3 space-y-2 text-sm text-navy-muted">
-              <li>✅ Calendar sync for smarter recommendations</li>
-              <li>✅ Geo-aware eat-out deals near you</li>
-              <li>✅ Advanced spending analytics</li>
-              <li>✅ Social leaderboard</li>
-              <li>✅ Priority support</li>
+              <li>Calendar sync for smarter recommendations</li>
+              <li>Geo-aware eat-out deals near you</li>
+              <li>Advanced spending analytics</li>
+              <li>Social leaderboard</li>
+              <li>Priority support</li>
             </ul>
             <p className="mt-4 text-sm font-semibold text-navy">£3.99/mo or £39/yr</p>
             <div className="mt-5 flex gap-3">
               <button
                 onClick={handleProClick}
-                className="flex-1 rounded-xl bg-navy px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#172744]"
+                className="flex-1 rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
               >
                 Join the waitlist
               </button>
               <button
                 onClick={() => setShowProModal(false)}
-                className="rounded-xl border border-cream-dark px-4 py-2.5 text-sm font-semibold text-navy-muted"
+                className="rounded-lg border border-cream-dark px-4 py-2.5 text-sm font-semibold text-navy-muted"
               >
                 Close
               </button>

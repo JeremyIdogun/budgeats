@@ -29,17 +29,7 @@ const config: Config = {
         body: ["var(--font-body)", "sans-serif"],
       },
       boxShadow: {
-        card: "0 2px 24px rgba(30,45,78,0.08)",
-        "card-hover": "0 8px 32px rgba(30,45,78,0.14)",
-      },
-      keyframes: {
-        popIn: {
-          "0%": { transform: "scale(0)", opacity: "0" },
-          "100%": { transform: "scale(1)", opacity: "1" },
-        },
-      },
-      animation: {
-        popIn: "popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both",
+        card: "0 1px 3px rgba(0,0,0,0.07)",
       },
     },
   },

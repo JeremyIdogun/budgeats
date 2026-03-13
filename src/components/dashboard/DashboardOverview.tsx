@@ -25,11 +25,8 @@ import {
 } from "@/store/selectors";
 import { formatPence } from "@/utils/currency";
 
-function getBudgetColor(utilisationPct: number): string {
-  if (utilisationPct > 100) return "#D94F4F";
-  if (utilisationPct >= 90) return "#E8693A";
-  if (utilisationPct >= 70) return "#F5A623";
-  return "#3DBFB8";
+function getBudgetColorClass(utilisationPct: number): string {
+  return utilisationPct >= 100 ? "bg-danger" : "bg-teal";
 }
 
 function dayLabel(date: Date): string {
@@ -144,11 +141,8 @@ export function DashboardOverview({
   const plannedMealCount = selectPlannedMealCount(selectorState);
   const alertState = selectDashboardAlertState(selectorState);
 
-  const ringColor = getBudgetColor(utilisationPct);
+  const budgetColorClass = getBudgetColorClass(utilisationPct);
   const progress = Math.min(Math.max(utilisationPct, 0), 100);
-  const radius = 58;
-  const circumference = 2 * Math.PI * radius;
-  const dashOffset = circumference - (progress / 100) * circumference;
 
   const todayIndex = getTodayDayIndex(weekKey);
 
@@ -180,38 +174,29 @@ export function DashboardOverview({
         />
 
         <div className="grid gap-5 lg:grid-cols-[340px_1fr] mt-5">
-          <section className="rounded-2xl border border-cream-dark bg-white p-5">
+          <section className="rounded-lg border border-cream-dark bg-white p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
               Weekly Budget
             </p>
-            <div className="mt-5 flex items-center justify-center">
-              <svg viewBox="0 0 140 140" className="h-44 w-44 -rotate-90" aria-hidden>
-                <circle cx="70" cy="70" r={radius} stroke="#EDEBE7" strokeWidth="12" fill="none" />
-                <circle
-                  cx="70"
-                  cy="70"
-                  r={radius}
-                  stroke={ringColor}
-                  strokeWidth="12"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={dashOffset}
-                  className="transition-all duration-300"
+            <div className="mt-5">
+              <div className="h-1 rounded-full bg-cream-dark">
+                <div
+                  className={`h-1 rounded-full ${budgetColorClass} transition-opacity duration-150`}
+                  style={{ width: `${progress}%` }}
                 />
-              </svg>
+              </div>
             </div>
-            <p className="-mt-28 text-center text-3xl font-semibold text-navy">
+            <p className="mt-4 text-center text-3xl font-semibold text-navy">
               {Math.round(utilisationPct)}% used
             </p>
-            <p className="mt-16 text-center text-sm text-navy-muted">
+            <p className="mt-2 text-center text-sm text-navy-muted">
               {remainingPence >= 0
                 ? `${formatPence(remainingPence)} remaining`
                 : `${formatPence(Math.abs(remainingPence))} over budget`}
             </p>
           </section>
 
-          <section className="rounded-2xl border border-cream-dark bg-white p-4 md:p-5">
+          <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
             <p className="text-sm font-semibold text-navy">Week summary</p>
             <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-7">
               {weekDays.map((date, index) => {
@@ -222,7 +207,7 @@ export function DashboardOverview({
                   <Link
                     key={isoDate(date)}
                     href="/planner"
-                    className={`rounded-xl border px-3 py-3 transition ${
+                    className={`rounded-lg border px-3 py-3 transition-colors duration-150 ${
                       isToday
                         ? "border-teal bg-teal/5"
                         : "border-cream-dark bg-cream/40 hover:border-navy/25"
@@ -252,31 +237,31 @@ export function DashboardOverview({
           </section>
         )}
 
-        <section className="mt-5 rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="mt-5 rounded-lg border border-cream-dark bg-white p-5">
           <p className="text-sm font-semibold text-navy">Quick actions</p>
           <div className="mt-3 grid gap-2 sm:grid-cols-3">
             <Link
               href="/planner"
-              className="rounded-xl bg-navy px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#172744]"
+              className="rounded-lg bg-navy px-4 py-3 text-center text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
             >
               + Add meals to this week
             </Link>
             <Link
               href="/shopping"
-              className="rounded-xl border border-cream-dark bg-white px-4 py-3 text-center text-sm font-semibold text-navy transition hover:border-navy/25"
+              className="rounded-lg border border-cream-dark bg-white px-4 py-3 text-center text-sm font-semibold text-navy transition-colors duration-150 hover:border-navy/25"
             >
               View shopping list
             </Link>
             <Link
               href="/insights"
-              className="rounded-xl border border-cream-dark bg-white px-4 py-3 text-center text-sm font-semibold text-navy transition hover:border-navy/25"
+              className="rounded-lg border border-cream-dark bg-white px-4 py-3 text-center text-sm font-semibold text-navy transition-colors duration-150 hover:border-navy/25"
             >
               See insights
             </Link>
           </div>
         </section>
 
-        <section className="mt-5 rounded-2xl border border-cream-dark bg-white p-5">
+        <section className="mt-5 rounded-lg border border-cream-dark bg-white p-5">
           {alertState === "under-planned" && (
             <div className="flex flex-wrap items-start justify-between gap-4">
               <p className="text-sm text-navy">

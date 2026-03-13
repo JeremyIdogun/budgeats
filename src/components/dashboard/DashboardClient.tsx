@@ -650,7 +650,7 @@ export function DashboardClient({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-2 rounded-xl border border-cream-dark bg-white p-1 md:flex">
+            <div className="hidden items-center gap-2 rounded-lg border border-cream-dark bg-white p-1 md:flex">
               <button
                 onClick={() => setActiveTab("planner")}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
@@ -692,7 +692,7 @@ export function DashboardClient({
           </div>
         </section>
 
-        <div className="mb-4 flex items-center gap-2 rounded-xl border border-cream-dark bg-white p-1 md:hidden">
+        <div className="mb-4 flex items-center gap-2 rounded-lg border border-cream-dark bg-white p-1 md:hidden">
           <button
             onClick={() => setActiveTab("planner")}
             className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${
@@ -717,7 +717,7 @@ export function DashboardClient({
 
         {activeTab === "planner" ? (
           <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
-            <section className="rounded-2xl border border-cream-dark bg-white p-4 md:p-5">
+            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[860px] border-separate border-spacing-2">
                   <thead>
@@ -744,7 +744,7 @@ export function DashboardClient({
                   <tbody>
                     {MEAL_TYPES.map((type) => (
                       <tr key={type}>
-                        <td className="rounded-xl bg-cream px-3 py-3 align-top text-sm font-semibold text-navy">
+                        <td className="rounded-lg bg-cream px-3 py-3 align-top text-sm font-semibold text-navy">
                           {capitalize(type)}
                         </td>
                         {weekDays.map((day) => {
@@ -757,7 +757,7 @@ export function DashboardClient({
                           return (
                             <td
                               key={slotKey}
-                              className="rounded-xl border border-cream-dark bg-white px-2 py-2 align-top"
+                              className="rounded-lg border border-cream-dark bg-white px-2 py-2 align-top"
                             >
                               <label
                                 htmlFor={slotKey}
@@ -807,7 +807,7 @@ export function DashboardClient({
             </section>
 
             <aside className="space-y-4">
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Add custom meal</p>
                 <form onSubmit={handleCreateCustomMeal} className="mt-3 space-y-2">
                   <input
@@ -850,7 +850,7 @@ export function DashboardClient({
                 </form>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Your custom meals</p>
                 <div className="mt-3 space-y-2">
                   {customDisplayMeals.length === 0 ? (
@@ -881,7 +881,7 @@ export function DashboardClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">This week&apos;s budget</p>
                 <p className="mt-3 text-3xl font-semibold text-navy">
                   {Math.round(budgetUsedPct)}%
@@ -925,7 +925,7 @@ export function DashboardClient({
           </div>
         ) : (
           <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
-            <section className="rounded-2xl border border-cream-dark bg-white p-4 md:p-5">
+            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
               {mealsWithoutIngredients.length > 0 && (
                 <p className="mb-3 rounded-lg bg-amber-100 px-3 py-2 text-xs text-navy-muted">
                   Some selected custom meals have no ingredients, so they will not add
@@ -933,7 +933,7 @@ export function DashboardClient({
                 </p>
               )}
               {shoppingItems.length === 0 ? (
-                <div className="rounded-xl bg-cream px-5 py-8 text-center">
+                <div className="rounded-lg bg-cream px-5 py-8 text-center">
                   <p className="text-sm font-semibold text-navy">No shopping items yet</p>
                   <p className="mt-1 text-sm text-navy-muted">
                     Plan meals in the weekly grid and your list will appear here.
@@ -1022,7 +1022,7 @@ export function DashboardClient({
             </section>
 
             <aside className="space-y-4">
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Shopping summary</p>
                 <div className="mt-3 space-y-1 text-sm">
                   <p className="flex items-center justify-between text-navy-muted">
@@ -1062,7 +1062,7 @@ export function DashboardClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Basket by retailer</p>
                 <div className="mt-3 space-y-2">
                   {basketByRetailer.map((retailer) => (
@@ -1084,14 +1084,14 @@ export function DashboardClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Preferred retailers</p>
                 <p className="mt-2 text-xs leading-relaxed text-navy-muted">
                   {selectedRetailers || "No preferred retailers set yet."}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Tip</p>
                 <p className="mt-2 text-xs leading-relaxed text-navy-muted">
                   Keep this list open in-store and check items as you shop to avoid

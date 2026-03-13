@@ -217,20 +217,20 @@ export function InsightsClient({
         </section>
 
         {!hasMeals ? (
-          <section className="rounded-2xl border border-cream-dark bg-white p-8 text-center">
+          <section className="rounded-lg border border-cream-dark bg-white p-8 text-center">
             <p className="text-lg font-semibold text-navy">
               No data yet. Plan your first week of meals to see insights.
             </p>
             <Link
               href="/planner"
-              className="mt-5 inline-block rounded-xl bg-navy px-5 py-2.5 text-sm font-semibold text-white"
+              className="mt-5 inline-block rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white"
             >
               Go to planner →
             </Link>
           </section>
         ) : (
           <div className="space-y-4">
-            <section className="rounded-2xl border border-cream-dark bg-white p-5">
+            <section className="rounded-lg border border-cream-dark bg-white p-5">
               <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">
                 Week Summary
               </h2>
@@ -241,7 +241,7 @@ export function InsightsClient({
             </section>
 
             {mostExpensiveMeal && (
-              <section className="rounded-2xl border border-cream-dark bg-white p-5">
+              <section className="rounded-lg border border-cream-dark bg-white p-5">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">
                   Most Expensive Meal
                 </h2>
@@ -257,7 +257,7 @@ export function InsightsClient({
             )}
 
             {bestValueMeal && (
-              <section className="rounded-2xl border border-cream-dark bg-white p-5">
+              <section className="rounded-lg border border-cream-dark bg-white p-5">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">
                   Best Value Meal
                 </h2>
@@ -269,7 +269,7 @@ export function InsightsClient({
             )}
 
             {retailerSplit.length > 0 && generatedShoppingList.items.length > 0 && (
-              <section className="rounded-2xl border border-cream-dark bg-white p-5">
+              <section className="rounded-lg border border-cream-dark bg-white p-5">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">
                   Retailer Split
                 </h2>

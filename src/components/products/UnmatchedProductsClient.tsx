@@ -56,19 +56,19 @@ export function UnmatchedProductsClient() {
         </section>
 
         {isLoading && (
-          <section className="rounded-2xl border border-cream-dark bg-white p-6 text-sm text-navy-muted">
+          <section className="rounded-lg border border-cream-dark bg-white p-6 text-sm text-navy-muted">
             Loading unmatched products...
           </section>
         )}
 
         {error && (
-          <section className="rounded-2xl border border-coral/30 bg-coral/10 p-6 text-sm text-coral">
+          <section className="rounded-lg border border-coral/30 bg-coral/10 p-6 text-sm text-coral">
             {error}
           </section>
         )}
 
         {!isLoading && !error && items.length === 0 && (
-          <section className="rounded-2xl border border-cream-dark bg-white p-6 text-sm text-navy-muted">
+          <section className="rounded-lg border border-cream-dark bg-white p-6 text-sm text-navy-muted">
             No unmatched products right now.
           </section>
         )}
@@ -76,7 +76,7 @@ export function UnmatchedProductsClient() {
         {!isLoading && !error && items.length > 0 && (
           <div className="space-y-3">
             {items.map((item) => (
-              <article key={item.retailerProductId} className="rounded-2xl border border-cream-dark bg-white p-4">
+              <article key={item.retailerProductId} className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">{item.retailerProductName}</p>
                 <p className="text-xs text-navy-muted">
                   {item.retailerId.toUpperCase()} · score {(item.matchScore * 100).toFixed(1)}%

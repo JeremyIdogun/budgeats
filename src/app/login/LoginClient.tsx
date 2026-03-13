@@ -50,7 +50,7 @@ export function LoginClient() {
           <BrandLogo href="/" />
         </header>
 
-        <section className="rounded-2xl border border-cream-dark bg-white p-6 md:p-8">
+        <section className="rounded-lg border border-cream-dark bg-white p-6 md:p-8">
           <h1 className="text-2xl font-semibold text-navy">Sign in</h1>
           <p className="mt-1 text-sm text-navy-muted">
             Continue to your dashboard and synced meal plan.
@@ -64,7 +64,7 @@ export function LoginClient() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 required
-                className="mt-1 w-full rounded-xl border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                className="mt-1 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
               />
             </label>
 
@@ -76,7 +76,7 @@ export function LoginClient() {
                 onChange={(event) => setPassword(event.target.value)}
                 required
                 minLength={6}
-                className="mt-1 w-full rounded-xl border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                className="mt-1 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
               />
             </label>
 
@@ -94,7 +94,7 @@ export function LoginClient() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-navy px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-lg bg-navy px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>

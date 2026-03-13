@@ -54,7 +54,7 @@ export function TriggerRunButton() {
       <select
         value={retailerSlug}
         onChange={(event) => setRetailerSlug(event.target.value as RetailerSlug)}
-        className="rounded-md border border-cream-dark bg-white px-2.5 py-2 text-xs font-medium text-navy"
+        className="rounded-lg border border-cream-dark bg-white px-2.5 py-2 text-xs font-medium text-navy"
       >
         <option value="tesco">Tesco</option>
         <option value="asda">Asda</option>
@@ -63,7 +63,7 @@ export function TriggerRunButton() {
       <button
         disabled={isSubmitting}
         onClick={() => void triggerRun()}
-        className="rounded-md bg-navy px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Triggering..." : "Trigger Run"}
       </button>

@@ -78,7 +78,7 @@ export function StepRetailers({ onNext, onBack }: Props) {
             <button
               key={id}
               onClick={() => toggleRetailer(id)}
-              className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all text-sm font-medium
+              className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-sm font-medium transition-colors duration-150
                 ${
                   isSelected
                     ? "border-teal bg-teal/10 text-navy"
@@ -86,7 +86,7 @@ export function StepRetailers({ onNext, onBack }: Props) {
                 }`}
             >
               <div
-                className="w-10 h-10 rounded-[10px] flex items-center justify-center font-heading font-extrabold text-lg"
+                className="w-10 h-10 rounded-lg flex items-center justify-center font-heading font-extrabold text-lg"
                 style={{ background: bg, color }}
               >
                 {initial}
@@ -105,7 +105,7 @@ export function StepRetailers({ onNext, onBack }: Props) {
       <button
         onClick={onNext}
         disabled={selected.length === 0}
-        className="w-full py-4 rounded-[14px] bg-navy text-white font-heading font-bold text-base hover:bg-[#162340] hover:-translate-y-px transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
+        className="w-full rounded-lg bg-navy py-4 text-base font-bold text-white transition-colors duration-150 hover:bg-[#162340] disabled:cursor-not-allowed disabled:opacity-40"
       >
         Let&apos;s go →
       </button>

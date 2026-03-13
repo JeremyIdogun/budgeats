@@ -270,7 +270,7 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
   const savingDisplay = recommendation.savingPence > 0 ? formatPence(recommendation.savingPence) : null;
 
   return (
-    <div className="relative rounded-2xl border border-cream-dark bg-white p-5">
+    <div className="relative rounded-lg border border-cream-dark bg-white p-5">
       {/* Toast */}
       {toast && (
         <div className="absolute left-1/2 top-3 -translate-x-1/2 rounded-full bg-navy px-4 py-2 text-sm font-semibold text-white shadow-card">
@@ -353,13 +353,13 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
           <div className="mt-4 flex gap-2">
             <button
               onClick={() => handleAccept(isCook ? recommendedMeal : null)}
-              className="flex-1 rounded-xl bg-navy px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#172744]"
+              className="flex-1 rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#172744]"
             >
               {isCook ? "Add to plan" : "Got it"}
             </button>
             <button
               onClick={handleDismiss}
-              className="rounded-xl border border-cream-dark px-4 py-2.5 text-sm font-semibold text-navy-muted transition hover:border-navy/25"
+              className="rounded-lg border border-cream-dark px-4 py-2.5 text-sm font-semibold text-navy-muted transition hover:border-navy/25"
             >
               Show alternatives
             </button>
@@ -377,7 +377,7 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
                 {alternatives.map((meal) => (
                   <div
                     key={meal.id}
-                    className="flex items-center justify-between rounded-xl border border-cream-dark px-4 py-3"
+                    className="flex items-center justify-between rounded-lg border border-cream-dark px-4 py-3"
                   >
                     <div>
                       <p className="text-sm font-semibold text-navy">

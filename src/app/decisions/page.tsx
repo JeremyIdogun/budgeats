@@ -96,13 +96,13 @@ export default function DecisionsPage() {
         </section>
 
         {loading && (
-          <section className="mb-3 rounded-2xl border border-cream-dark bg-white p-3 text-xs text-navy-muted">
+          <section className="mb-3 rounded-lg border border-cream-dark bg-white p-3 text-xs text-navy-muted">
             Loading decisions...
           </section>
         )}
 
         {entries.length === 0 ? (
-          <section className="rounded-2xl border border-cream-dark bg-white p-8 text-center">
+          <section className="rounded-lg border border-cream-dark bg-white p-8 text-center">
             <p className="text-lg font-semibold text-navy">No decisions yet.</p>
             <p className="mt-2 text-sm text-navy-muted">
               Accept or dismiss a Logismos recommendation on the dashboard to start your history.
@@ -113,7 +113,7 @@ export default function DecisionsPage() {
             {entries.map((entry) => (
               <div
                 key={entry.decision_id}
-                className="rounded-2xl border border-cream-dark bg-white p-4"
+                className="rounded-lg border border-cream-dark bg-white p-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">

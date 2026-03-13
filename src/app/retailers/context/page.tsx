@@ -32,7 +32,7 @@ export default function RetailerContextPage() {
       <div className="mx-auto max-w-5xl">
         <AppNav />
         <h1 className="mb-4 text-2xl font-semibold text-navy md:text-3xl">Retailer Context</h1>
-        <section className="rounded-xl border border-cream-dark bg-white p-4 text-sm">
+        <section className="rounded-lg border border-cream-dark bg-white p-4 text-sm">
           {!summary ? (
             <p className="text-navy-muted">Loading retailer context...</p>
           ) : (

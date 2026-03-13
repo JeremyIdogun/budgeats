@@ -26,7 +26,7 @@ export default function MealCostCoveragePage() {
       <div className="mx-auto max-w-4xl">
         <AppNav />
         <h1 className="mb-4 text-2xl font-semibold text-navy md:text-3xl">Meal Cost Coverage</h1>
-        <section className="rounded-xl border border-cream-dark bg-white p-4 text-sm text-navy">
+        <section className="rounded-lg border border-cream-dark bg-white p-4 text-sm text-navy">
           {summary ? (
             <div className="space-y-2">
               <p>Meals total: <span className="font-semibold">{summary.mealCount}</span></p>

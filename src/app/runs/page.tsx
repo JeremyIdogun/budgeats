@@ -32,14 +32,14 @@ export default function RunsPage() {
         <h1 className="mb-4 text-2xl font-semibold text-navy md:text-3xl">Ingestion Runs</h1>
         <div className="space-y-2">
           {rows.map((row) => (
-            <article key={row.id} className="rounded-xl border border-cream-dark bg-white p-3 text-sm">
+            <article key={row.id} className="rounded-lg border border-cream-dark bg-white p-3 text-sm">
               <p className="font-semibold text-navy">{row.retailer_id}</p>
               <p className="text-xs text-navy-muted">{new Date(row.started_at).toLocaleString("en-GB")}</p>
               <p className="text-xs text-navy-muted">{row.status} · {row.products_scraped} products</p>
             </article>
           ))}
           {rows.length === 0 && (
-            <p className="rounded-xl border border-cream-dark bg-white p-3 text-sm text-navy-muted">
+            <p className="rounded-lg border border-cream-dark bg-white p-3 text-sm text-navy-muted">
               No ingestion runs available.
             </p>
           )}

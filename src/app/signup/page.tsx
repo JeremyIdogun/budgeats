@@ -148,7 +148,7 @@ export default function SignupPage() {
           <BrandLogo href="/" />
         </header>
 
-        <section className="rounded-2xl border border-cream-dark bg-white p-6 md:p-8">
+        <section className="rounded-lg border border-cream-dark bg-white p-6 md:p-8">
           {confirmationSent ? (
             <div className="py-3 text-center">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-teal/15 text-3xl">
@@ -180,7 +180,7 @@ export default function SignupPage() {
                   type="button"
                   onClick={() => handleOAuthSignUp("google")}
                   disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <GoogleIcon />
                   {oauthLoading === "google"
@@ -191,7 +191,7 @@ export default function SignupPage() {
                   type="button"
                   onClick={() => handleOAuthSignUp("facebook")}
                   disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <FacebookIcon />
                   {oauthLoading === "facebook"
@@ -202,7 +202,7 @@ export default function SignupPage() {
                   type="button"
                   onClick={handleInstagramClick}
                   disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <InstagramIcon />
                   Sign up with Instagram
@@ -223,7 +223,7 @@ export default function SignupPage() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     required
-                    className="mt-1 w-full rounded-xl border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                    className="mt-1 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
                   />
                 </label>
 
@@ -235,7 +235,7 @@ export default function SignupPage() {
                     onChange={(event) => setPassword(event.target.value)}
                     required
                     minLength={6}
-                    className="mt-1 w-full rounded-xl border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                    className="mt-1 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
                   />
                 </label>
 
@@ -248,7 +248,7 @@ export default function SignupPage() {
                 <button
                   type="submit"
                   disabled={loading || oauthLoading !== null}
-                  className="w-full rounded-xl bg-navy px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-lg bg-navy px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading ? "Creating account..." : "Sign up"}
                 </button>

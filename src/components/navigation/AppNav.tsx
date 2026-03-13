@@ -6,13 +6,13 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { NavBudgetPill } from "@/components/navigation/NavBudgetPill";
 
 const NAV_LINKS = [
-  { href: "/dashboard", label: "Dashboard", icon: null },
-  { href: "/planner", label: "Meal Planner", icon: null },
-  { href: "/shopping", label: "Shopping List", icon: null },
-  { href: "/insights", label: "Insights", icon: null },
-  { href: "/settings", label: "Settings", icon: null },
-  { href: "/rewards", label: "Rewards", icon: "⭐" },
-  { href: "/admin", label: "Admin", icon: null },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/planner", label: "Meal Planner" },
+  { href: "/shopping", label: "Shopping List" },
+  { href: "/insights", label: "Insights" },
+  { href: "/settings", label: "Settings" },
+  { href: "/rewards", label: "Rewards" },
+  { href: "/admin", label: "Admin" },
 ];
 
 export function AppNav() {
@@ -32,27 +32,20 @@ export function AppNav() {
       </div>
 
       <div className="mt-3 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <nav className="flex min-w-max flex-nowrap items-center gap-6 border-b border-cream-dark">
+        <nav className="flex min-w-max flex-nowrap items-center gap-6">
           {NAV_LINKS.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${
+                className={`whitespace-nowrap pb-3 text-sm transition-colors duration-150 ${
                   isActive
-                    ? "text-navy after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full after:bg-teal"
-                    : "text-navy-muted hover:text-navy"
+                    ? "font-medium text-navy"
+                    : "font-normal text-navy-muted hover:text-navy"
                 }`}
               >
-                {link.icon ? (
-                  <>
-                    <span className="sm:hidden">{link.icon}</span>
-                    <span className="hidden sm:inline">{link.icon} {link.label}</span>
-                  </>
-                ) : (
-                  link.label
-                )}
+                {link.label}
               </Link>
             );
           })}

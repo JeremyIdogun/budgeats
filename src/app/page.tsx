@@ -26,13 +26,7 @@ export default function HomePage() {
     <main className="relative min-h-screen overflow-hidden bg-cream text-navy">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          backgroundImage:
-            `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%231e2d4e' fill-opacity='0.07'%3E%3Ccircle cx='9' cy='11' r='0.7'/%3E%3Ccircle cx='39' cy='22' r='0.6'/%3E%3Ccircle cx='72' cy='9' r='0.8'/%3E%3Ccircle cx='111' cy='19' r='0.6'/%3E%3Ccircle cx='128' cy='41' r='0.7'/%3E%3Ccircle cx='17' cy='56' r='0.7'/%3E%3Ccircle cx='52' cy='45' r='0.6'/%3E%3Ccircle cx='88' cy='62' r='0.7'/%3E%3Ccircle cx='121' cy='75' r='0.6'/%3E%3Ccircle cx='28' cy='93' r='0.7'/%3E%3Ccircle cx='63' cy='101' r='0.6'/%3E%3Ccircle cx='96' cy='109' r='0.8'/%3E%3Ccircle cx='133' cy='122' r='0.6'/%3E%3Ccircle cx='15' cy='128' r='0.7'/%3E%3Ccircle cx='74' cy='132' r='0.6'/%3E%3C/g%3E%3C/svg%3E"), radial-gradient(circle at 12% 8%, rgba(61,191,184,0.14), transparent 35%), radial-gradient(circle at 88% 12%, rgba(232,105,58,0.12), transparent 36%), linear-gradient(180deg, rgba(255,255,255,0.55), rgba(247,245,242,0.9))`,
-          backgroundSize: "140px 140px, auto, auto, auto",
-          backgroundRepeat: "repeat, no-repeat, no-repeat, no-repeat",
-        }}
+        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-teal/5 to-transparent"
       />
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-col px-6 py-8 md:px-10 md:py-10">
@@ -52,13 +46,13 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="rounded-xl border border-cream-dark bg-white px-4 py-2.5 text-sm font-semibold text-navy transition hover:border-navy/25"
+              className="rounded-lg border border-cream-dark bg-white px-4 py-2.5 text-sm font-semibold text-navy transition-colors duration-150 hover:border-navy/25"
             >
               Log in
             </Link>
             <Link
               href="/signup"
-              className="rounded-xl bg-navy px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#172744]"
+              className="rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
             >
               Sign up
             </Link>
@@ -79,13 +73,13 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/signup"
-              className="rounded-xl bg-navy px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#172744]"
+              className="rounded-lg bg-navy px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
             >
               Start with email
             </Link>
             <a
               href="#features"
-              className="rounded-xl border border-cream-dark bg-white px-6 py-3 text-sm font-semibold text-navy transition hover:border-navy/25"
+              className="rounded-lg border border-cream-dark bg-white px-6 py-3 text-sm font-semibold text-navy transition-colors duration-150 hover:border-navy/25"
             >
               Learn more
             </a>
@@ -99,7 +93,7 @@ export default function HomePage() {
           {highlights.map((item) => (
             <article
               key={item.title}
-              className="rounded-2xl border border-cream-dark bg-white p-6"
+              className="rounded-lg border border-cream-dark bg-white p-6"
             >
               <h2 className="text-lg font-semibold">{item.title}</h2>
               <p className="mt-2 text-sm leading-relaxed text-navy-muted">
@@ -116,7 +110,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/signup"
-              className="rounded-xl bg-navy px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#172744]"
+              className="rounded-lg bg-navy px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
             >
               Continue
             </Link>

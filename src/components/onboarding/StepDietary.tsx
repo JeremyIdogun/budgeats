@@ -46,7 +46,7 @@ export function StepDietary({ onNext, onBack }: Props) {
           <button
             key={id}
             onClick={() => toggleDietary(id)}
-            className={`px-5 py-3 rounded-full border-2 text-sm font-medium flex items-center gap-2 transition-all
+            className={`flex items-center gap-2 rounded-full border-2 px-5 py-3 text-sm font-medium transition-colors duration-150
               ${
                 dietary.includes(id) && !isNone
                   ? "border-coral bg-coral/10 text-navy"
@@ -58,7 +58,7 @@ export function StepDietary({ onNext, onBack }: Props) {
         ))}
         <button
           onClick={setNoDietaryPreference}
-          className={`px-5 py-3 rounded-full border-2 text-sm font-medium flex items-center gap-2 transition-all
+          className={`flex items-center gap-2 rounded-full border-2 px-5 py-3 text-sm font-medium transition-colors duration-150
             ${
               isNone
                 ? "border-navy-muted bg-cream text-navy"
@@ -71,7 +71,7 @@ export function StepDietary({ onNext, onBack }: Props) {
 
       <button
         onClick={onNext}
-        className="w-full py-4 rounded-[14px] bg-navy text-white font-heading font-bold text-base hover:bg-[#162340] hover:-translate-y-px transition-all"
+        className="w-full rounded-lg bg-navy py-4 text-base font-bold text-white transition-colors duration-150 hover:bg-[#162340]"
       >
         Continue →
       </button>

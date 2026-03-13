@@ -27,7 +27,7 @@ export default function IngredientsPage() {
       <div className="mx-auto max-w-4xl">
         <AppNav />
         <h1 className="mb-4 text-2xl font-semibold text-navy md:text-3xl">Ingredients Coverage</h1>
-        <section className="rounded-xl border border-cream-dark bg-white p-4 text-sm text-navy">
+        <section className="rounded-lg border border-cream-dark bg-white p-4 text-sm text-navy">
           {stats ? (
             <div className="space-y-2">
               <p>Total canonical ingredients: <span className="font-semibold">{stats.canonicalIngredientCount}</span></p>

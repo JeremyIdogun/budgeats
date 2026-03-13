@@ -77,14 +77,14 @@ export default function ReviewQueuePage() {
                   <button
                     disabled={busy}
                     onClick={() => decide(product.retailerProductId, "approved")}
-                    className="rounded-md bg-teal px-4 py-1.5 text-sm font-semibold text-white hover:bg-teal/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="rounded-lg bg-teal px-4 py-1.5 text-sm font-semibold text-white hover:bg-teal/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Approve
                   </button>
                   <button
                     disabled={busy}
                     onClick={() => decide(product.retailerProductId, "rejected")}
-                    className="rounded-md border border-danger px-4 py-1.5 text-sm font-semibold text-danger hover:bg-danger/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="rounded-lg border border-danger px-4 py-1.5 text-sm font-semibold text-danger hover:bg-danger/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Reject
                   </button>

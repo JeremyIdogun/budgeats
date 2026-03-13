@@ -42,7 +42,7 @@ export function StepHousehold({ onNext, onBack }: Props) {
           <button
             key={size}
             onClick={() => setHousehold(size)}
-            className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center gap-1 transition-all font-heading font-bold text-xl
+            className={`aspect-square rounded-lg border-2 flex flex-col items-center justify-center gap-1 font-heading text-xl font-bold transition-colors duration-150
               ${
                 household === size
                   ? "border-teal bg-teal/10 text-navy"
@@ -62,7 +62,7 @@ export function StepHousehold({ onNext, onBack }: Props) {
       <button
         onClick={onNext}
         disabled={!household}
-        className="w-full py-4 rounded-[14px] bg-navy text-white font-heading font-bold text-base hover:bg-[#162340] hover:-translate-y-px transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
+        className="w-full rounded-lg bg-navy py-4 text-base font-bold text-white transition-colors duration-150 hover:bg-[#162340] disabled:cursor-not-allowed disabled:opacity-40"
       >
         Continue →
       </button>
