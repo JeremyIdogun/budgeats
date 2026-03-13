@@ -61,7 +61,7 @@ export default function DecisionsPage() {
         <AppNav />
 
         <section className="mb-4">
-          <h1 className="text-2xl font-semibold text-navy md:text-3xl">Decision History</h1>
+          <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Decision History</h1>
           <p className="text-sm text-navy-muted">Your Logismos recommendations over time.</p>
           <div className="mt-3 flex gap-2">
             <button

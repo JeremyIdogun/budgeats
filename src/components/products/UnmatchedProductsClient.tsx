@@ -49,7 +49,7 @@ export function UnmatchedProductsClient() {
         <AppNav />
 
         <section className="mb-4">
-          <h1 className="text-2xl font-semibold text-navy md:text-3xl">Unmatched Products</h1>
+          <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Unmatched Products</h1>
           <p className="text-sm text-navy-muted">
             Products below confidence threshold with suggested canonical candidates.
           </p>

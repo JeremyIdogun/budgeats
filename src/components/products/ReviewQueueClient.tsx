@@ -68,7 +68,7 @@ export function ReviewQueueClient() {
         <AppNav />
 
         <section className="mb-4">
-          <h1 className="text-2xl font-semibold text-navy md:text-3xl">Product Match Review</h1>
+          <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Product Match Review</h1>
           <p className="text-sm text-navy-muted">
             Approve or reject candidate matches with 0.65-0.90 confidence.
           </p>

@@ -346,7 +346,7 @@ export function SettingsClient({
         <AppNav />
 
         <section className="mb-4">
-          <h1 className="text-2xl font-semibold text-navy md:text-3xl">Settings</h1>
+          <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Settings</h1>
           <p className="text-sm text-navy-muted">Update your profile preferences.</p>
         </section>
 

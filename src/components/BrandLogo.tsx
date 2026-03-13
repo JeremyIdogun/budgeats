@@ -17,14 +17,14 @@ export function BrandLogo({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center ${className}`}
+      className={`inline-flex items-center leading-none ${className}`}
       aria-label="Loavish home"
     >
       <span
         className={
           isWordmark
-            ? "relative block h-10 w-[210px] overflow-hidden md:h-12 md:w-[280px]"
-            : "relative block h-8 w-[110px] overflow-hidden md:h-10 md:w-[138px]"
+            ? "relative block h-10 w-47.5 overflow-hidden md:h-14 md:w-70"
+            : "relative block h-7 w-25 overflow-hidden md:h-8 md:w-31"
         }
       >
         <Image
@@ -32,8 +32,8 @@ export function BrandLogo({
           alt="Loavish"
           fill
           priority
-          className="object-contain"
-          sizes={isWordmark ? "(min-width: 768px) 280px, 210px" : "(min-width: 768px) 138px, 110px"}
+          className="object-contain object-left"
+          sizes={isWordmark ? "(min-width: 768px) 220px, 180px" : "(min-width: 768px) 124px, 100px"}
         />
       </span>
     </Link>

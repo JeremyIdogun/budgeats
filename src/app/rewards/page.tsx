@@ -109,7 +109,7 @@ export default function RewardsPage() {
         <AppNav />
 
         <section className="mb-4">
-          <h1 className="text-2xl font-semibold text-navy md:text-3xl">Rewards</h1>
+          <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Rewards</h1>
           <p className="text-sm text-navy-muted">Your LoavishPoints &amp; Logismos Score.</p>
         </section>
 

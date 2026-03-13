@@ -289,7 +289,7 @@ export function ShoppingClient({
 
         <section className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-navy md:text-3xl">Shopping List</h1>
+            <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Shopping List</h1>
             <p className="text-sm text-navy-muted">Week of {weekHeading}</p>
           </div>
           <div className="rounded-lg border border-cream-dark bg-white px-4 py-3">

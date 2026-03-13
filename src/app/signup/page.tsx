@@ -154,7 +154,7 @@ export default function SignupPage() {
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-teal/15 text-3xl">
                 ✉️
               </div>
-              <h1 className="text-2xl font-semibold text-navy">Check your inbox</h1>
+              <h1 className="text-2xl font-extrabold text-navy">Check your inbox</h1>
               <p className="mt-2 text-sm leading-relaxed text-navy-muted">
                 We&apos;ve sent a confirmation link to <strong>{email}</strong>. Click
                 it to activate your account and you&apos;ll be taken straight to
@@ -170,7 +170,7 @@ export default function SignupPage() {
             </div>
           ) : (
             <>
-              <h1 className="text-2xl font-semibold text-navy">Create account</h1>
+              <h1 className="text-2xl font-extrabold text-navy">Create account</h1>
               <p className="mt-1 text-sm text-navy-muted">
                 Sign up to begin your onboarding and meal planning setup.
               </p>

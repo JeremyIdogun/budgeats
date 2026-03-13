@@ -51,7 +51,7 @@ export function LoginClient() {
         </header>
 
         <section className="rounded-lg border border-cream-dark bg-white p-6 md:p-8">
-          <h1 className="text-2xl font-semibold text-navy">Sign in</h1>
+          <h1 className="text-2xl font-extrabold text-navy">Sign in</h1>
           <p className="mt-1 text-sm text-navy-muted">
             Continue to your dashboard and synced meal plan.
           </p>

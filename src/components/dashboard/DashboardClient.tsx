@@ -640,7 +640,7 @@ export function DashboardClient({
 
         <section className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-navy md:text-3xl">
+            <h1 className="text-2xl font-extrabold text-navy md:text-3xl">
               {activeTab === "planner" ? "Meal planner" : "Shopping list"}
             </h1>
             <p className="text-sm text-navy-muted">
