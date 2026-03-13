@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# budgEAts
 
-## Getting Started
+budgEAts is a Next.js 16 app for budget-aware meal planning, shopping support, and behavior-guided food decisions.
 
-First, run the development server:
+## Current product modes
+
+The codebase supports two runtime modes, controlled by `NEXT_PUBLIC_COMING_SOON`:
+
+- **Coming-soon mode (`true`)**: users only see the landing/waitlist experience.
+- **App mode (`false`)**: users can access authentication and the in-app routes (dashboard, planner, shopping, insights, settings, rewards, and decisions).
+
+Route blocking in coming-soon mode is enforced by `src/middleware.ts`.
+
+## Tech stack
+
+- **Framework**: Next.js (App Router), React 19, TypeScript
+- **Styling**: Tailwind CSS v4 + global CSS
+- **State management**: Zustand (`src/store`, `src/stores`)
+- **Backend/data**: Supabase auth + tables, SQL migrations in `supabase/`
+
+## Application map
+
+### Public and auth routes
+
+- `/` — either `ComingSoonPage` or the full marketing landing page depending on env flag.
+- `/signup`, `/login` — Supabase auth flows.
+- `/auth/callback` — auth callback handler.
+- `/api/waitlist` — waitlist submission endpoint used by the coming-soon page.
+
+### In-app routes
+
+- `/onboarding` — profile and preference capture.
+- `/dashboard` — central planning and shopping context.
+- `/planner` — meal planning views/logic.
+- `/shopping` — shopping list and retailer-aware list UX.
+- `/insights` — budget/meal insights.
+- `/settings` — account and profile settings.
+- `/rewards` and `/decisions` — Logismos/Loavish decision & points flow.
+
+## Notable code areas
+
+- `src/components/` — UI by domain (dashboard, shopping, onboarding, nav, settings, insights, logismos, coming-soon).
+- `src/lib/` — pure/business logic (budget math, planner helpers, shopping transforms, dashboard data hydration, Logismos recommendation logic, Supabase clients).
+- `src/models/` and `src/types/` — shared domain types.
+- `src/data/*.json` — local seed/reference datasets for meals, ingredients, and prices.
+- `supabase/migrations/` + `supabase/snippets/` — schema foundations and feature SQL.
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run checks:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run lint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment variables (typical)
 
-## Learn More
+- `NEXT_PUBLIC_COMING_SOON` — toggles landing-only mode vs full app mode.
+- Supabase project keys/URLs required by `src/lib/supabase/client.ts` and `src/lib/supabase/server.ts`.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
