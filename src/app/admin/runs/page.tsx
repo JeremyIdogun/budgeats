@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+import { listIngestionRuns } from "@/lib/server/admin-metrics";
 
 interface Run {
   id: string;
@@ -38,9 +38,7 @@ function formatDate(iso: string | null) {
 }
 
 export default async function RunsPage() {
-  const res = await fetch(`${BASE_URL}/api/admin/runs`, { cache: "no-store" });
-  const data = await res.json();
-  const runs: Run[] = data.runs ?? [];
+  const runs = (await listIngestionRuns(200)) as Run[];
 
   return (
     <div>

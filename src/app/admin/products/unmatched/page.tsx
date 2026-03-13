@@ -1,6 +1,5 @@
 import Link from "next/link";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+import { listUnmatchedProducts } from "@/lib/product-match-review";
 
 interface UnmatchedProduct {
   retailerProductId: string;
@@ -11,9 +10,13 @@ interface UnmatchedProduct {
 }
 
 export default async function UnmatchedPage() {
-  const res = await fetch(`${BASE_URL}/api/v1/products/unmatched`, { cache: "no-store" });
-  const data = await res.json();
-  const products: UnmatchedProduct[] = data.data ?? [];
+  const products: UnmatchedProduct[] = (listUnmatchedProducts() ?? []).map((item) => ({
+    retailerProductId: item.retailerProductId,
+    name: item.retailerProductName,
+    retailerId: item.retailerId,
+    suggestedCanonicalId: item.suggestedCanonical[0]?.ingredientId ?? null,
+    matchScore: item.matchScore,
+  }));
 
   return (
     <div>

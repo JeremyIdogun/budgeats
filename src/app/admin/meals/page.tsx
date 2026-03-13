@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+import { listMealCostCoverageRows } from "@/lib/server/admin-metrics";
 
 interface MealCoverage {
   id: string;
@@ -23,9 +23,7 @@ function CoverageBadge({ pct }: { pct: number }) {
 }
 
 export default async function MealsCoveragePage() {
-  const res = await fetch(`${BASE_URL}/api/admin/meals/cost-coverage`, { cache: "no-store" });
-  const data = await res.json();
-  const meals: MealCoverage[] = data.meals ?? [];
+  const meals = (listMealCostCoverageRows() ?? []) as MealCoverage[];
 
   return (
     <div>

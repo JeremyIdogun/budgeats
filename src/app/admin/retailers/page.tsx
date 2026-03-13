@@ -1,8 +1,9 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+import { getRetailerContextSummary } from "@/lib/server/admin-metrics";
 
 interface RetailerContext {
+  user_id: string;
   retailer_id: string;
-  postcode: string;
+  postcode: string | null;
   updated_at: string;
 }
 
@@ -17,9 +18,8 @@ function formatDate(iso: string) {
 }
 
 export default async function RetailersPage() {
-  const res = await fetch(`${BASE_URL}/api/admin/retailers/context`, { cache: "no-store" });
-  const data = await res.json();
-  const contexts: RetailerContext[] = data.contexts ?? [];
+  const summary = await getRetailerContextSummary();
+  const contexts = (summary.rows ?? []) as RetailerContext[];
 
   return (
     <div>
@@ -44,7 +44,7 @@ export default async function RetailersPage() {
                     {ctx.retailer_id}
                   </td>
                   <td className="py-3 px-4 border-b border-cream-dark text-sm font-body text-navy-muted">
-                    {ctx.postcode}
+                    {ctx.postcode ?? "—"}
                   </td>
                   <td className="py-3 px-4 border-b border-cream-dark text-sm font-body text-navy-muted">
                     {formatDate(ctx.updated_at)}

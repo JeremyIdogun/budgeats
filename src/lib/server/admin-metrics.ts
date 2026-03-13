@@ -22,6 +22,14 @@ type MinimalPrisma = {
   };
 };
 
+export interface MealCoverageRow {
+  id: string;
+  name: string;
+  ingredientCount: number;
+  pricedCount: number;
+  coveragePercent: number;
+}
+
 export async function listIngestionRuns(limit = 100): Promise<Array<{
   id: string;
   retailer_id: string;
@@ -69,25 +77,35 @@ export function getIngredientCoverageStats() {
 }
 
 export function getMealCostCoverage() {
-  const meals = mealsData as Meal[];
-  const prices = pricesData as IngredientPrice[];
-  let covered = 0;
-
-  for (const meal of meals) {
-    const required = meal.ingredients.filter((entry) => !entry.optional);
-    if (required.length === 0) continue;
-    const matched = required.filter((entry) =>
-      prices.some((price) => price.ingredientId === entry.ingredientId),
-    ).length;
-    const ratio = matched / required.length;
-    if (ratio >= 0.85) covered += 1;
-  }
+  const rows = listMealCostCoverageRows();
+  const covered = rows.filter((row) => row.coveragePercent >= 85).length;
 
   return {
-    mealCount: meals.length,
+    mealCount: rows.length,
     coveredMeals: covered,
-    coveragePct: meals.length === 0 ? 0 : Math.round((covered / meals.length) * 100),
+    coveragePct: rows.length === 0 ? 0 : Math.round((covered / rows.length) * 100),
   };
+}
+
+export function listMealCostCoverageRows(): MealCoverageRow[] {
+  const meals = mealsData as Meal[];
+  const prices = pricesData as IngredientPrice[];
+  const pricedIngredientIds = new Set(prices.map((price) => price.ingredientId));
+
+  return meals.map((meal) => {
+    const required = meal.ingredients.filter((entry) => !entry.optional);
+    const ingredientCount = required.length;
+    const pricedCount = required.filter((entry) => pricedIngredientIds.has(entry.ingredientId)).length;
+    const coveragePercent = ingredientCount === 0 ? 100 : Math.round((pricedCount / ingredientCount) * 100);
+
+    return {
+      id: meal.id,
+      name: meal.name,
+      ingredientCount,
+      pricedCount,
+      coveragePercent,
+    };
+  });
 }
 
 export async function getRetailerContextSummary() {

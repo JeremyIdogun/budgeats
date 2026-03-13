@@ -1,17 +1,16 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
+import { getIngredientCoverageStats } from "@/lib/server/admin-metrics";
 
 interface IngredientStats {
-  total: number;
-  withPrices: number;
-  coveragePercent: number;
+  canonicalIngredientCount: number;
+  usedInMealsCount: number;
+  unusedCount: number;
+  coveragePct: number;
 }
 
 export default async function IngredientsPage() {
-  const res = await fetch(`${BASE_URL}/api/admin/ingredients`, { cache: "no-store" });
-  const data = await res.json();
-  const stats: IngredientStats = data.stats ?? { total: 0, withPrices: 0, coveragePercent: 0 };
+  const stats = getIngredientCoverageStats() as IngredientStats;
 
-  const coverageClamped = Math.min(100, Math.max(0, stats.coveragePercent));
+  const coverageClamped = Math.min(100, Math.max(0, stats.coveragePct));
 
   return (
     <div>
@@ -22,10 +21,15 @@ export default async function IngredientsPage() {
 
         <dl className="grid grid-cols-2 gap-y-3 text-sm font-body mb-5">
           <dt className="text-navy-muted">Total Ingredients</dt>
-          <dd className="text-right font-semibold text-navy">{stats.total.toLocaleString()}</dd>
+          <dd className="text-right font-semibold text-navy">
+            {stats.canonicalIngredientCount.toLocaleString()}
+          </dd>
 
-          <dt className="text-navy-muted">With Prices</dt>
-          <dd className="text-right font-semibold text-navy">{stats.withPrices.toLocaleString()}</dd>
+          <dt className="text-navy-muted">Used In Meals</dt>
+          <dd className="text-right font-semibold text-navy">{stats.usedInMealsCount.toLocaleString()}</dd>
+
+          <dt className="text-navy-muted">Unused</dt>
+          <dd className="text-right font-semibold text-navy">{stats.unusedCount.toLocaleString()}</dd>
 
           <dt className="text-navy-muted">Coverage</dt>
           <dd className="text-right font-semibold text-navy">{coverageClamped.toFixed(1)}%</dd>
