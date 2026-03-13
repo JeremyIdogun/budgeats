@@ -20,23 +20,9 @@ export function captureServerError(error: unknown, context: ServerErrorContext):
   // Always log structurally
   console.error(JSON.stringify(structured));
 
-  // Send to Sentry if DSN configured (non-blocking)
-  if (process.env.SENTRY_DSN) {
-    import("@sentry/nextjs")
-      .then(({ captureException, withScope }) => {
-        withScope((scope) => {
-          scope.setTag("event", context.event);
-          if (context.userId) scope.setUser({ id: context.userId });
-          if (context.retailerId) scope.setTag("retailer_id", context.retailerId);
-          if (context.runId) scope.setTag("run_id", context.runId);
-          if (context.route) scope.setTag("route", context.route);
-          captureException(error instanceof Error ? error : new Error(String(error)));
-        });
-      })
-      .catch(() => {
-        // Sentry not available, already logged above
-      });
-  }
+  // Sentry support: install @sentry/nextjs and set SENTRY_DSN env var to enable.
+  // Dynamic import is intentionally omitted here to avoid build-time resolution
+  // errors. Wire Sentry via sentry.server.config.ts when the package is added.
 }
 
 export function logIngestionSummary(summary: {
