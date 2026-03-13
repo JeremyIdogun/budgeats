@@ -34,7 +34,8 @@ export async function scrapeWithPlaywright(input: {
   resourceKey: string;
 }): Promise<string> {
   requiredSnapshotBucket();
-  const playwright = (await import("playwright")) as PlaywrightModule;
+  const dynamicImport = new Function("m", "return import(m)") as (moduleName: string) => Promise<unknown>;
+  const playwright = (await dynamicImport("playwright")) as PlaywrightModule;
 
   return withExponentialBackoff(
     async () => {

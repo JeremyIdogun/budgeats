@@ -28,6 +28,7 @@ export interface RunIngestionJobInput {
 }
 
 export interface IngestionJobResult {
+  runId: string;
   retailerId: string;
   startedAt: string;
   completedAt: string;
@@ -51,6 +52,7 @@ function uniqueByRetailerProductId(rows: RawProduct[]): RawProduct[] {
 }
 
 export async function runIngestionJob(input: RunIngestionJobInput): Promise<IngestionJobResult> {
+  const runId = crypto.randomUUID();
   const startedAt = input.now ?? new Date();
   const startedAtMs = Date.now();
   const errors: string[] = [];
@@ -115,6 +117,7 @@ export async function runIngestionJob(input: RunIngestionJobInput): Promise<Inge
     logEvent({
       event: "ingestion.run.completed",
       retailer_id: retailerId,
+      run_id: runId,
       duration_ms: Date.now() - startedAtMs,
       products_scraped: productsScraped,
       matched: productsScraped,
@@ -124,6 +127,7 @@ export async function runIngestionJob(input: RunIngestionJobInput): Promise<Inge
     });
 
     return {
+      runId,
       retailerId,
       startedAt: startedAt.toISOString(),
       completedAt: completedAt.toISOString(),
@@ -149,6 +153,7 @@ export async function runIngestionJob(input: RunIngestionJobInput): Promise<Inge
     logEvent({
       event: "ingestion.run.failed",
       retailer_id: retailerId,
+      run_id: runId,
       duration_ms: Date.now() - startedAtMs,
       products_scraped: productsScraped,
       matched: 0,
@@ -159,6 +164,7 @@ export async function runIngestionJob(input: RunIngestionJobInput): Promise<Inge
     });
 
     return {
+      runId,
       retailerId,
       startedAt: startedAt.toISOString(),
       completedAt: completedAt.toISOString(),

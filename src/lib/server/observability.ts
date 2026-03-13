@@ -7,6 +7,24 @@ export interface ServerErrorContext {
   [key: string]: unknown;
 }
 
+async function captureWithSentry(error: unknown, context: Record<string, unknown>): Promise<void> {
+  if (!process.env.SENTRY_DSN) return;
+  try {
+    const dynamicImport = new Function("m", "return import(m)") as (moduleName: string) => Promise<unknown>;
+    const sentry = (await dynamicImport("@sentry/nextjs")) as {
+      captureException?: (exception: unknown, hint?: unknown) => void;
+    };
+    sentry.captureException?.(error, {
+      extra: context,
+      tags: {
+        event: typeof context.event === "string" ? context.event : "server.error",
+      },
+    });
+  } catch {
+    // Keep error capture non-blocking.
+  }
+}
+
 export function captureServerError(error: unknown, context: ServerErrorContext): void {
   const { event, ...restContext } = context;
   const structured = {
@@ -20,10 +38,7 @@ export function captureServerError(error: unknown, context: ServerErrorContext):
 
   // Always log structurally
   console.error(JSON.stringify(structured));
-
-  // Sentry support: install @sentry/nextjs and set SENTRY_DSN env var to enable.
-  // Dynamic import is intentionally omitted here to avoid build-time resolution
-  // errors. Wire Sentry via sentry.server.config.ts when the package is added.
+  void captureWithSentry(error, structured);
 }
 
 export function logIngestionSummary(summary: {

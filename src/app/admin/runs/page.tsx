@@ -1,4 +1,5 @@
 import { listIngestionRuns } from "@/lib/server/admin-metrics";
+import { TriggerRunButton } from "./TriggerRunButton";
 
 interface Run {
   id: string;
@@ -44,12 +45,7 @@ export default async function RunsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-heading text-2xl font-bold text-navy">Ingestion Runs</h1>
-        <button
-          disabled
-          className="rounded-md bg-navy-muted/30 px-4 py-2 text-sm font-semibold text-navy-muted cursor-not-allowed"
-        >
-          Trigger Run — coming soon
-        </button>
+        <TriggerRunButton />
       </div>
 
       {runs.length === 0 ? (

@@ -38,9 +38,11 @@ export async function POST(request: Request) {
 
   try {
     const updated = setMatchDecision({ retailerProductId, decision });
-    cacheDeleteByPrefix("pricing:ingredient");
-    cacheDeleteByPrefix("pricing:meal");
-    cacheDeleteByPrefix("pricing:basket");
+    await Promise.all([
+      cacheDeleteByPrefix("pricing:ingredient"),
+      cacheDeleteByPrefix("pricing:meal"),
+      cacheDeleteByPrefix("pricing:basket"),
+    ]);
     return NextResponse.json({
       data: updated,
       explanation: `Set ${retailerProductId} to ${decision}.`,

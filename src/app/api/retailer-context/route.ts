@@ -32,8 +32,10 @@ export async function POST(request: Request) {
         postcode,
       },
     });
-    cacheDeleteByPrefix("pricing:basket");
-    cacheDeleteByPrefix("pricing:meal");
+    await Promise.all([
+      cacheDeleteByPrefix("pricing:basket"),
+      cacheDeleteByPrefix("pricing:meal"),
+    ]);
 
     return NextResponse.json({
       data: row,
