@@ -8,12 +8,13 @@ export interface ServerErrorContext {
 }
 
 export function captureServerError(error: unknown, context: ServerErrorContext): void {
+  const { event, ...restContext } = context;
   const structured = {
     level: "error",
-    event: context.event,
+    event,
     message: error instanceof Error ? error.message : String(error),
     stack: error instanceof Error ? error.stack : undefined,
-    ...context,
+    ...restContext,
     timestamp: new Date().toISOString(),
   };
 
