@@ -32,7 +32,7 @@ export function BrandLogo({
           alt="Loavish"
           fill
           priority
-          className="object-contain object-left"
+          className={`object-contain ${isWordmark ? "object-center" : "object-left"}`}
           sizes={isWordmark ? "(min-width: 768px) 220px, 180px" : "(min-width: 768px) 124px, 100px"}
         />
       </span>

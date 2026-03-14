@@ -74,9 +74,8 @@ export const selectTodaysMeals = (state: BudgeAtsState): DayPlan => {
 };
 
 export const selectDaysRemainingInWeek = (): number => {
-  const today = new Date().getDay(); // 0=Sun
-  const mon = today === 0 ? 6 : today - 1; // Mon=0
-  return Math.max(1, 7 - mon);
+  const today = new Date().getDay(); // 0=Sun, week starts on Sunday
+  return Math.max(1, 7 - today);
 };
 
 export const selectWasteRiskIngredientIds = (state: BudgeAtsState): string[] => {

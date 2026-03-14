@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/BrandLogo";
 import { NavBudgetPill } from "@/components/navigation/NavBudgetPill";
+import { createClient } from "@/lib/supabase/client";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -17,13 +18,30 @@ const NAV_LINKS = [
 
 export function AppNav() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.replace("/login");
+    router.refresh();
+  }
 
   return (
     <header className="mb-6">
       <div className="flex items-center justify-between gap-3">
-        <BrandLogo href="/dashboard" />
-        <div className="hidden sm:block">
-          <NavBudgetPill />
+        <BrandLogo href="/dashboard" variant="wordmark" />
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:block">
+            <NavBudgetPill />
+          </div>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-sm font-medium text-navy-muted transition-colors hover:text-navy"
+          >
+            Log out
+          </button>
         </div>
       </div>
 

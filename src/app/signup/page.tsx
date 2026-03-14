@@ -175,46 +175,6 @@ export default function SignupPage() {
                 Sign up to begin your onboarding and meal planning setup.
               </p>
 
-              <div className="mt-6 space-y-2.5">
-                <button
-                  type="button"
-                  onClick={() => handleOAuthSignUp("google")}
-                  disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <GoogleIcon />
-                  {oauthLoading === "google"
-                    ? "Redirecting..."
-                    : "Sign up with Google"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOAuthSignUp("facebook")}
-                  disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <FacebookIcon />
-                  {oauthLoading === "facebook"
-                    ? "Redirecting..."
-                    : "Sign up with Facebook"}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleInstagramClick}
-                  disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <InstagramIcon />
-                  Sign up with Instagram
-                </button>
-              </div>
-
-              <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.12em] text-navy-muted">
-                <span className="h-px flex-1 bg-cream-dark" />
-                <span>or</span>
-                <span className="h-px flex-1 bg-cream-dark" />
-              </div>
-
               <form onSubmit={handleSignUp} className="mt-6 space-y-4">
                 <label className="block text-sm font-medium text-navy">
                   Email
@@ -254,7 +214,47 @@ export default function SignupPage() {
                 </button>
               </form>
 
-              <p className="mt-4 text-center text-sm text-navy-muted">
+              <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.12em] text-navy-muted">
+                <span className="h-px flex-1 bg-cream-dark" />
+                <span>or continue with</span>
+                <span className="h-px flex-1 bg-cream-dark" />
+              </div>
+
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleOAuthSignUp("google")}
+                  disabled={loading || oauthLoading !== null}
+                  title="Sign up with Google"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-cream-dark bg-white transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <GoogleIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleOAuthSignUp("facebook")}
+                  disabled={loading || oauthLoading !== null}
+                  title="Sign up with Facebook"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-cream-dark bg-white transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <FacebookIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleInstagramClick}
+                  disabled={loading || oauthLoading !== null}
+                  title="Sign up with Instagram"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-cream-dark bg-white transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <InstagramIcon />
+                </button>
+              </div>
+
+              {oauthLoading && (
+                <p className="mt-3 text-center text-xs text-navy-muted">Redirecting...</p>
+              )}
+
+              <p className="mt-5 text-center text-sm text-navy-muted">
                 Already have an account?{" "}
                 <Link href="/login" className="font-semibold text-navy hover:underline">
                   Log in

@@ -195,7 +195,7 @@ export default function HomePage() {
         >
           Stop guessing what to cook.
           <br />
-          Start planning with confidence.
+          <span className="text-coral">Start planning</span> with confidence.
         </h2>
         <p className="mb-8 text-base text-navy-muted">
           Set your budget, pick your meals, and let Loavish handle the maths.

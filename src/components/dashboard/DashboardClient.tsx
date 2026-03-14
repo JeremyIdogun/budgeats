@@ -83,7 +83,7 @@ const RETAILER_NAMES: Record<RetailerId, string> = {
 
 function startOfWeek(date: Date) {
   const d = new Date(date);
-  const day = (d.getDay() + 6) % 7;
+  const day = d.getDay(); // 0 = Sunday, week starts on Sunday
   d.setDate(d.getDate() - day);
   d.setHours(0, 0, 0, 0);
   return d;
