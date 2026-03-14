@@ -1,10 +1,16 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
-import { createClient } from "@/lib/supabase/client";
 import { deriveBudgetUtilisationPct, deriveMealCostPence } from "@/lib/budget";
 import { generateShoppingList } from "@/lib/shopping";
+import {
+  getPlannerSessionPlan,
+  persistPlannerState,
+  setLatestPlannerPersistState,
+  setPlannerSessionPlan,
+  type PlannerPersistState,
+} from "@/lib/planner-persistence";
 import { RETAILERS, type Meal, type RetailerId, type UserProfile, type WeekPlan } from "@/models";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { useBudgeAtsStore, type BudgeAtsState } from "@/store";
@@ -196,7 +202,6 @@ export function DashboardClient({
   profileBudgetPeriod,
   initialTab,
 }: DashboardClientProps) {
-  const supabase = useMemo(() => createClient(), []);
   const {
     budget: onboardingBudget,
     period: onboardingPeriod,
@@ -216,7 +221,10 @@ export function DashboardClient({
 
   const [activeTab, setActiveTab] = useState<DashboardTab>(initialTab ?? "planner");
   const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(new Date()));
-  const [plan, setPlan] = useState<Record<string, string>>(initialPlan);
+  const [plan, setPlan] = useState<Record<string, string>>(() => {
+    const currentWeekKey = isoDate(startOfWeek(new Date()));
+    return getPlannerSessionPlan(currentWeekKey, userId) ?? initialPlan;
+  });
   const [checkedItems, setCheckedItems] = useState<string[]>(initialCheckedItems);
   const [customMeals, setCustomMeals] = useState<CustomMeal[]>(initialCustomMeals);
 
@@ -297,22 +305,50 @@ export function DashboardClient({
     }
   }, [storedUser, effectiveUser, setUser]);
 
+  // Keep the session cache up to date on every plan change.
+  useEffect(() => {
+    setPlannerSessionPlan(weekKey, userId, plan);
+  }, [plan, weekKey, userId]);
+
+  // Track latest values for the unmount flush without triggering extra renders.
+  const latestDataRef = useRef<PlannerPersistState>({
+    userId,
+    plan,
+    checkedItems,
+    customMeals,
+  });
+  useEffect(() => {
+    const latest = {
+      userId,
+      plan,
+      checkedItems,
+      customMeals,
+    };
+    latestDataRef.current = latest;
+    setLatestPlannerPersistState(latest);
+  }, [userId, plan, checkedItems, customMeals]);
+
+  // Debounced save to Supabase while the user is actively editing.
   useEffect(() => {
     const timeout = setTimeout(() => {
-      void supabase.from("user_dashboard_state").upsert(
-        {
-          user_id: userId,
-          plan,
-          checked_item_keys: checkedItems,
-          custom_meals: customMeals,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id" },
-      );
+      void persistPlannerState({
+        userId,
+        plan,
+        checkedItems,
+        customMeals,
+      });
     }, 450);
 
     return () => clearTimeout(timeout);
-  }, [supabase, userId, plan, checkedItems, customMeals]);
+  }, [userId, plan, checkedItems, customMeals]);
+
+  // Best-effort flush on unmount so navigating away before the 450 ms
+  // debounce fires (e.g. clicking Log out) still saves the latest plan.
+  useEffect(() => {
+    return () => {
+      void persistPlannerState(latestDataRef.current);
+    };
+  }, []);
 
   const dashboardLibraryMeals = useMemo(
     () => storeMeals.filter((meal) => isDashboardMealType(meal.type)),

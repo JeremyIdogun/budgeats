@@ -5,6 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/BrandLogo";
 import { NavBudgetPill } from "@/components/navigation/NavBudgetPill";
 import { createClient } from "@/lib/supabase/client";
+import {
+  clearPlannerSessionCache,
+  flushPlannerStateToServer,
+} from "@/lib/planner-persistence";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -21,6 +25,8 @@ export function AppNav() {
   const router = useRouter();
 
   async function handleLogout() {
+    await flushPlannerStateToServer();
+    clearPlannerSessionCache();
     const supabase = createClient();
     await supabase.auth.signOut();
     router.replace("/login");

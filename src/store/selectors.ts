@@ -8,6 +8,8 @@ import { generateShoppingList } from "@/lib/shopping";
 import type { DayPlan, RetailerId } from "@/models";
 import type { BudgeAtsState } from "@/store";
 
+const EMPTY_WASTE_RISK_INGREDIENT_IDS: string[] = [];
+
 export const selectWeekSpendPence = (state: BudgeAtsState): number => {
   if (!state.user || !state.currentWeekPlan) return 0;
 
@@ -82,7 +84,7 @@ export const selectWasteRiskIngredientIds = (state: BudgeAtsState): string[] => 
   // Phase I stub: return empty array
   // Phase II: compare shopping list purchase dates against current date
   void state;
-  return [];
+  return EMPTY_WASTE_RISK_INGREDIENT_IDS;
 };
 
 export const selectDashboardAlertState = (

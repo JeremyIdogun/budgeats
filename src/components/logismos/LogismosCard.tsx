@@ -49,6 +49,7 @@ function computeCost(
 export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }: LogismosCardProps) {
   const store = useBudgeAtsStore();
   const addDecisionEntry = useDecisionStore((s) => s.addEntry);
+  const setStoreRecommendation = useBudgeAtsStore((s) => s.setRecommendation);
 
   const [toast, setToast] = useState<string | null>(null);
   const [showAlternatives, setShowAlternatives] = useState(false);
@@ -118,11 +119,23 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
     ],
   );
 
-  const [recommendation, setRecommendation] = useState<LogismosRecommendation>(localRecommendation);
-
-  useEffect(() => {
-    setRecommendation(localRecommendation);
-  }, [localRecommendation]);
+  const recommendationRequestKey = useMemo(
+    () =>
+      JSON.stringify({
+        contextSignals,
+        cookableMealIds: cookableMealsWithCost.map((meal) => meal.id),
+        householdSize,
+      }),
+    [contextSignals, cookableMealsWithCost, householdSize],
+  );
+  const [apiRecommendation, setApiRecommendation] = useState<{
+    key: string;
+    value: LogismosRecommendation;
+  } | null>(null);
+  const recommendation =
+    apiRecommendation?.key === recommendationRequestKey
+      ? apiRecommendation.value
+      : localRecommendation;
 
   useEffect(() => {
     let cancelled = false;
@@ -141,7 +154,10 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
         if (!response.ok) return;
         const payload = (await response.json()) as { data?: LogismosRecommendation };
         if (!cancelled && payload.data) {
-          setRecommendation(payload.data);
+          setApiRecommendation({
+            key: recommendationRequestKey,
+            value: payload.data,
+          });
         }
       } catch {
         // Fall back to local recommendation when network/API fails.
@@ -156,11 +172,12 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
     contextSignals,
     cookableMealsWithCost,
     householdSize,
+    recommendationRequestKey,
   ]);
 
   useEffect(() => {
-    store.setRecommendation(recommendation);
-  }, [recommendation, store]);
+    setStoreRecommendation(recommendation);
+  }, [recommendation, setStoreRecommendation]);
 
   const recommendedMeal = useMemo(
     () => cookableMealsWithCost.find((m) => m.id === recommendation.mealId) ?? null,
