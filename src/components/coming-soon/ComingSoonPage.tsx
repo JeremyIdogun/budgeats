@@ -107,16 +107,16 @@ export function ComingSoonPage() {
         className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-teal/5 to-transparent"
       />
 
-      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-12">
+      <nav className="relative z-20 flex items-center justify-between px-6 py-5 md:px-12">
         <Link href="/" aria-label="Loavish home" className="inline-flex items-center">
-          <span className="relative block h-10 w-[210px] md:h-14 md:w-[330px]">
+          <span className="relative block h-10 w-[190px] md:h-14 md:w-[280px]">
             <Image
-              src="/loavish-logotype.svg"
+              src="/loavish-wordmark.svg"
               alt="Loavish"
               fill
               priority
               className="object-contain object-left"
-              sizes="(min-width: 768px) 330px, 210px"
+              sizes="(min-width: 768px) 280px, 190px"
             />
           </span>
         </Link>
@@ -125,7 +125,7 @@ export function ComingSoonPage() {
         </div>
       </nav>
 
-      <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pb-20 pt-32 text-center">
+      <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pb-20 pt-20 md:pt-24 text-center">
         <p className="mb-8 text-[11px] font-medium uppercase tracking-widest text-navy-muted">
           Now in development - join the waitlist
         </p>
@@ -263,13 +263,13 @@ export function ComingSoonPage() {
       </section>
 
       <footer className="relative z-10 flex flex-wrap items-center justify-between gap-4 bg-navy px-6 py-8 text-center md:px-12">
-        <span className="relative block h-9 w-[210px] md:h-12 md:w-[260px]">
+        <span className="relative block h-10 w-[190px] md:h-11 md:w-[220px]">
           <Image
-            src="/loavish-logotype-white.svg"
+            src="/loavish-wordmark-white.svg"
             alt="Loavish"
             fill
             className="object-contain object-left"
-            sizes="(min-width: 768px) 260px, 210px"
+            sizes="(min-width: 768px) 220px, 190px"
           />
         </span>
         <ul className="flex list-none gap-6">
