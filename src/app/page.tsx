@@ -1,7 +1,6 @@
 import { ComingSoonPage } from "@/components/coming-soon/ComingSoonPage";
 import Link from "next/link";
 import Image from "next/image";
-import { BrandLogo } from "@/components/BrandLogo";
 
 const STATS = [
   {
@@ -58,7 +57,18 @@ export default function HomePage() {
 
       <div className="relative mx-auto flex w-full max-w-6xl flex-col px-6 py-8 md:px-10 md:py-10">
         <header className="flex items-center justify-between">
-          <BrandLogo href="/" variant="wordmark" />
+          <Link href="/" aria-label="Loavish home" className="inline-flex items-center">
+            <span className="relative block h-10 w-[210px] md:h-14 md:w-[330px]">
+              <Image
+                src="/loavish-logotype.svg"
+                alt="Loavish"
+                fill
+                priority
+                className="object-contain object-left"
+                sizes="(min-width: 768px) 330px, 210px"
+              />
+            </span>
+          </Link>
           <div className="flex items-center gap-2">
             <Link
               href="/login"
