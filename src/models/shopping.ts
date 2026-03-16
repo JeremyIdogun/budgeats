@@ -10,9 +10,13 @@ export interface ShoppingLineItem {
   packsNeeded: number;
   cheapestRetailerId: RetailerId;
   cheapestPricePence: number;
+  matchLabel?: "exact" | "equivalent" | "substitute";
+  productUrl?: string;
+  substituteSuggestion?: string | null;
   alternativeRetailers: Array<{
     retailerId: RetailerId;
     pricePence: number;
+    productUrl?: string;
   }>;
 }
 
@@ -25,4 +29,15 @@ export interface ShoppingList {
   totalPence: number;
   totalByRetailer: Record<RetailerId, number>;
   estimatedSavingPence: number;
+  groupedByRetailer: Record<RetailerId, ShoppingLineItem[]>;
+  cheapestSingleRetailer: {
+    retailerId: RetailerId | null;
+    totalPence: number;
+    explanation: string;
+  };
+  cheapestMixedRetailer: {
+    totalPence: number;
+    retailerBreakdown: Record<RetailerId, number>;
+    explanation: string;
+  };
 }

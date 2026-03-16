@@ -29,6 +29,8 @@ interface DashboardShoppingItem {
   group: string;
   bestOfferRetailerId: RetailerId | null;
   bestOfferPence: number | null;
+  productUrl?: string;
+  substituteSuggestion?: string | null;
   priced: boolean;
 }
 
@@ -181,6 +183,8 @@ export function ShoppingClient({
     group: item.category,
     bestOfferRetailerId: item.cheapestRetailerId,
     bestOfferPence: item.cheapestPricePence,
+    productUrl: item.productUrl,
+    substituteSuggestion: item.substituteSuggestion ?? null,
     priced: true,
   }));
 
@@ -285,10 +289,10 @@ export function ShoppingClient({
 
         <section className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-navy md:text-3xl">Shopping List</h1>
+            <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Shopping List</h1>
             <p className="text-sm text-navy-muted">Week of {weekHeading}</p>
           </div>
-          <div className="rounded-xl border border-cream-dark bg-white px-4 py-3">
+          <div className="rounded-lg border border-cream-dark bg-white px-4 py-3">
             <p className="text-xs uppercase tracking-[0.12em] text-navy-muted">Estimated total</p>
             <p className="mt-1 text-sm font-semibold text-navy">{formatPence(estimatedTotalPence)}</p>
             {savingsPence > 0 && topSplitRetailers.length >= 2 && (
@@ -301,21 +305,21 @@ export function ShoppingClient({
         </section>
 
         {plannedSlotCount === 0 || shoppingItems.length === 0 ? (
-          <section className="rounded-2xl border border-cream-dark bg-white p-8 text-center">
+          <section className="rounded-lg border border-cream-dark bg-white p-8 text-center">
             <p className="text-lg font-semibold text-navy">Plan your meals first.</p>
             <p className="mt-2 text-sm text-navy-muted">
               Add meals to your planner and your shopping list will auto-generate.
             </p>
             <Link
               href="/planner"
-              className="mt-5 inline-block rounded-xl bg-navy px-5 py-2.5 text-sm font-semibold text-white"
+              className="mt-5 inline-block rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white"
             >
               Go to planner →
             </Link>
           </section>
         ) : (
           <div className="grid gap-5 xl:grid-cols-[320px_1fr]">
-            <aside className="rounded-2xl border border-cream-dark bg-white p-4">
+            <aside className="rounded-lg border border-cream-dark bg-white p-4">
               <p className="text-sm font-semibold text-navy">Store split summary</p>
               <div className="mt-3 space-y-2">
                 {basketByRetailer.map((retailer) => (
@@ -333,7 +337,7 @@ export function ShoppingClient({
               </div>
             </aside>
 
-            <section className="rounded-2xl border border-cream-dark bg-white p-4 md:p-5">
+            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm text-navy-muted">
                   {checkedCount} of {shoppingItems.length} items checked
@@ -392,6 +396,19 @@ export function ShoppingClient({
                                 ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
                                 : "No store price yet"}
                             </span>
+                            {item.substituteSuggestion && (
+                              <span className="block text-[11px] text-coral">{item.substituteSuggestion}</span>
+                            )}
+                            {item.productUrl && (
+                              <a
+                                href={item.productUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="block text-[11px] text-navy underline underline-offset-2"
+                              >
+                                Open product
+                              </a>
+                            )}
                           </span>
                         </label>
                       ))}

@@ -84,6 +84,12 @@ export default function OnboardingPage() {
         dietary_preferences: store.dietary,
         preferred_retailer_ids: store.retailers,
         updated_at: new Date().toISOString(),
+        // Logismos defaults
+        logismos_enabled: true,
+        energy_check_in_enabled: true,
+        calendar_sync_enabled: false,
+        loavish_points_balance: 0,
+        streak_days: 0,
       });
 
       setStep(5);
@@ -103,7 +109,7 @@ export default function OnboardingPage() {
             </p>
             <div className="h-1.5 rounded-full bg-cream-dark">
               <div
-                className="h-full rounded-full bg-navy transition-all duration-300"
+                className="h-full rounded-full bg-navy transition-opacity duration-150"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -111,7 +117,7 @@ export default function OnboardingPage() {
         </header>
 
         <div className="flex-1">
-          <div className="relative mx-auto w-full max-w-3xl rounded-[32px] border border-cream-dark bg-white p-6 md:p-8 lg:p-10">
+          <div className="relative mx-auto w-full max-w-3xl rounded-lg border border-cream-dark bg-white p-6 md:p-8 lg:p-10">
             <div className="mx-auto w-full max-w-2xl">
               {step === 1 && <StepBudget onNext={() => setStep(2)} />}
               {step === 2 && (

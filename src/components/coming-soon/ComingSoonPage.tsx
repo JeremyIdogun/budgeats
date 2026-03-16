@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-/* ── Waitlist form ── */
 function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -24,8 +23,7 @@ function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
 
   if (submitted) {
     return (
-      <div className="flex items-center gap-3 rounded-2xl border border-teal-light bg-[#F0FAFA] px-5 py-4 text-sm font-medium text-navy">
-        <span>🎉</span>
+      <div className="flex items-center gap-3 rounded-lg border border-teal-light bg-[#F0FAFA] px-5 py-4 text-sm font-medium text-navy">
         <span>You&rsquo;re on the list! We&rsquo;ll be in touch soon.</span>
       </div>
     );
@@ -34,11 +32,9 @@ function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex gap-2.5 rounded-2xl border bg-white px-5 py-2 shadow-card transition-all focus-within:shadow-[0_2px_24px_rgba(61,191,184,0.15)]"
+      className="flex gap-2.5 rounded-lg border bg-white px-5 py-2"
       style={{
         borderColor: invalid ? "#E8693A" : "#EDEBE7",
-        // @ts-expect-error CSS variable
-        "--tw-ring-color": "transparent",
       }}
     >
       <input
@@ -54,7 +50,7 @@ function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
       />
       <button
         type="submit"
-        className="flex-shrink-0 rounded-xl bg-navy px-5 py-2.5 text-sm font-bold text-white transition hover:-translate-y-px hover:bg-[#162340] hover:shadow-[0_4px_16px_rgba(30,45,78,0.2)]"
+        className="flex-shrink-0 rounded-lg bg-navy px-5 py-2.5 text-sm font-bold text-white transition-colors duration-150 hover:bg-[#162340]"
       >
         {cta}
       </button>
@@ -62,11 +58,10 @@ function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
   );
 }
 
-/* ── Feature cards data ── */
 const FEATURES = [
   {
     title: "Meal planning with live budget impact",
-    desc: "Plan your entire week on a 7-day grid. Your budget bar updates in real time as you add meals — no more end-of-week surprises.",
+    desc: "Plan your entire week on a 7-day grid. Your budget bar updates in real time as you add meals with clear remaining headroom.",
   },
   {
     title: "Smart shopping list",
@@ -74,7 +69,7 @@ const FEATURES = [
   },
   {
     title: "Ingredient-level prices",
-    desc: "Unit price normalisation and brand vs own-label comparison across the UK's major supermarkets — before you leave the house.",
+    desc: "Unit price normalisation and brand vs own-label comparison across the UK's major supermarkets before you leave the house.",
   },
   {
     title: "Smart swap suggestions",
@@ -104,49 +99,24 @@ const STATS = [
   },
 ] as const;
 
-/* ── Page ── */
 export function ComingSoonPage() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-cream text-navy antialiased">
-      {/* Fixed gradient backdrop */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background: `
-            radial-gradient(ellipse 60% 50% at 80% -10%, rgba(61,191,184,0.13) 0%, transparent 60%),
-            radial-gradient(ellipse 50% 40% at -10% 80%, rgba(232,105,58,0.10) 0%, transparent 60%)
-          `,
-        }}
+        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-teal/5 to-transparent"
       />
 
-      {/* ── Nav ── */}
-      <nav className="relative z-20 mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5 md:px-6">
+      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-12">
         <Link href="/" aria-label="Loavish home" className="inline-flex items-center">
-          <span className="relative block h-10 w-[190px] md:h-14 md:w-[280px]">
+          <span className="relative block h-10 w-[210px] md:h-14 md:w-[330px]">
             <Image
-              src="/loavish-wordmark.svg"
+              src="/loavish-logotype.svg"
               alt="Loavish"
               fill
               priority
               className="object-contain object-left"
-              sizes="(min-width: 768px) 280px, 190px"
+              sizes="(min-width: 768px) 330px, 210px"
             />
           </span>
         </Link>
@@ -155,18 +125,11 @@ export function ComingSoonPage() {
         </div>
       </nav>
 
-      {/* ── Hero ── */}
-      <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pb-20 pt-12 text-center">
-        {/* Eyebrow */}
-        <div
-          className="mb-8 inline-flex items-center gap-2 rounded-full border border-cream-dark bg-white px-5 py-2 text-xs font-semibold uppercase tracking-widest text-navy-muted"
-          style={{ animation: "fadeUp 0.6s ease both" }}
-        >
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-teal" />
-          Now in development &mdash; join the waitlist
-        </div>
+      <section className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pb-20 pt-32 text-center">
+        <p className="mb-8 text-[11px] font-medium uppercase tracking-widest text-navy-muted">
+          Now in development - join the waitlist
+        </p>
 
-        {/* Headline */}
         <h1
           className="mb-6 max-w-3xl text-navy"
           style={{
@@ -175,48 +138,33 @@ export function ComingSoonPage() {
             fontWeight: 800,
             lineHeight: 1.06,
             letterSpacing: "-2px",
-            animation: "fadeUp 0.6s 0.1s ease both",
           }}
         >
-          Stop guessing.<br />
-          Start eating{" "}
-          <span className="text-coral">smarter.</span>
+          Stop guessing.
+          <br />
+          Start eating <span className="text-coral">smarter.</span>
         </h1>
 
-        {/* Subtitle */}
-        <p
-          className="mb-12 max-w-xl text-lg leading-relaxed text-navy-muted"
-          style={{ animation: "fadeUp 0.6s 0.2s ease both" }}
-        >
-          Loavish breaks your food spend down to the ingredient level &mdash; so
-          you can plan meals, compare retailers, and hit your grocery budget every
-          week.
+        <p className="mb-12 max-w-xl text-lg leading-relaxed text-navy-muted">
+          Loavish breaks your food spend down to the ingredient level so you can
+          plan meals, compare retailers, and hit your grocery budget every week.
         </p>
 
-        {/* Form */}
-        <div
-          className="w-full max-w-md"
-          style={{ animation: "fadeUp 0.6s 0.3s ease both" }}
-        >
+        <div className="w-full max-w-md">
           <WaitlistForm />
           <p className="mt-3 text-xs text-navy-muted">
             No spam. Unsubscribe anytime. &middot; Free during beta.
           </p>
         </div>
 
-        {/* Scroll hint */}
-        <div
-          className="absolute bottom-9 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1.5 text-[11px] uppercase tracking-widest text-navy-muted"
-          style={{ animation: "fadeUp 0.6s 0.6s ease both" }}
-        >
+        <div className="absolute bottom-9 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1.5 text-[11px] uppercase tracking-widest text-navy-muted">
           <span>Scroll to explore</span>
-          <span className="animate-bounce">↓</span>
+          <span>↓</span>
         </div>
       </section>
 
-      {/* ── Stats strip ── */}
       <div className="relative z-10 mx-auto max-w-5xl px-6 pb-20">
-        <div className="reveal grid grid-cols-1 gap-8 rounded-3xl bg-navy px-8 py-12 text-center md:grid-cols-3 md:px-12">
+        <div className="grid grid-cols-1 gap-8 rounded-lg bg-navy px-8 py-12 text-center md:grid-cols-3 md:px-12">
           {STATS.map((stat) => (
             <div key={stat.value}>
               <div
@@ -241,13 +189,12 @@ export function ComingSoonPage() {
         </div>
       </div>
 
-      {/* ── Features ── */}
       <section className="relative z-10 mx-auto max-w-5xl px-6 pb-24">
         <p className="mb-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-teal">
           What Loavish does
         </p>
         <h2
-          className="reveal mb-14 text-center text-navy"
+          className="mb-14 text-center text-navy"
           style={{
             fontFamily: "var(--font-display, sans-serif)",
             fontSize: "clamp(28px, 4vw, 44px)",
@@ -260,54 +207,40 @@ export function ComingSoonPage() {
         </h2>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          {/* Wide card */}
-          <div className="reveal rounded-2xl border border-cream-dark bg-white p-8 transition-all hover:-translate-y-1 hover:border-teal-light hover:shadow-card-hover md:col-span-2">
-            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full border border-coral/25 bg-coral/10 text-sm font-bold tracking-wide text-coral">
-              01
-            </div>
+          <div className="rounded-lg border border-cream-dark bg-white p-8 transition-colors duration-150 hover:border-navy/15 md:col-span-2">
             <h3
               className="mb-3 text-lg font-bold text-navy"
               style={{ fontFamily: "var(--font-display, sans-serif)" }}
             >
-              Meal planning with live budget impact
+              {FEATURES[0].title}
             </h3>
             <p className="text-sm leading-relaxed text-navy-muted">
-              Plan your entire week on a 7-day grid. As you add each meal, your
-              budget bar updates in real time &mdash; so you always know exactly
-              how much headroom you have before you shop.
+              {FEATURES[0].desc}
             </p>
           </div>
 
-          {FEATURES.slice(1).map((f, index) => (
+          {FEATURES.slice(1).map((feature) => (
             <div
-              key={f.title}
-              className="reveal rounded-2xl border border-cream-dark bg-white p-8 transition-all hover:-translate-y-1 hover:border-teal-light hover:shadow-card-hover"
+              key={feature.title}
+              className="rounded-lg border border-cream-dark bg-white p-8 transition-colors duration-150 hover:border-navy/15"
             >
-              <div
-                className={`mb-5 flex h-12 w-12 items-center justify-center rounded-full border text-sm font-bold tracking-wide ${
-                  index % 2 === 0
-                    ? "border-teal/25 bg-teal/10 text-teal"
-                    : "border-coral/25 bg-coral/10 text-coral"
-                }`}
-              >
-                {String(index + 2).padStart(2, "0")}
-              </div>
               <h3
                 className="mb-3 text-lg font-bold text-navy"
                 style={{ fontFamily: "var(--font-display, sans-serif)" }}
               >
-                {f.title}
+                {feature.title}
               </h3>
-              <p className="text-sm leading-relaxed text-navy-muted">{f.desc}</p>
+              <p className="text-sm leading-relaxed text-navy-muted">
+                {feature.desc}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Bottom CTA ── */}
       <section className="relative z-10 mx-auto max-w-lg px-6 pb-28 text-center">
         <h2
-          className="reveal mb-4 text-navy"
+          className="mb-4 text-navy"
           style={{
             fontFamily: "var(--font-display, sans-serif)",
             fontSize: "clamp(28px, 4vw, 40px)",
@@ -316,37 +249,44 @@ export function ComingSoonPage() {
             lineHeight: 1.15,
           }}
         >
-          Be first to know<br />when we launch.
+          Be first to know
+          <br />
+          when we launch.
         </h2>
-        <p className="reveal mb-8 text-base text-navy-muted">
+        <p className="mb-8 text-base text-navy-muted">
           Early access users get free premium features during our beta period.
         </p>
-        <div className="reveal">
+        <div>
           <WaitlistForm cta="Get early access →" />
           <p className="mt-3 text-xs text-navy-muted">No spam. Unsubscribe anytime.</p>
         </div>
       </section>
 
-      {/* ── Footer ── */}
       <footer className="relative z-10 flex flex-wrap items-center justify-between gap-4 bg-navy px-6 py-8 text-center md:px-12">
-        <span className="relative block h-10 w-[190px] md:h-11 md:w-[220px]">
-          <Image src="/loavish-wordmark-white.svg" alt="Loavish" fill className="object-contain object-left" sizes="(min-width: 768px) 220px, 190px" />
+        <span className="relative block h-9 w-[210px] md:h-12 md:w-[260px]">
+          <Image
+            src="/loavish-logotype-white.svg"
+            alt="Loavish"
+            fill
+            className="object-contain object-left"
+            sizes="(min-width: 768px) 260px, 210px"
+          />
         </span>
         <ul className="flex list-none gap-6">
           <li>
-            <a href="#" className="text-xs text-white/50 transition hover:text-white/90">
+            <a href="#" className="text-xs text-white/50 transition-colors duration-150 hover:text-white/90">
               Privacy
             </a>
           </li>
           <li>
-            <a href="#" className="text-xs text-white/50 transition hover:text-white/90">
+            <a href="#" className="text-xs text-white/50 transition-colors duration-150 hover:text-white/90">
               Terms
             </a>
           </li>
           <li>
             <a
               href="mailto:hello@loavish.app"
-              className="text-xs text-white/50 transition hover:text-white/90"
+              className="text-xs text-white/50 transition-colors duration-150 hover:text-white/90"
             >
               Contact
             </a>

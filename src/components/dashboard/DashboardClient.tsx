@@ -1,10 +1,16 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
-import { createClient } from "@/lib/supabase/client";
 import { deriveBudgetUtilisationPct, deriveMealCostPence } from "@/lib/budget";
 import { generateShoppingList } from "@/lib/shopping";
+import {
+  getPlannerSessionPlan,
+  persistPlannerState,
+  setLatestPlannerPersistState,
+  setPlannerSessionPlan,
+  type PlannerPersistState,
+} from "@/lib/planner-persistence";
 import { RETAILERS, type Meal, type RetailerId, type UserProfile, type WeekPlan } from "@/models";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { useBudgeAtsStore, type BudgeAtsState } from "@/store";
@@ -62,6 +68,8 @@ interface DashboardShoppingItem {
   group: string;
   bestOfferRetailerId: RetailerId | null;
   bestOfferPence: number | null;
+  productUrl?: string;
+  substituteSuggestion?: string | null;
   priced: boolean;
 }
 
@@ -81,7 +89,7 @@ const RETAILER_NAMES: Record<RetailerId, string> = {
 
 function startOfWeek(date: Date) {
   const d = new Date(date);
-  const day = (d.getDay() + 6) % 7;
+  const day = d.getDay(); // 0 = Sunday, week starts on Sunday
   d.setDate(d.getDate() - day);
   d.setHours(0, 0, 0, 0);
   return d;
@@ -194,7 +202,6 @@ export function DashboardClient({
   profileBudgetPeriod,
   initialTab,
 }: DashboardClientProps) {
-  const supabase = useMemo(() => createClient(), []);
   const {
     budget: onboardingBudget,
     period: onboardingPeriod,
@@ -214,7 +221,10 @@ export function DashboardClient({
 
   const [activeTab, setActiveTab] = useState<DashboardTab>(initialTab ?? "planner");
   const [weekStart, setWeekStart] = useState<Date>(() => startOfWeek(new Date()));
-  const [plan, setPlan] = useState<Record<string, string>>(initialPlan);
+  const [plan, setPlan] = useState<Record<string, string>>(() => {
+    const currentWeekKey = isoDate(startOfWeek(new Date()));
+    return getPlannerSessionPlan(currentWeekKey, userId) ?? initialPlan;
+  });
   const [checkedItems, setCheckedItems] = useState<string[]>(initialCheckedItems);
   const [customMeals, setCustomMeals] = useState<CustomMeal[]>(initialCustomMeals);
 
@@ -295,22 +305,50 @@ export function DashboardClient({
     }
   }, [storedUser, effectiveUser, setUser]);
 
+  // Keep the session cache up to date on every plan change.
+  useEffect(() => {
+    setPlannerSessionPlan(weekKey, userId, plan);
+  }, [plan, weekKey, userId]);
+
+  // Track latest values for the unmount flush without triggering extra renders.
+  const latestDataRef = useRef<PlannerPersistState>({
+    userId,
+    plan,
+    checkedItems,
+    customMeals,
+  });
+  useEffect(() => {
+    const latest = {
+      userId,
+      plan,
+      checkedItems,
+      customMeals,
+    };
+    latestDataRef.current = latest;
+    setLatestPlannerPersistState(latest);
+  }, [userId, plan, checkedItems, customMeals]);
+
+  // Debounced save to Supabase while the user is actively editing.
   useEffect(() => {
     const timeout = setTimeout(() => {
-      void supabase.from("user_dashboard_state").upsert(
-        {
-          user_id: userId,
-          plan,
-          checked_item_keys: checkedItems,
-          custom_meals: customMeals,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id" },
-      );
+      void persistPlannerState({
+        userId,
+        plan,
+        checkedItems,
+        customMeals,
+      });
     }, 450);
 
     return () => clearTimeout(timeout);
-  }, [supabase, userId, plan, checkedItems, customMeals]);
+  }, [userId, plan, checkedItems, customMeals]);
+
+  // Best-effort flush on unmount so navigating away before the 450 ms
+  // debounce fires (e.g. clicking Log out) still saves the latest plan.
+  useEffect(() => {
+    return () => {
+      void persistPlannerState(latestDataRef.current);
+    };
+  }, []);
 
   const dashboardLibraryMeals = useMemo(
     () => storeMeals.filter((meal) => isDashboardMealType(meal.type)),
@@ -501,6 +539,8 @@ export function DashboardClient({
     group: item.category,
     bestOfferRetailerId: item.cheapestRetailerId,
     bestOfferPence: item.cheapestPricePence,
+    productUrl: item.productUrl,
+    substituteSuggestion: item.substituteSuggestion ?? null,
     priced: true,
   }));
 
@@ -636,7 +676,7 @@ export function DashboardClient({
 
         <section className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-navy md:text-3xl">
+            <h1 className="text-2xl font-extrabold text-navy md:text-3xl">
               {activeTab === "planner" ? "Meal planner" : "Shopping list"}
             </h1>
             <p className="text-sm text-navy-muted">
@@ -646,7 +686,7 @@ export function DashboardClient({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-2 rounded-xl border border-cream-dark bg-white p-1 md:flex">
+            <div className="hidden items-center gap-2 rounded-lg border border-cream-dark bg-white p-1 md:flex">
               <button
                 onClick={() => setActiveTab("planner")}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
@@ -688,7 +728,7 @@ export function DashboardClient({
           </div>
         </section>
 
-        <div className="mb-4 flex items-center gap-2 rounded-xl border border-cream-dark bg-white p-1 md:hidden">
+        <div className="mb-4 flex items-center gap-2 rounded-lg border border-cream-dark bg-white p-1 md:hidden">
           <button
             onClick={() => setActiveTab("planner")}
             className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${
@@ -713,7 +753,7 @@ export function DashboardClient({
 
         {activeTab === "planner" ? (
           <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
-            <section className="rounded-2xl border border-cream-dark bg-white p-4 md:p-5">
+            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[860px] border-separate border-spacing-2">
                   <thead>
@@ -740,7 +780,7 @@ export function DashboardClient({
                   <tbody>
                     {MEAL_TYPES.map((type) => (
                       <tr key={type}>
-                        <td className="rounded-xl bg-cream px-3 py-3 align-top text-sm font-semibold text-navy">
+                        <td className="rounded-lg bg-cream px-3 py-3 align-top text-sm font-semibold text-navy">
                           {capitalize(type)}
                         </td>
                         {weekDays.map((day) => {
@@ -753,7 +793,7 @@ export function DashboardClient({
                           return (
                             <td
                               key={slotKey}
-                              className="rounded-xl border border-cream-dark bg-white px-2 py-2 align-top"
+                              className="rounded-lg border border-cream-dark bg-white px-2 py-2 align-top"
                             >
                               <label
                                 htmlFor={slotKey}
@@ -803,7 +843,7 @@ export function DashboardClient({
             </section>
 
             <aside className="space-y-4">
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Add custom meal</p>
                 <form onSubmit={handleCreateCustomMeal} className="mt-3 space-y-2">
                   <input
@@ -846,7 +886,7 @@ export function DashboardClient({
                 </form>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Your custom meals</p>
                 <div className="mt-3 space-y-2">
                   {customDisplayMeals.length === 0 ? (
@@ -877,7 +917,7 @@ export function DashboardClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">This week&apos;s budget</p>
                 <p className="mt-3 text-3xl font-semibold text-navy">
                   {Math.round(budgetUsedPct)}%
@@ -921,7 +961,7 @@ export function DashboardClient({
           </div>
         ) : (
           <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
-            <section className="rounded-2xl border border-cream-dark bg-white p-4 md:p-5">
+            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
               {mealsWithoutIngredients.length > 0 && (
                 <p className="mb-3 rounded-lg bg-amber-100 px-3 py-2 text-xs text-navy-muted">
                   Some selected custom meals have no ingredients, so they will not add
@@ -929,7 +969,7 @@ export function DashboardClient({
                 </p>
               )}
               {shoppingItems.length === 0 ? (
-                <div className="rounded-xl bg-cream px-5 py-8 text-center">
+                <div className="rounded-lg bg-cream px-5 py-8 text-center">
                   <p className="text-sm font-semibold text-navy">No shopping items yet</p>
                   <p className="mt-1 text-sm text-navy-muted">
                     Plan meals in the weekly grid and your list will appear here.
@@ -989,14 +1029,27 @@ export function DashboardClient({
                               <span className="block text-xs font-medium text-navy-muted">
                                 {amountLabel(item.amount, item.unit)}
                               </span>
-                              <span className="block text-[11px] text-teal">
-                                {item.bestOfferRetailerId && item.bestOfferPence !== null
-                                  ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
-                                  : "No store price yet"}
+                                <span className="block text-[11px] text-teal">
+                                  {item.bestOfferRetailerId && item.bestOfferPence !== null
+                                    ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
+                                    : "No store price yet"}
+                                </span>
+                                {item.substituteSuggestion && (
+                                  <span className="block text-[11px] text-coral">{item.substituteSuggestion}</span>
+                                )}
+                                {item.productUrl && (
+                                  <a
+                                    href={item.productUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="block text-[11px] text-navy underline underline-offset-2"
+                                  >
+                                    Open product
+                                  </a>
+                                )}
                               </span>
-                            </span>
-                          </label>
-                        ))}
+                            </label>
+                          ))}
                       </div>
                     </div>
                   ))}
@@ -1005,7 +1058,7 @@ export function DashboardClient({
             </section>
 
             <aside className="space-y-4">
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Shopping summary</p>
                 <div className="mt-3 space-y-1 text-sm">
                   <p className="flex items-center justify-between text-navy-muted">
@@ -1045,7 +1098,7 @@ export function DashboardClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Basket by retailer</p>
                 <div className="mt-3 space-y-2">
                   {basketByRetailer.map((retailer) => (
@@ -1067,14 +1120,14 @@ export function DashboardClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Preferred retailers</p>
                 <p className="mt-2 text-xs leading-relaxed text-navy-muted">
                   {selectedRetailers || "No preferred retailers set yet."}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-cream-dark bg-white p-4">
+              <div className="rounded-lg border border-cream-dark bg-white p-4">
                 <p className="text-sm font-semibold text-navy">Tip</p>
                 <p className="mt-2 text-xs leading-relaxed text-navy-muted">
                   Keep this list open in-store and check items as you shop to avoid

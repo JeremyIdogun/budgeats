@@ -18,6 +18,12 @@ export interface UserProfile {
   preferred_retailer_ids: string[];
   created_at: string;
   updated_at: string;
+  calendarSyncEnabled?: boolean;
+  geoAwarenessEnabled?: boolean;
+  energyCheckInEnabled?: boolean;
+  logismosEnabled?: boolean;
+  loavishPointsBalance?: number;
+  logismosScore?: number | null;
 }
 
 export interface OnboardingState {

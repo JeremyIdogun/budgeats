@@ -34,7 +34,7 @@ export function StepSuccess({ onComplete }: StepSuccessProps) {
 
   return (
     <div className="text-center py-5">
-      <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-4xl mx-auto mb-6 animate-[popIn_0.5s_cubic-bezier(0.34,1.56,0.64,1)_0.2s_both]">
+      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-4xl">
         👍
       </div>
       <h2 className="font-heading text-3xl font-extrabold text-navy mb-3">
@@ -58,9 +58,20 @@ export function StepSuccess({ onComplete }: StepSuccessProps) {
         ))}
       </div>
 
+      <div className="mb-6 rounded-lg border border-teal/30 bg-teal/5 px-5 py-4 text-left">
+        <p className="text-sm font-semibold text-navy">
+          Your Logismos advisor is ready
+        </p>
+        <p className="mt-1 text-sm text-navy-muted">
+          Plan 3 meals on the dashboard and Logismos will start giving you
+          personalised cook-or-eat-out recommendations — and reward you with
+          LoavishPoints for every smart decision.
+        </p>
+      </div>
+
       <button
         onClick={handleContinue}
-        className="w-full py-4 rounded-[14px] bg-teal text-white font-heading font-bold text-base hover:-translate-y-px transition-all"
+        className="w-full rounded-lg bg-teal py-4 text-base font-bold text-white transition-colors duration-150 hover:bg-teal/90"
       >
         Go to my dashboard →
       </button>

@@ -1,4 +1,5 @@
 import { scaleQuantity } from "@/lib/scaling";
+import { computeBasketPricing, resolveIngredientPricing } from "@/lib/pricing-engine-adapter";
 import { RETAILERS } from "@/models/retailer";
 import type {
   Ingredient,
@@ -81,6 +82,13 @@ export function generateShoppingList(
     },
     {} as Record<RetailerId, boolean>,
   );
+  const groupedByRetailer = retailerIds.reduce(
+    (acc, retailerId) => {
+      acc[retailerId] = [];
+      return acc;
+    },
+    {} as Record<RetailerId, ShoppingList["items"]>,
+  );
 
   const items: ShoppingList["items"] = [];
 
@@ -89,21 +97,8 @@ export function generateShoppingList(
     if (!ingredient) continue;
 
     const packsNeeded = Math.ceil(totalQuantityNeeded / ingredient.storageQuantity);
-
-    const offers = user.preferredRetailers
-      .map((retailerId) => {
-        const price = pricesByKey.get(keyForPrice(ingredientId, retailerId));
-        if (!price) return null;
-
-        return {
-          retailerId,
-          pricePence: price.pricePerStorageUnit * packsNeeded,
-        };
-      })
-      .filter((offer): offer is NonNullable<typeof offer> => Boolean(offer))
-      .sort((a, b) => a.pricePence - b.pricePence);
-
-    if (offers.length === 0) continue;
+    const ingredientPrices = prices.filter((price) => price.ingredientId === ingredientId);
+    if (ingredientPrices.length === 0) continue;
 
     for (const retailerId of retailerIds) {
       const price = pricesByKey.get(keyForPrice(ingredientId, retailerId));
@@ -115,18 +110,41 @@ export function generateShoppingList(
       retailerTotals[retailerId] += price.pricePerStorageUnit * packsNeeded;
     }
 
-    const cheapest = offers[0];
-    items.push({
-      ingredientId,
-      ingredientName: ingredient.name,
-      category: ingredient.category,
-      totalQuantityNeeded,
-      unit: ingredient.defaultUnit,
-      packsNeeded,
-      cheapestRetailerId: cheapest.retailerId,
-      cheapestPricePence: cheapest.pricePence,
-      alternativeRetailers: offers.slice(1),
-    });
+    try {
+      const priced = resolveIngredientPricing({
+        ingredient,
+        prices: ingredientPrices,
+        preferredRetailers: user.preferredRetailers,
+        loyaltyEnabled: false,
+      });
+
+      const item = {
+        ingredientId,
+        ingredientName: ingredient.name,
+        category: ingredient.category,
+        totalQuantityNeeded,
+        unit: ingredient.defaultUnit,
+        packsNeeded,
+        cheapestRetailerId: priced.retailerId,
+        cheapestPricePence: priced.pricePence * packsNeeded,
+        matchLabel: priced.matchLabel,
+        productUrl: priced.productUrl,
+        substituteSuggestion:
+          priced.matchLabel === "substitute"
+            ? `Swap to ${priced.chosenProductName}`
+            : null,
+        alternativeRetailers: priced.alternativeOptions.map((option) => ({
+          retailerId: option.retailerId,
+          pricePence: option.pricePence * packsNeeded,
+          productUrl: option.productUrl,
+        })),
+      };
+
+      groupedByRetailer[priced.retailerId].push(item);
+      items.push(item);
+    } catch {
+      continue;
+    }
   }
 
   items.sort((a, b) => {
@@ -153,6 +171,29 @@ export function generateShoppingList(
       ? Math.min(...viableSingleRetailerTotals)
       : totalPence;
 
+  const basketMeal: Meal = {
+    id: "shopping-basket",
+    name: "Shopping Basket",
+    emoji: "🛒",
+    type: "dinner",
+    prepTimeMinutes: 0,
+    dietaryTags: [],
+    basePortions: 1,
+    ingredients: items.map((item) => ({
+      ingredientId: item.ingredientId,
+      quantity: item.totalQuantityNeeded,
+      unit: item.unit,
+    })),
+  };
+
+  const basketPricing = computeBasketPricing({
+    meals: [basketMeal],
+    ingredients,
+    prices,
+    retailerIds: user.preferredRetailers.length > 0 ? user.preferredRetailers : retailerIds,
+    loyaltyPrefs: {},
+  });
+
   return {
     id: generateId("shopping"),
     weekPlanId: weekPlan.id,
@@ -162,5 +203,16 @@ export function generateShoppingList(
     totalPence,
     totalByRetailer,
     estimatedSavingPence: Math.max(0, bestSingleRetailerTotal - totalPence),
+    groupedByRetailer: groupedByRetailer as Record<RetailerId, ShoppingList["items"]>,
+    cheapestSingleRetailer: {
+      retailerId: basketPricing.singleRetailer.retailerId,
+      totalPence: basketPricing.singleRetailer.totalCostPence,
+      explanation: basketPricing.singleRetailer.explanation,
+    },
+    cheapestMixedRetailer: {
+      totalPence: basketPricing.mixedRetailer.totalCostPence,
+      retailerBreakdown: basketPricing.mixedRetailer.breakdown,
+      explanation: basketPricing.mixedRetailer.explanation,
+    },
   };
 }

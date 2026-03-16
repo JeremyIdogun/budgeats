@@ -19,7 +19,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@loavish/pricing-engine": ["./packages/pricing-engine/src/index.ts"],
+      "@loavish/matching-engine": ["./packages/matching-engine/src/index.ts"],
+      "@loavish/logismos": ["./packages/logismos/src/index.ts"]
     }
   },
   "include": [
@@ -30,5 +33,9 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "packages/**",
+    "scripts/**"
+  ]
 }

@@ -19,6 +19,7 @@ import type {
   UserProfile,
   WeekPlan,
 } from "@/models";
+import type { EnergyLevel, LogismosRecommendation } from "@/models/logismos";
 
 export interface BudgeAtsState {
   user: UserProfile | null;
@@ -26,6 +27,16 @@ export interface BudgeAtsState {
   meals: Meal[];
   ingredients: Ingredient[];
   prices: IngredientPrice[];
+
+  // Logismos state
+  currentRecommendation: LogismosRecommendation | null;
+  energyLevel: EnergyLevel | null;
+  loavishPoints: number;
+  logismosScore: number | null;
+  streakDays: number;
+
+  // Weekly budget nudge
+  budgetNudgeDismissedForWeek: string | null; // weekStartDate of last dismissed nudge
 
   setUser: (user: UserProfile) => void;
   setCurrentWeekPlan: (weekPlan: WeekPlan | null) => void;
@@ -35,6 +46,18 @@ export interface BudgeAtsState {
   addPlannedMeal: (dayIndex: number, mealType: MealType, plannedMeal: PlannedMeal) => void;
   removePlannedMeal: (dayIndex: number, mealType: MealType) => void;
   shiftWeek: (direction: 1 | -1) => void;
+
+  // Logismos actions
+  setRecommendation: (rec: LogismosRecommendation | null) => void;
+  setEnergyLevel: (level: EnergyLevel | null) => void;
+  acceptRecommendation: () => void;
+  dismissRecommendation: () => void;
+  addPoints: (points: number) => void;
+  setLogismosScore: (score: number | null) => void;
+
+  // Weekly budget actions
+  setWeekBudgetOverride: (pence: number) => void;
+  dismissBudgetNudge: (weekStartDate: string) => void;
 }
 
 const storage = createJSONStorage(() => {
@@ -65,6 +88,16 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
       ingredients: ingredientsData as Ingredient[],
       prices: pricesData as IngredientPrice[],
 
+      // Logismos initial state
+      currentRecommendation: null,
+      energyLevel: null,
+      loavishPoints: 0,
+      logismosScore: null,
+      streakDays: 0,
+
+      // Weekly budget nudge
+      budgetNudgeDismissedForWeek: null,
+
       setUser: (user) => set({ user }),
       setCurrentWeekPlan: (currentWeekPlan) => set({ currentWeekPlan }),
       setMeals: (meals) => set({ meals }),
@@ -94,6 +127,24 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
             currentWeekPlan: shiftWeekPlan(basePlan, direction),
           };
         }),
+
+      // Logismos actions
+      setRecommendation: (rec) => set({ currentRecommendation: rec }),
+      setEnergyLevel: (level) => set({ energyLevel: level }),
+      acceptRecommendation: () => set({ currentRecommendation: null }),
+      dismissRecommendation: () => set({ currentRecommendation: null }),
+      addPoints: (points) => set((state) => ({ loavishPoints: state.loavishPoints + points })),
+      setLogismosScore: (score) => set({ logismosScore: score }),
+
+      // Weekly budget actions
+      setWeekBudgetOverride: (pence) =>
+        set((state) => {
+          const weekPlan = ensureWeekPlan(state);
+          return {
+            currentWeekPlan: { ...weekPlan, budgetOverridePence: pence, updatedAt: new Date().toISOString() },
+          };
+        }),
+      dismissBudgetNudge: (weekStartDate) => set({ budgetNudgeDismissedForWeek: weekStartDate }),
     }),
     {
       name: "budgeats-storage",
@@ -101,6 +152,11 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
       partialize: (state) => ({
         user: state.user,
         currentWeekPlan: state.currentWeekPlan,
+        loavishPoints: state.loavishPoints,
+        logismosScore: state.logismosScore,
+        streakDays: state.streakDays,
+        energyLevel: state.energyLevel,
+        budgetNudgeDismissedForWeek: state.budgetNudgeDismissedForWeek,
       }),
     },
   ),

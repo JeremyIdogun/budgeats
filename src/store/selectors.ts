@@ -8,6 +8,8 @@ import { generateShoppingList } from "@/lib/shopping";
 import type { DayPlan, RetailerId } from "@/models";
 import type { BudgeAtsState } from "@/store";
 
+const EMPTY_WASTE_RISK_INGREDIENT_IDS: string[] = [];
+
 export const selectWeekSpendPence = (state: BudgeAtsState): number => {
   if (!state.user || !state.currentWeekPlan) return 0;
 
@@ -20,16 +22,22 @@ export const selectWeekSpendPence = (state: BudgeAtsState): number => {
   );
 };
 
+// Returns this week's budget: override if set, otherwise profile default
+export const selectEffectiveWeeklyBudgetPence = (state: BudgeAtsState): number => {
+  return state.currentWeekPlan?.budgetOverridePence ?? state.user?.budget.amount ?? 0;
+};
+
 export const selectBudgetRemainingPence = (state: BudgeAtsState): number => {
   if (!state.user) return 0;
   const spent = selectWeekSpendPence(state);
-  return deriveBudgetRemainingPence(state.user.budget.amount, spent);
+  return deriveBudgetRemainingPence(selectEffectiveWeeklyBudgetPence(state), spent);
 };
 
 export const selectBudgetUtilisationPct = (state: BudgeAtsState): number => {
-  if (!state.user) return 0;
+  const budget = selectEffectiveWeeklyBudgetPence(state);
+  if (budget <= 0) return 0;
   const spent = selectWeekSpendPence(state);
-  return deriveBudgetUtilisationPct(state.user.budget.amount, spent);
+  return deriveBudgetUtilisationPct(budget, spent);
 };
 
 export const selectCheapestRetailer = (state: BudgeAtsState): RetailerId | null => {
@@ -67,11 +75,23 @@ export const selectTodaysMeals = (state: BudgeAtsState): DayPlan => {
   return todayIndex >= 0 ? (state.currentWeekPlan.days[todayIndex] ?? {}) : {};
 };
 
+export const selectDaysRemainingInWeek = (): number => {
+  const today = new Date().getDay(); // 0=Sun, week starts on Sunday
+  return Math.max(1, 7 - today);
+};
+
+export const selectWasteRiskIngredientIds = (state: BudgeAtsState): string[] => {
+  // Phase I stub: return empty array
+  // Phase II: compare shopping list purchase dates against current date
+  void state;
+  return EMPTY_WASTE_RISK_INGREDIENT_IDS;
+};
+
 export const selectDashboardAlertState = (
   state: BudgeAtsState,
 ): "under-planned" | "on-track" | "over-budget" => {
   const spent = selectWeekSpendPence(state);
-  const budget = state.user?.budget.amount ?? 0;
+  const budget = selectEffectiveWeeklyBudgetPence(state);
   const count = selectPlannedMealCount(state);
   if (budget > 0 && spent > budget) return "over-budget";
   if (count < 14) return "under-planned";

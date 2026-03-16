@@ -346,18 +346,18 @@ export function SettingsClient({
         <AppNav />
 
         <section className="mb-4">
-          <h1 className="text-2xl font-semibold text-navy md:text-3xl">Settings</h1>
+          <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Settings</h1>
           <p className="text-sm text-navy-muted">Update your profile preferences.</p>
         </section>
 
         {error && (
-          <div className="mb-4 rounded-xl border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
+          <div className="mb-4 rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
             {error}
           </div>
         )}
 
         <div className="space-y-4">
-          <section className="rounded-2xl border border-cream-dark bg-white p-5">
+          <section className="rounded-lg border border-cream-dark bg-white p-5">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">Budget</h2>
             <div className="mt-4 text-center">
               <div className="font-heading text-5xl font-extrabold text-navy tracking-tight">
@@ -392,19 +392,19 @@ export function SettingsClient({
                 step={1}
                 value={budget}
                 onChange={(event) => setBudget(parseInt(event.target.value, 10))}
-                className="mt-2 w-full rounded-xl border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                className="mt-2 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition-colors duration-150 focus:border-navy/30"
               />
             </label>
 
-            <div className="mt-4 flex w-fit gap-1 rounded-xl bg-cream p-1">
+            <div className="mt-4 flex w-fit gap-1 rounded-lg bg-cream p-1">
               {(["weekly", "monthly"] as BudgetPeriod[]).map((period) => (
                 <button
                   key={period}
                   onClick={() => setBudgetPeriod(period)}
-                  className={`rounded-[9px] px-5 py-2 text-sm font-medium transition-all ${
+                  className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors duration-150 ${
                     budgetPeriod === period
-                      ? "bg-white text-navy shadow-sm"
-                      : "text-navy-muted"
+                      ? "border border-cream-dark bg-white text-navy"
+                      : "text-navy-muted hover:text-navy"
                   }`}
                 >
                   {period.charAt(0).toUpperCase() + period.slice(1)}
@@ -424,14 +424,14 @@ export function SettingsClient({
             </div>
           </section>
 
-          <section className="rounded-2xl border border-cream-dark bg-white p-5">
+          <section className="rounded-lg border border-cream-dark bg-white p-5">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">Household</h2>
             <div className="mt-4 grid grid-cols-5 gap-2">
               {HOUSEHOLD_OPTIONS.map(({ size, label }) => (
                 <button
                   key={size}
                   onClick={() => setHousehold(size)}
-                  className={`aspect-square rounded-2xl border-2 text-xl font-bold transition-all ${
+                  className={`aspect-square rounded-lg border-2 text-xl font-bold transition-colors duration-150 ${
                     household === size
                       ? "border-teal bg-teal/10 text-navy"
                       : "border-cream-dark bg-white text-navy-muted hover:border-teal/40"
@@ -455,7 +455,7 @@ export function SettingsClient({
             </div>
           </section>
 
-          <section className="rounded-2xl border border-cream-dark bg-white p-5">
+          <section className="rounded-lg border border-cream-dark bg-white p-5">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">
               Dietary Preferences
             </h2>
@@ -466,7 +466,7 @@ export function SettingsClient({
                   <button
                     key={id}
                     onClick={() => toggleDietary(id)}
-                    className={`rounded-full border-2 px-5 py-3 text-sm font-medium transition-all ${
+                    className={`rounded-full border-2 px-5 py-3 text-sm font-medium transition-colors duration-150 ${
                       selected
                         ? "border-coral bg-coral/10 text-navy"
                         : "border-cream-dark bg-white text-navy-muted hover:border-coral/40"
@@ -479,7 +479,7 @@ export function SettingsClient({
               })}
               <button
                 onClick={() => toggleDietary("none")}
-                className={`rounded-full border-2 px-5 py-3 text-sm font-medium transition-all ${
+                className={`rounded-full border-2 px-5 py-3 text-sm font-medium transition-colors duration-150 ${
                   dietary.includes("none")
                     ? "border-navy-muted bg-cream text-navy"
                     : "border-cream-dark bg-white text-navy-muted hover:border-navy-muted/40"
@@ -507,7 +507,7 @@ export function SettingsClient({
             </div>
           </section>
 
-          <section className="rounded-2xl border border-cream-dark bg-white p-5">
+          <section className="rounded-lg border border-cream-dark bg-white p-5">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">
               Preferred Retailers
             </h2>
@@ -518,14 +518,14 @@ export function SettingsClient({
                   <button
                     key={id}
                     onClick={() => toggleRetailer(id as RetailerId)}
-                    className={`rounded-2xl border-2 p-4 text-sm font-medium transition-all ${
+                    className={`rounded-lg border-2 p-4 text-sm font-medium transition-colors duration-150 ${
                       isSelected
                         ? "border-teal bg-teal/10 text-navy"
                         : "border-cream-dark bg-white text-navy-muted hover:border-teal/40"
                     }`}
                   >
                     <div
-                      className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-[10px] text-lg font-extrabold"
+                      className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-lg text-lg font-extrabold"
                       style={{ background: bg, color }}
                     >
                       {initial}
@@ -552,7 +552,7 @@ export function SettingsClient({
             </div>
           </section>
 
-          <section className="rounded-2xl border border-cream-dark bg-white p-5">
+          <section className="rounded-lg border border-cream-dark bg-white p-5">
             <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-navy-muted">Account</h2>
             <p className="mt-2 text-sm text-navy">
               Email: <span className="font-medium">{profileEmail ?? "Unknown"}</span>

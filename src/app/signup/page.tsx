@@ -145,16 +145,16 @@ export default function SignupPage() {
     <main className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
       <div className="mx-auto w-full max-w-md">
         <header className="mb-8 flex justify-center">
-          <BrandLogo href="/" />
+          <BrandLogo href="/" variant="wordmark" />
         </header>
 
-        <section className="rounded-2xl border border-cream-dark bg-white p-6 md:p-8">
+        <section className="rounded-lg border border-cream-dark bg-white p-6 md:p-8">
           {confirmationSent ? (
             <div className="py-3 text-center">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-teal/15 text-3xl">
                 ✉️
               </div>
-              <h1 className="text-2xl font-semibold text-navy">Check your inbox</h1>
+              <h1 className="text-2xl font-extrabold text-navy">Check your inbox</h1>
               <p className="mt-2 text-sm leading-relaxed text-navy-muted">
                 We&apos;ve sent a confirmation link to <strong>{email}</strong>. Click
                 it to activate your account and you&apos;ll be taken straight to
@@ -170,50 +170,10 @@ export default function SignupPage() {
             </div>
           ) : (
             <>
-              <h1 className="text-2xl font-semibold text-navy">Create account</h1>
+              <h1 className="text-2xl font-extrabold text-navy">Create account</h1>
               <p className="mt-1 text-sm text-navy-muted">
                 Sign up to begin your onboarding and meal planning setup.
               </p>
-
-              <div className="mt-6 space-y-2.5">
-                <button
-                  type="button"
-                  onClick={() => handleOAuthSignUp("google")}
-                  disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <GoogleIcon />
-                  {oauthLoading === "google"
-                    ? "Redirecting..."
-                    : "Sign up with Google"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOAuthSignUp("facebook")}
-                  disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <FacebookIcon />
-                  {oauthLoading === "facebook"
-                    ? "Redirecting..."
-                    : "Sign up with Facebook"}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleInstagramClick}
-                  disabled={loading || oauthLoading !== null}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-cream-dark bg-white px-4 py-3 text-sm font-semibold text-navy transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <InstagramIcon />
-                  Sign up with Instagram
-                </button>
-              </div>
-
-              <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.12em] text-navy-muted">
-                <span className="h-px flex-1 bg-cream-dark" />
-                <span>or</span>
-                <span className="h-px flex-1 bg-cream-dark" />
-              </div>
 
               <form onSubmit={handleSignUp} className="mt-6 space-y-4">
                 <label className="block text-sm font-medium text-navy">
@@ -223,7 +183,7 @@ export default function SignupPage() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     required
-                    className="mt-1 w-full rounded-xl border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                    className="mt-1 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
                   />
                 </label>
 
@@ -235,7 +195,7 @@ export default function SignupPage() {
                     onChange={(event) => setPassword(event.target.value)}
                     required
                     minLength={6}
-                    className="mt-1 w-full rounded-xl border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                    className="mt-1 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
                   />
                 </label>
 
@@ -248,13 +208,53 @@ export default function SignupPage() {
                 <button
                   type="submit"
                   disabled={loading || oauthLoading !== null}
-                  className="w-full rounded-xl bg-navy px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-lg bg-navy px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading ? "Creating account..." : "Sign up"}
                 </button>
               </form>
 
-              <p className="mt-4 text-center text-sm text-navy-muted">
+              <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.12em] text-navy-muted">
+                <span className="h-px flex-1 bg-cream-dark" />
+                <span>or continue with</span>
+                <span className="h-px flex-1 bg-cream-dark" />
+              </div>
+
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleOAuthSignUp("google")}
+                  disabled={loading || oauthLoading !== null}
+                  title="Sign up with Google"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-cream-dark bg-white transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <GoogleIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleOAuthSignUp("facebook")}
+                  disabled={loading || oauthLoading !== null}
+                  title="Sign up with Facebook"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-cream-dark bg-white transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <FacebookIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleInstagramClick}
+                  disabled={loading || oauthLoading !== null}
+                  title="Sign up with Instagram"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-cream-dark bg-white transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <InstagramIcon />
+                </button>
+              </div>
+
+              {oauthLoading && (
+                <p className="mt-3 text-center text-xs text-navy-muted">Redirecting...</p>
+              )}
+
+              <p className="mt-5 text-center text-sm text-navy-muted">
                 Already have an account?{" "}
                 <Link href="/login" className="font-semibold text-navy hover:underline">
                   Log in

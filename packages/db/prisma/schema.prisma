@@ -1,0 +1,375 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Retailer {
+  id              String                  @id @default(uuid()) @db.Uuid
+  slug            String                  @unique
+  name            String
+  status          String                  @default("active")
+  loyalty_scheme  String                  @default("none")
+  country_code    String                  @default("GB")
+  created_at      DateTime                @default(now())
+  updated_at      DateTime                @updatedAt
+  contexts        RetailerContext[]
+  products        RetailerProduct[]
+  prices          RetailerPrice[]
+  normalized      NormalizedPrice[]
+  ingredient_snaps IngredientPriceSnapshot[]
+  meal_cost_snaps MealCostSnapshot[]
+  preferences     UserRetailerPreference[]
+  alerts          PriceAlert[]
+  ingestion_runs  IngestionRun[]
+
+  @@map("retailers")
+}
+
+model IngestionRun {
+  id               String   @id @default(uuid()) @db.Uuid
+  retailer_id      String   @db.Uuid
+  started_at       DateTime
+  completed_at     DateTime?
+  status           String
+  products_scraped Int      @default(0)
+  errors_json      Json?
+  created_at       DateTime @default(now())
+  retailer         Retailer @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+
+  @@index([retailer_id, started_at])
+  @@map("ingestion_runs")
+}
+
+model RetailerContext {
+  id                    String    @id @default(uuid()) @db.Uuid
+  retailer_id           String    @db.Uuid
+  context_key           String
+  context_json          Json
+  postcode              String?
+  store_id              String?
+  loyalty_enabled       Boolean   @default(false)
+  source_snapshot_url   String?
+  source_payload_sha256 String?
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
+  retailer              Retailer  @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+
+  @@unique([retailer_id, context_key])
+  @@index([retailer_id, updated_at])
+  @@map("retailer_context")
+}
+
+model RetailerProduct {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  retailer_id           String                    @db.Uuid
+  retailer_product_id   String
+  name                  String
+  brand                 String?
+  category              String?
+  pack_size_raw         String?
+  normalized_quantity   Float?
+  normalized_unit       String?
+  image_url             String?
+  product_url           String
+  source_payload_sha256 String?
+  scraped_at            DateTime                  @default(now())
+  created_at            DateTime                  @default(now())
+  updated_at            DateTime                  @updatedAt
+  retailer              Retailer                  @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+  prices                RetailerPrice[]
+  matches               ProductMatch[]
+  normalized            NormalizedPrice[]
+  ingredient_snaps      IngredientPriceSnapshot[]
+
+  @@unique([retailer_id, retailer_product_id])
+  @@index([retailer_id, category])
+  @@map("retailer_products")
+}
+
+model RetailerPrice {
+  id                    String           @id @default(uuid()) @db.Uuid
+  retailer_id           String           @db.Uuid
+  retailer_product_id   String           @db.Uuid
+  currency              String           @default("GBP")
+  base_price_pence      Int
+  promo_price_pence     Int?
+  loyalty_price_pence   Int?
+  loyalty_scheme        String?
+  promo_label           String?
+  valid_from            DateTime?
+  valid_to              DateTime?
+  observed_at           DateTime         @default(now())
+  source_snapshot_url   String?
+  source_payload_sha256 String?
+  retailer              Retailer         @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+  product               RetailerProduct  @relation(fields: [retailer_product_id], references: [id], onDelete: Cascade)
+  normalized            NormalizedPrice[]
+
+  @@index([retailer_id, observed_at])
+  @@index([retailer_product_id, observed_at])
+  @@map("retailer_prices")
+}
+
+model CanonicalIngredient {
+  id                   String                    @id @default(uuid()) @db.Uuid
+  slug                 String                    @unique
+  name                 String
+  category             String
+  default_unit         String
+  waste_half_life_days Int
+  perishability_tier   String
+  created_at           DateTime                  @default(now())
+  updated_at           DateTime                  @updatedAt
+  canonical_products   CanonicalProduct[]
+  meal_ingredients     MealIngredient[]
+  ingredient_snaps     IngredientPriceSnapshot[]
+  normalized           NormalizedPrice[]
+  source_substitutions SubstitutionRule[]        @relation("SourceIngredient")
+  target_substitutions SubstitutionRule[]        @relation("TargetIngredient")
+  alerts               PriceAlert[]
+  product_matches      ProductMatch[]
+
+  @@index([category, name])
+  @@map("canonical_ingredients")
+}
+
+model CanonicalProduct {
+  id                     String            @id @default(uuid()) @db.Uuid
+  canonical_ingredient_id String           @db.Uuid
+  name                   String
+  brand                  String?
+  form                   String?
+  quality_tier           String?
+  pack_size_raw          String?
+  normalized_quantity    Float?
+  normalized_unit        String?
+  created_at             DateTime          @default(now())
+  updated_at             DateTime          @updatedAt
+  ingredient             CanonicalIngredient @relation(fields: [canonical_ingredient_id], references: [id], onDelete: Cascade)
+  product_matches        ProductMatch[]
+  normalized             NormalizedPrice[]
+
+  @@index([canonical_ingredient_id, quality_tier])
+  @@map("canonical_products")
+}
+
+model ProductMatch {
+  id                     String              @id @default(uuid()) @db.Uuid
+  retailer_product_id    String              @db.Uuid
+  canonical_product_id   String?             @db.Uuid
+  canonical_ingredient_id String?            @db.Uuid
+  match_label            String
+  match_score            Float
+  status                 String
+  explanation            String
+  matched_at             DateTime            @default(now())
+  reviewed_at            DateTime?
+  reviewed_by            String?
+  created_at             DateTime            @default(now())
+  updated_at             DateTime            @updatedAt
+  retailer_product       RetailerProduct     @relation(fields: [retailer_product_id], references: [id], onDelete: Cascade)
+  canonical_product      CanonicalProduct?   @relation(fields: [canonical_product_id], references: [id], onDelete: SetNull)
+  canonical_ingredient   CanonicalIngredient? @relation(fields: [canonical_ingredient_id], references: [id], onDelete: SetNull)
+
+  @@index([status, match_score])
+  @@index([retailer_product_id, matched_at])
+  @@map("product_matches")
+}
+
+model NormalizedPrice {
+  id                     String              @id @default(uuid()) @db.Uuid
+  retailer_id            String              @db.Uuid
+  retailer_product_id    String              @db.Uuid
+  retailer_price_id      String?             @db.Uuid
+  canonical_product_id   String?             @db.Uuid
+  canonical_ingredient_id String?            @db.Uuid
+  effective_price_pence  Int
+  unit_price_pence_100   Int
+  quantity_base_unit     Float
+  base_unit              String
+  match_label            String
+  freshness_status       String
+  explanation            String
+  computed_at            DateTime            @default(now())
+  retailer               Retailer            @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+  retailer_product       RetailerProduct     @relation(fields: [retailer_product_id], references: [id], onDelete: Cascade)
+  retailer_price         RetailerPrice?      @relation(fields: [retailer_price_id], references: [id], onDelete: SetNull)
+  canonical_product      CanonicalProduct?   @relation(fields: [canonical_product_id], references: [id], onDelete: SetNull)
+  canonical_ingredient   CanonicalIngredient? @relation(fields: [canonical_ingredient_id], references: [id], onDelete: SetNull)
+  ingredient_snaps       IngredientPriceSnapshot[]
+
+  @@index([canonical_ingredient_id, retailer_id, computed_at])
+  @@index([retailer_id, freshness_status])
+  @@map("normalized_prices")
+}
+
+model IngredientPriceSnapshot {
+  id                     String               @id @default(uuid()) @db.Uuid
+  user_id                String
+  week_start_date        DateTime?
+  retailer_id            String               @db.Uuid
+  canonical_ingredient_id String              @db.Uuid
+  retailer_product_id    String?              @db.Uuid
+  normalized_price_id    String?              @db.Uuid
+  price_pence            Int
+  match_label            String
+  freshness_status       String
+  explanation            String
+  snapped_at             DateTime             @default(now())
+  retailer               Retailer             @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+  ingredient             CanonicalIngredient  @relation(fields: [canonical_ingredient_id], references: [id], onDelete: Cascade)
+  retailer_product       RetailerProduct?     @relation(fields: [retailer_product_id], references: [id], onDelete: SetNull)
+  normalized_price       NormalizedPrice?     @relation(fields: [normalized_price_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id, snapped_at])
+  @@index([canonical_ingredient_id, retailer_id, snapped_at])
+  @@map("ingredient_price_snapshots")
+}
+
+model Meal {
+  id                String             @id @default(uuid()) @db.Uuid
+  slug              String             @unique
+  name              String
+  meal_type         String
+  prep_time_minutes Int
+  instructions      String?
+  created_at        DateTime           @default(now())
+  updated_at        DateTime           @updatedAt
+  ingredients       MealIngredient[]
+  cost_snapshots    MealCostSnapshot[]
+  decisions         DecisionLog[]
+
+  @@index([meal_type, name])
+  @@map("meals")
+}
+
+model MealIngredient {
+  id                     String              @id @default(uuid()) @db.Uuid
+  meal_id                String              @db.Uuid
+  canonical_ingredient_id String             @db.Uuid
+  quantity               Float
+  unit                   String
+  optional               Boolean             @default(false)
+  created_at             DateTime            @default(now())
+  updated_at             DateTime            @updatedAt
+  meal                   Meal                @relation(fields: [meal_id], references: [id], onDelete: Cascade)
+  ingredient             CanonicalIngredient @relation(fields: [canonical_ingredient_id], references: [id], onDelete: Cascade)
+
+  @@index([meal_id])
+  @@index([canonical_ingredient_id])
+  @@map("meal_ingredients")
+}
+
+model MealCostSnapshot {
+  id                      String   @id @default(uuid()) @db.Uuid
+  user_id                 String
+  week_start_date         DateTime?
+  meal_id                 String   @db.Uuid
+  retailer_id             String   @db.Uuid
+  loyalty_enabled         Boolean  @default(false)
+  total_cost_pence        Int
+  waste_penalty_pence     Int      @default(0)
+  per_ingredient_costs_json Json
+  explanation             String
+  calculated_at           DateTime @default(now())
+  created_at              DateTime @default(now())
+  meal                    Meal     @relation(fields: [meal_id], references: [id], onDelete: Cascade)
+  retailer                Retailer @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, created_at])
+  @@index([meal_id, retailer_id, calculated_at])
+  @@map("meal_cost_snapshots")
+}
+
+model SubstitutionRule {
+  id                      String              @id @default(uuid()) @db.Uuid
+  source_ingredient_id    String              @db.Uuid
+  substitute_ingredient_id String             @db.Uuid
+  quality_tier            String
+  reason                  String
+  rank                    Int                 @default(1)
+  is_active               Boolean             @default(true)
+  created_at              DateTime            @default(now())
+  updated_at              DateTime            @updatedAt
+  source_ingredient       CanonicalIngredient @relation("SourceIngredient", fields: [source_ingredient_id], references: [id], onDelete: Cascade)
+  substitute_ingredient   CanonicalIngredient @relation("TargetIngredient", fields: [substitute_ingredient_id], references: [id], onDelete: Cascade)
+
+  @@unique([source_ingredient_id, substitute_ingredient_id])
+  @@index([source_ingredient_id, is_active])
+  @@map("substitution_rules")
+}
+
+model UserRetailerPreference {
+  id              String    @id @default(uuid()) @db.Uuid
+  user_id         String
+  retailer_id     String    @db.Uuid
+  enabled         Boolean   @default(true)
+  loyalty_enabled Boolean   @default(false)
+  postcode        String?
+  is_primary      Boolean   @default(false)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  retailer        Retailer  @relation(fields: [retailer_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, retailer_id])
+  @@index([user_id, enabled])
+  @@map("user_retailer_preferences")
+}
+
+model PriceAlert {
+  id                       String               @id @default(uuid()) @db.Uuid
+  user_id                  String
+  canonical_ingredient_id  String               @db.Uuid
+  retailer_id              String?              @db.Uuid
+  threshold_price_pence    Int
+  last_notified_price_pence Int?
+  is_active                Boolean              @default(true)
+  triggered_at             DateTime?
+  created_at               DateTime             @default(now())
+  updated_at               DateTime             @updatedAt
+  ingredient               CanonicalIngredient  @relation(fields: [canonical_ingredient_id], references: [id], onDelete: Cascade)
+  retailer                 Retailer?            @relation(fields: [retailer_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id, is_active, created_at])
+  @@index([canonical_ingredient_id, retailer_id])
+  @@map("price_alerts")
+}
+
+model DecisionLog {
+  id                  String        @id @default(uuid()) @db.Uuid
+  user_id             String
+  meal_id             String?       @db.Uuid
+  recommendation_type String
+  recommendation_json Json
+  explanation         String
+  accepted            Boolean?
+  points_awarded      Int?
+  guardrail_triggered String?
+  created_at          DateTime      @default(now())
+  responded_at        DateTime?
+  meal                Meal?         @relation(fields: [meal_id], references: [id], onDelete: SetNull)
+  points_entries      PointsLedger[]
+
+  @@index([user_id, created_at])
+  @@index([accepted, created_at])
+  @@map("decision_log")
+}
+
+model PointsLedger {
+  id             String      @id @default(uuid()) @db.Uuid
+  user_id        String
+  decision_log_id String?    @db.Uuid
+  event_type     String
+  points_awarded Int
+  explanation    String?
+  created_at     DateTime    @default(now())
+  decision_log   DecisionLog? @relation(fields: [decision_log_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id, created_at])
+  @@index([event_type, created_at])
+  @@map("points_ledger")
+}
