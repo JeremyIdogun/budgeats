@@ -34,6 +34,7 @@ export interface BudgeAtsState {
   loavishPoints: number;
   logismosScore: number | null;
   streakDays: number;
+  pantryItems: Record<string, boolean>;
 
   // Weekly budget nudge
   budgetNudgeDismissedForWeek: string | null; // weekStartDate of last dismissed nudge
@@ -54,6 +55,8 @@ export interface BudgeAtsState {
   dismissRecommendation: () => void;
   addPoints: (points: number) => void;
   setLogismosScore: (score: number | null) => void;
+  togglePantryItem: (ingredientId: string) => void;
+  setPantryItem: (ingredientId: string, inStock: boolean) => void;
 
   // Weekly budget actions
   setWeekBudgetOverride: (pence: number) => void;
@@ -94,6 +97,7 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
       loavishPoints: 0,
       logismosScore: null,
       streakDays: 0,
+      pantryItems: {},
 
       // Weekly budget nudge
       budgetNudgeDismissedForWeek: null,
@@ -135,6 +139,20 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
       dismissRecommendation: () => set({ currentRecommendation: null }),
       addPoints: (points) => set((state) => ({ loavishPoints: state.loavishPoints + points })),
       setLogismosScore: (score) => set({ logismosScore: score }),
+      togglePantryItem: (ingredientId) =>
+        set((state) => ({
+          pantryItems: {
+            ...state.pantryItems,
+            [ingredientId]: !state.pantryItems[ingredientId],
+          },
+        })),
+      setPantryItem: (ingredientId, inStock) =>
+        set((state) => ({
+          pantryItems: {
+            ...state.pantryItems,
+            [ingredientId]: inStock,
+          },
+        })),
 
       // Weekly budget actions
       setWeekBudgetOverride: (pence) =>
@@ -156,6 +174,7 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
         logismosScore: state.logismosScore,
         streakDays: state.streakDays,
         energyLevel: state.energyLevel,
+        pantryItems: state.pantryItems,
         budgetNudgeDismissedForWeek: state.budgetNudgeDismissedForWeek,
       }),
     },

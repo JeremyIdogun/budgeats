@@ -27,6 +27,10 @@ function mealTypeFromHour(hourOfDay: number): "breakfast" | "lunch" | "dinner" {
   return "dinner";
 }
 
+function formatPenceInEngine(pence: number): string {
+  return `£${(pence / 100).toFixed(2)}`;
+}
+
 function toLegacyRecommendation(
   result: ReturnType<typeof runLogismos>,
   input: RecommendationRequestBody,
@@ -37,11 +41,38 @@ function toLegacyRecommendation(
   const savingPence = Math.max(0, eatOutEstimatePence - cookCostPence);
   const now = new Date();
   const expiresAt = new Date(now.getTime() + 60 * 60 * 1000);
+  const confidenceBand: LogismosRecommendation["confidenceBand"] =
+    result.score >= 0.75 ? "high" : result.score >= 0.45 ? "medium" : "low";
+
+  const candidateFactors = [
+    savingPence > 0 ? `Cooking saves ${formatPenceInEngine(savingPence)} vs eating out` : null,
+    input.contextSignals.energyLevel === "low" && result.primaryMeal
+      ? `Low energy: ${result.primaryMeal.meal.prepTimeMinutes}-minute meal`
+      : null,
+    input.contextSignals.wasteRiskIngredients.length > 0 ? "Ingredient expiry risk detected" : null,
+    `${input.contextSignals.daysRemainingInWeek} days left in budget week`,
+    "Recommendation generated from your current context",
+  ].filter((value): value is string => typeof value === "string");
+  const uniqueFactors = Array.from(new Set(candidateFactors));
+  const topFactors: [string, string, string] = [
+    uniqueFactors[0] ?? "Recommendation generated",
+    uniqueFactors[1] ?? "Based on your context",
+    uniqueFactors[2] ?? "Check assumptions below",
+  ];
 
   return {
     type: result.recommendation === "cook" ? "cook" : "eat_out",
     mealId: result.primaryMeal?.meal.id ?? null,
     reason: result.explanation,
+    confidenceBand,
+    topFactors,
+    assumptions: {
+      householdSize: input.householdSize,
+      energyLevel: input.contextSignals.energyLevel,
+      daysRemainingInWeek: input.contextSignals.daysRemainingInWeek,
+      budgetRemainingPence: input.contextSignals.budgetRemainingPence,
+      eatOutBaseline: `ONS estimate: ${mealType} ${formatPenceInEngine(eatOutEstimatePence)}`,
+    },
     cookCostPence,
     eatOutEstimatePence,
     savingPence,

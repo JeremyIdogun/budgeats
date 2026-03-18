@@ -16,6 +16,15 @@ export interface LogismosRecommendation {
   type: RecommendationType;
   mealId: string | null; // null when eat_out
   reason: string; // one-sentence human explanation
+  confidenceBand: "low" | "medium" | "high";
+  topFactors: [string, string, string];
+  assumptions: {
+    householdSize: number;
+    energyLevel: EnergyLevel | null;
+    daysRemainingInWeek: number;
+    budgetRemainingPence: number;
+    eatOutBaseline: string;
+  };
   cookCostPence: number;
   eatOutEstimatePence: number;
   savingPence: number;

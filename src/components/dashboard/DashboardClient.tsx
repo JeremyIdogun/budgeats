@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
+import { identifyUser, trackEvent } from "@/lib/analytics";
 import { deriveBudgetUtilisationPct, deriveMealCostPence } from "@/lib/budget";
 import { generateShoppingList } from "@/lib/shopping";
 import {
@@ -11,7 +12,14 @@ import {
   setPlannerSessionPlan,
   type PlannerPersistState,
 } from "@/lib/planner-persistence";
-import { RETAILERS, type Meal, type RetailerId, type UserProfile, type WeekPlan } from "@/models";
+import {
+  RETAILERS,
+  type DietaryTag,
+  type Meal,
+  type RetailerId,
+  type UserProfile,
+  type WeekPlan,
+} from "@/models";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { useBudgeAtsStore, type BudgeAtsState } from "@/store";
 import {
@@ -233,6 +241,9 @@ export function DashboardClient({
   const [customCost, setCustomCost] = useState("");
   const [customIngredients, setCustomIngredients] = useState("");
   const [customError, setCustomError] = useState<string | null>(null);
+  const [mealSearchQuery, setMealSearchQuery] = useState("");
+  const [activeDietaryFilters, setActiveDietaryFilters] = useState<DietaryTag[]>([]);
+  const identifiedUserRef = useRef<string | null>(null);
 
   const weekDays = useMemo(
     () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
@@ -305,6 +316,17 @@ export function DashboardClient({
     }
   }, [storedUser, effectiveUser, setUser]);
 
+  useEffect(() => {
+    if (!effectiveUser.id) return;
+    if (identifiedUserRef.current === effectiveUser.id) return;
+
+    identifyUser(effectiveUser.id, {
+      household_size: householdSize,
+      preferred_retailers: preferredRetailers,
+    });
+    identifiedUserRef.current = effectiveUser.id;
+  }, [effectiveUser.id, householdSize, preferredRetailers]);
+
   // Keep the session cache up to date on every plan change.
   useEffect(() => {
     setPlannerSessionPlan(weekKey, userId, plan);
@@ -355,6 +377,18 @@ export function DashboardClient({
     [storeMeals],
   );
 
+  const filteredLibraryMeals = useMemo(() => {
+    return dashboardLibraryMeals.filter((meal) => {
+      const matchesSearch =
+        mealSearchQuery.trim() === "" ||
+        meal.name.toLowerCase().includes(mealSearchQuery.toLowerCase());
+      const matchesDiet =
+        activeDietaryFilters.length === 0 ||
+        activeDietaryFilters.every((tag) => meal.dietaryTags.includes(tag));
+      return matchesSearch && matchesDiet;
+    });
+  }, [dashboardLibraryMeals, mealSearchQuery, activeDietaryFilters]);
+
   const ingredientById = useMemo(
     () => new Map(storeIngredients.map((ingredient) => [ingredient.id, ingredient])),
     [storeIngredients],
@@ -363,6 +397,10 @@ export function DashboardClient({
   const libraryMealsById = useMemo(
     () => new Map(dashboardLibraryMeals.map((meal) => [meal.id, meal])),
     [dashboardLibraryMeals],
+  );
+  const filteredLibraryMealIds = useMemo(
+    () => new Set(filteredLibraryMeals.map((meal) => meal.id)),
+    [filteredLibraryMeals],
   );
 
   const libraryDisplayMeals = useMemo<DisplayMeal[]>(() => {
@@ -420,9 +458,15 @@ export function DashboardClient({
   };
 
   const libraryMealsByType: Record<DashboardMealType, DisplayMeal[]> = {
-    breakfast: libraryDisplayMeals.filter((meal) => meal.type === "breakfast"),
-    lunch: libraryDisplayMeals.filter((meal) => meal.type === "lunch"),
-    dinner: libraryDisplayMeals.filter((meal) => meal.type === "dinner"),
+    breakfast: libraryDisplayMeals.filter(
+      (meal) => meal.type === "breakfast" && filteredLibraryMealIds.has(meal.id),
+    ),
+    lunch: libraryDisplayMeals.filter(
+      (meal) => meal.type === "lunch" && filteredLibraryMealIds.has(meal.id),
+    ),
+    dinner: libraryDisplayMeals.filter(
+      (meal) => meal.type === "dinner" && filteredLibraryMealIds.has(meal.id),
+    ),
   };
 
   const allMealsById = useMemo(
@@ -586,6 +630,13 @@ export function DashboardClient({
     .join(", ");
 
   function setMealForSlot(slotKey: string, mealId: string) {
+    if (mealId !== "" && plan[slotKey] !== mealId) {
+      trackEvent("plan_created", {
+        meal_id: mealId,
+        slot_key: slotKey,
+      });
+    }
+
     setPlan((prev) => {
       const next = { ...prev };
       if (!mealId) {
@@ -753,9 +804,48 @@ export function DashboardClient({
 
         {activeTab === "planner" ? (
           <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
-            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[860px] border-separate border-spacing-2">
+            <div>
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Search meals..."
+                  value={mealSearchQuery}
+                  onChange={(e) => setMealSearchQuery(e.target.value)}
+                  className="rounded-lg border border-cream-dark bg-white px-3 py-2 text-sm text-navy outline-none focus:border-navy/30"
+                />
+                {(["vegetarian", "vegan", "halal", "gluten-free", "dairy-free"] as DietaryTag[]).map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() =>
+                      setActiveDietaryFilters((prev) =>
+                        prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+                      )
+                    }
+                    className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                      activeDietaryFilters.includes(tag)
+                        ? "border-teal bg-teal text-white"
+                        : "border-cream-dark bg-white text-navy-muted hover:text-navy"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+                {(mealSearchQuery || activeDietaryFilters.length > 0) && (
+                  <button
+                    onClick={() => {
+                      setMealSearchQuery("");
+                      setActiveDietaryFilters([]);
+                    }}
+                    className="text-xs text-navy-muted underline"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[860px] border-separate border-spacing-2">
                   <thead>
                     <tr>
                       <th className="px-2 py-2 text-left text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
@@ -838,9 +928,10 @@ export function DashboardClient({
                       </tr>
                     ))}
                   </tbody>
-                </table>
-              </div>
-            </section>
+                  </table>
+                </div>
+              </section>
+            </div>
 
             <aside className="space-y-4">
               <div className="rounded-lg border border-cream-dark bg-white p-4">

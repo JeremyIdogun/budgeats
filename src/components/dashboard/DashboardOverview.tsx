@@ -196,35 +196,50 @@ export function DashboardOverview({
             </p>
           </section>
 
-          <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
-            <p className="text-sm font-semibold text-navy">Week summary</p>
-            <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-7">
-              {weekDays.map((date, index) => {
-                const mealCount = Object.values(effectiveWeekPlan.days[index]).filter(Boolean).length;
-                const isToday = todayIndex === index;
+          {plannedMealCount === 0 ? (
+            <section className="rounded-lg border border-cream-dark bg-white p-8 text-center">
+              <p className="text-lg font-semibold text-navy">No meals planned yet</p>
+              <p className="mt-2 text-sm text-navy-muted">
+                Add meals to your weekly plan to see your budget breakdown here.
+              </p>
+              <a
+                href="/planner"
+                className="mt-5 inline-block rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white"
+              >
+                Go to planner →
+              </a>
+            </section>
+          ) : (
+            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
+              <p className="text-sm font-semibold text-navy">Week summary</p>
+              <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-7">
+                {weekDays.map((date, index) => {
+                  const mealCount = Object.values(effectiveWeekPlan.days[index]).filter(Boolean).length;
+                  const isToday = todayIndex === index;
 
-                return (
-                  <Link
-                    key={isoDate(date)}
-                    href="/planner"
-                    className={`rounded-lg border px-3 py-3 transition-colors duration-150 ${
-                      isToday
-                        ? "border-teal bg-teal/5"
-                        : "border-cream-dark bg-cream/40 hover:border-navy/25"
-                    }`}
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-[0.1em] text-navy-muted">
-                      {dayLabel(date)}
-                    </p>
-                    <p className="mt-0.5 text-sm font-semibold text-navy">{dateLabel(date)}</p>
-                    <p className="mt-3 text-xs text-navy-muted">
-                      {mealCount} meal{mealCount === 1 ? "" : "s"}
-                    </p>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
+                  return (
+                    <Link
+                      key={isoDate(date)}
+                      href="/planner"
+                      className={`rounded-lg border px-3 py-3 transition-colors duration-150 ${
+                        isToday
+                          ? "border-teal bg-teal/5"
+                          : "border-cream-dark bg-cream/40 hover:border-navy/25"
+                      }`}
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.1em] text-navy-muted">
+                        {dayLabel(date)}
+                      </p>
+                      <p className="mt-0.5 text-sm font-semibold text-navy">{dateLabel(date)}</p>
+                      <p className="mt-3 text-xs text-navy-muted">
+                        {mealCount} meal{mealCount === 1 ? "" : "s"}
+                      </p>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </div>
 
         {logismosEnabled && plannedMealCount >= 3 && (
