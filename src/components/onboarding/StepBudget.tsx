@@ -1,5 +1,9 @@
 "use client";
 
+import { StepHeader } from "@/components/onboarding/StepHeader";
+import { Button } from "@/components/ui/Button";
+import { FieldLabel } from "@/components/ui/FieldLabel";
+import { Input } from "@/components/ui/Input";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { BudgetPeriod } from "@/types";
 
@@ -18,85 +22,74 @@ export function roundUpToStep(value: number) {
 
 export function StepBudget({ onNext }: Props) {
   const { budget, period, setBudget, setPeriod } = useOnboardingStore();
-  const sliderMax = Math.max(
-    BASE_MAX_BUDGET,
-    roundUpToStep(budget + MAX_BUFFER),
-  );
+  const sliderMax = Math.max(BASE_MAX_BUDGET, roundUpToStep(budget + MAX_BUFFER));
 
   return (
-    <div>
-      <p className="text-xs font-semibold tracking-widest uppercase text-teal mb-3">
-        Step 1 of 4
-      </p>
-      <h1 className="font-heading text-3xl font-extrabold text-navy leading-tight mb-2">
-        What&apos;s your food budget?
-      </h1>
-      <p className="text-navy-muted text-sm leading-relaxed mb-9">
-        We&apos;ll use this to guide your meal planning and flag when you&apos;re
-        on
-        track.
-      </p>
-
-      {/* Budget display */}
-      <div className="mb-8 bg-cream">
-        <div className="font-heading text-4xl font-semibold text-navy tracking-tight">
-          £{budget}
-        </div>
-        <p className="mt-1 text-sm text-navy-muted">
-          per {period === "weekly" ? "week" : "month"}
-        </p>
-      </div>
-
-      {/* Slider */}
-      <input
-        type="range"
-        min={MIN_BUDGET}
-        max={sliderMax}
-        step={STEP}
-        value={budget}
-        onChange={(e) => setBudget(parseInt(e.target.value, 10))}
-        className="budget-range mb-2"
+    <div className="space-y-8">
+      <StepHeader
+        step={1}
+        title="What's your food budget?"
+        description="We'll use this to guide your weekly plan and keep spending predictable."
       />
-      <div className="flex justify-between text-xs text-navy-muted mb-6">
-        <span>£{MIN_BUDGET}</span>
-        <span>£{sliderMax}</span>
+
+      <section className="rounded-lg bg-cream px-5 py-4">
+        <p className="font-heading text-4xl font-semibold tracking-tight text-navy">£{budget}</p>
+        <p className="mt-1 text-sm text-navy-muted">per {period === "weekly" ? "week" : "month"}</p>
+      </section>
+
+      <div>
+        <input
+          type="range"
+          min={MIN_BUDGET}
+          max={sliderMax}
+          step={STEP}
+          value={budget}
+          onChange={(e) => setBudget(Number.parseInt(e.target.value, 10))}
+          className="budget-range"
+        />
+        <div className="mt-2 flex justify-between text-xs text-navy-muted">
+          <span>£{MIN_BUDGET}</span>
+          <span>£{sliderMax}</span>
+        </div>
       </div>
 
-      <label className="mb-6 block text-sm text-navy">
+      <FieldLabel>
         Exact amount (£)
-        <input
+        <Input
           type="number"
           min={MIN_BUDGET}
           step={1}
           value={budget}
-          onChange={(e) => setBudget(parseInt(e.target.value, 10))}
-          className="mt-2 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition-colors duration-150 focus:border-navy/30"
+          onChange={(e) => {
+            const value = Number.parseInt(e.target.value, 10);
+            if (Number.isFinite(value)) setBudget(value);
+          }}
+          className="mt-2"
         />
-      </label>
+      </FieldLabel>
 
-      {/* Period toggle */}
-      <div className="mx-auto mb-9 flex w-fit gap-1 rounded-lg bg-cream p-1">
-        {(["weekly", "monthly"] as BudgetPeriod[]).map((p) => (
-          <button
-            key={p}
-            onClick={() => setPeriod(p)}
-            className={`rounded-lg px-5 py-2 text-sm font-medium transition-colors duration-150 ${
-              period === p
-                ? "border border-cream-dark bg-white text-navy"
-                : "text-navy-muted hover:text-navy"
-            }`}
-          >
-            {p.charAt(0).toUpperCase() + p.slice(1)}
-          </button>
-        ))}
+      <div className="rounded-lg bg-cream p-1">
+        <div className="grid grid-cols-2 gap-1">
+          {(["weekly", "monthly"] as BudgetPeriod[]).map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setPeriod(value)}
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors duration-150 ${
+                period === value
+                  ? "bg-white text-navy shadow-[0_1px_2px_rgba(30,45,78,0.08)]"
+                  : "text-navy-muted hover:text-navy"
+              }`}
+            >
+              {value.charAt(0).toUpperCase() + value.slice(1)}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <button
-        onClick={onNext}
-        className="w-full rounded-lg bg-navy py-4 text-base font-bold text-white transition-colors duration-150 hover:bg-[#162340]"
-      >
-        Continue →
-      </button>
+      <Button type="button" onClick={onNext} size="lg" fullWidth>
+        Continue
+      </Button>
     </div>
   );
 }

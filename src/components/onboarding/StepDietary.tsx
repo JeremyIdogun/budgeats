@@ -1,5 +1,7 @@
 "use client";
 
+import { StepHeader } from "@/components/onboarding/StepHeader";
+import { Button } from "@/components/ui/Button";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { DietaryPreference } from "@/types";
 
@@ -17,64 +19,54 @@ export const DIETARY_PREFERENCES: { id: DietaryPreference; emoji: string; label:
 ];
 
 export function StepDietary({ onNext, onBack }: Props) {
-  const { dietary, toggleDietary, setNoDietaryPreference } =
-    useOnboardingStore();
-
+  const { dietary, toggleDietary, setNoDietaryPreference } = useOnboardingStore();
   const isNone = dietary.includes("none");
 
   return (
-    <div>
-      <button
-        onClick={onBack}
-        className="text-navy-muted text-sm mb-4 flex items-center gap-1 hover:text-navy transition-colors"
-      >
-        ← Back
-      </button>
-      <p className="text-xs font-semibold tracking-widest uppercase text-teal mb-3">
-        Step 3 of 4
-      </p>
-      <h1 className="font-heading text-3xl font-extrabold text-navy leading-tight mb-2">
-        Any dietary preferences?
-      </h1>
-      <p className="text-navy-muted text-sm leading-relaxed mb-8">
-        We&apos;ll filter meal suggestions and flag incompatible ingredients
-        automatically.
-      </p>
+    <div className="space-y-7">
+      <StepHeader
+        step={3}
+        onBack={onBack}
+        title="Any dietary preferences?"
+        description="We filter suggestions and flag incompatible ingredients automatically."
+      />
 
-      <div className="flex flex-wrap gap-2 mb-8">
-        {DIETARY_PREFERENCES.map(({ id, emoji, label }) => (
-          <button
-            key={id}
-            onClick={() => toggleDietary(id)}
-            className={`flex items-center gap-2 rounded-full border-2 px-5 py-3 text-sm font-medium transition-colors duration-150
-              ${
-                dietary.includes(id) && !isNone
-                  ? "border-coral bg-coral/10 text-navy"
-                  : "border-cream-dark bg-white text-navy-muted hover:border-coral/40"
+      <div className="flex flex-wrap gap-2">
+        {DIETARY_PREFERENCES.map(({ id, emoji, label }) => {
+          const selected = dietary.includes(id) && !isNone;
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => toggleDietary(id)}
+              className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-150 ${
+                selected
+                  ? "border-navy bg-navy/5 text-navy"
+                  : "border-cream-dark bg-white text-navy-muted hover:border-navy/25"
               }`}
-          >
-            <span>{emoji}</span> {label}
-          </button>
-        ))}
+            >
+              <span>{emoji}</span>
+              <span>{label}</span>
+            </button>
+          );
+        })}
+
         <button
+          type="button"
           onClick={setNoDietaryPreference}
-          className={`flex items-center gap-2 rounded-full border-2 px-5 py-3 text-sm font-medium transition-colors duration-150
-            ${
-              isNone
-                ? "border-navy-muted bg-cream text-navy"
-                : "border-cream-dark bg-white text-navy-muted hover:border-navy-muted/40"
-            }`}
+          className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-150 ${
+            isNone
+              ? "border-navy bg-navy/5 text-navy"
+              : "border-cream-dark bg-white text-navy-muted hover:border-navy/25"
+          }`}
         >
-          ✓ No preference
+          No preference
         </button>
       </div>
 
-      <button
-        onClick={onNext}
-        className="w-full rounded-lg bg-navy py-4 text-base font-bold text-white transition-colors duration-150 hover:bg-[#162340]"
-      >
-        Continue →
-      </button>
+      <Button type="button" onClick={onNext} size="lg" fullWidth>
+        Continue
+      </Button>
     </div>
   );
 }

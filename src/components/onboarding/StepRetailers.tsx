@@ -1,5 +1,7 @@
 "use client";
 
+import { StepHeader } from "@/components/onboarding/StepHeader";
+import { Button } from "@/components/ui/Button";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 
 interface Props {
@@ -53,62 +55,47 @@ export function StepRetailers({ onNext, onBack }: Props) {
   const { retailers: selected, toggleRetailer } = useOnboardingStore();
 
   return (
-    <div>
-      <button
-        onClick={onBack}
-        className="text-navy-muted text-sm mb-4 flex items-center gap-1 hover:text-navy transition-colors"
-      >
-        ← Back
-      </button>
-      <p className="text-xs font-semibold tracking-widest uppercase text-teal mb-3">
-        Step 4 of 4
-      </p>
-      <h1 className="font-heading text-3xl font-extrabold text-navy leading-tight mb-2">
-        Where do you usually shop?
-      </h1>
-      <p className="text-navy-muted text-sm leading-relaxed mb-8">
-        We&apos;ll estimate your basket across these stores and highlight the
-        cheapest option each week.
-      </p>
+    <div className="space-y-7">
+      <StepHeader
+        step={4}
+        onBack={onBack}
+        title="Where do you usually shop?"
+        description="We'll compare baskets across these stores and highlight the cheapest route."
+      />
 
-      <div className="grid grid-cols-3 gap-2 mb-6">
+      <div className="grid grid-cols-3 gap-2">
         {RETAILER_OPTIONS.map(({ id, label, initial, bg, color }) => {
           const isSelected = selected.includes(id);
+
           return (
             <button
               key={id}
+              type="button"
               onClick={() => toggleRetailer(id)}
-              className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-sm font-medium transition-colors duration-150
-                ${
-                  isSelected
-                    ? "border-teal bg-teal/10 text-navy"
-                    : "border-cream-dark bg-white text-navy-muted hover:border-teal/40"
-                }`}
+              className={`rounded-lg border px-2 py-4 text-sm font-medium transition-colors duration-150 ${
+                isSelected
+                  ? "border-navy bg-navy/5 text-navy"
+                  : "border-cream-dark bg-white text-navy-muted hover:border-navy/25"
+              }`}
             >
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center font-heading font-extrabold text-lg"
+              <span
+                className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-md font-heading text-lg font-bold"
                 style={{ background: bg, color }}
               >
                 {initial}
-              </div>
-              {label}
-              {isSelected && (
-                <div className="w-5 h-5 rounded-full bg-teal flex items-center justify-center text-white text-xs">
-                  ✓
-                </div>
-              )}
+              </span>
+              <span className="block text-center">{label}</span>
+              <span className="mt-1 block text-center text-[11px] text-navy-muted">
+                {isSelected ? "Selected" : "Tap to select"}
+              </span>
             </button>
           );
         })}
       </div>
 
-      <button
-        onClick={onNext}
-        disabled={selected.length === 0}
-        className="w-full rounded-lg bg-navy py-4 text-base font-bold text-white transition-colors duration-150 hover:bg-[#162340] disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        Let&apos;s go →
-      </button>
+      <Button type="button" onClick={onNext} size="lg" fullWidth disabled={selected.length === 0}>
+        Let's go
+      </Button>
     </div>
   );
 }

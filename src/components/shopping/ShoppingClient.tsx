@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
+import { Button, buttonClasses } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { PageShell } from "@/components/ui/PageShell";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { trackEvent } from "@/lib/analytics";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
 import {
@@ -334,17 +338,17 @@ export function ShoppingClient({
   const estimatedTotalPence = splitBasketTotal + customMealCostPence;
 
   return (
-    <main className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
-      <div className="mx-auto max-w-7xl">
-        <AppNav />
+    <PageShell>
+      <AppNav />
 
-        <section className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Shopping List</h1>
-            <p className="text-sm text-navy-muted">Week of {weekHeading}</p>
-          </div>
-          <div className="rounded-lg border border-cream-dark bg-white px-4 py-3">
-            <p className="text-xs uppercase tracking-[0.12em] text-navy-muted">Estimated total</p>
+      <SectionHeader
+        title="Shopping list"
+        description={`Week of ${weekHeading}`}
+        actions={
+          <Card padding="sm" className="w-full max-w-[340px]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-navy-muted">
+              Estimated total
+            </p>
             <p className="mt-1 text-sm font-semibold text-navy">{formatPence(estimatedTotalPence)}</p>
             <p className="mt-1 text-xs text-navy-muted">
               Prices last updated {PRICES_LAST_UPDATED}. Estimates only.
@@ -355,136 +359,127 @@ export function ShoppingClient({
                 {topSplitRetailers[1]}
               </p>
             )}
-          </div>
-        </section>
+          </Card>
+        }
+      />
 
-        {plannedSlotCount === 0 || shoppingItems.length === 0 ? (
-          <section className="rounded-lg border border-cream-dark bg-white p-8 text-center">
-            <p className="text-lg font-semibold text-navy">Plan your meals first.</p>
-            <p className="mt-2 text-sm text-navy-muted">
-              Add meals to your planner and your shopping list will auto-generate.
-            </p>
-            <Link
-              href="/planner"
-              className="mt-5 inline-block rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white"
-            >
-              Go to planner →
-            </Link>
-          </section>
-        ) : (
-          <div className="grid gap-5 xl:grid-cols-[320px_1fr]">
-            <aside className="rounded-lg border border-cream-dark bg-white p-4">
-              <p className="text-sm font-semibold text-navy">Store split summary</p>
-              <div className="mt-3 space-y-2">
-                {basketByRetailer.map((retailer) => (
-                  <div
-                    key={retailer.retailerId}
-                    className="flex items-center justify-between rounded-lg bg-cream px-3 py-2 text-sm"
-                  >
-                    <span className="text-navy">{RETAILER_NAMES[retailer.retailerId]}</span>
-                    <span className="font-semibold text-navy">{formatPence(retailer.totalPence)}</span>
-                  </div>
-                ))}
-                {basketByRetailer.length === 0 && (
-                  <p className="text-xs text-navy-muted">No pricing estimate available yet.</p>
-                )}
-              </div>
-            </aside>
-
-            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <p className="text-sm text-navy-muted">
-                  {checkedCount} of {shoppingItems.length} items checked
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={checkAllForWeek}
-                    className="rounded-lg border border-cream-dark bg-white px-3 py-1.5 text-xs font-semibold text-navy transition hover:border-navy/25"
-                  >
-                    Check all
-                  </button>
-                  <button
-                    onClick={clearCheckedForWeek}
-                    className="rounded-lg border border-cream-dark bg-white px-3 py-1.5 text-xs font-semibold text-navy transition hover:border-navy/25"
-                  >
-                    Clear
-                  </button>
-                  <button
-                    onClick={handleCopyList}
-                    className="rounded-lg border border-cream-dark bg-white px-3 py-1.5 text-sm text-navy transition hover:border-navy/25"
-                  >
-                    {copied ? "Copied!" : "Copy list"}
-                  </button>
+      {plannedSlotCount === 0 || shoppingItems.length === 0 ? (
+        <Card as="section" padding="lg" className="text-center">
+          <p className="text-lg font-semibold text-navy">Plan your meals first.</p>
+          <p className="mt-2 text-sm text-navy-muted">
+            Add meals to your planner and your shopping list will auto-generate.
+          </p>
+          <Link
+            href="/planner"
+            className={buttonClasses({ variant: "primary", size: "md", className: "mt-5" })}
+          >
+            Go to planner
+          </Link>
+        </Card>
+      ) : (
+        <div className="grid gap-5 xl:grid-cols-[320px_1fr]">
+          <Card as="aside" className="h-fit xl:sticky xl:top-6">
+            <p className="text-sm font-semibold text-navy">Store split summary</p>
+            <div className="mt-3 space-y-2">
+              {basketByRetailer.map((retailer) => (
+                <div
+                  key={retailer.retailerId}
+                  className="flex items-center justify-between rounded-lg bg-cream px-3 py-2 text-sm"
+                >
+                  <span className="text-navy">{RETAILER_NAMES[retailer.retailerId]}</span>
+                  <span className="font-semibold text-navy">{formatPence(retailer.totalPence)}</span>
                 </div>
-              </div>
+              ))}
+              {basketByRetailer.length === 0 && (
+                <p className="text-xs text-navy-muted">No pricing estimate available yet.</p>
+              )}
+            </div>
+          </Card>
 
-              <div className="space-y-5">
-                {shoppingByGroup.map(([group, items]) => (
-                  <div key={group}>
-                    <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
-                      {categoryLabel(group)}
-                    </h3>
-                    <div className="space-y-2">
-                      {items.map((item) => (
-                        <label
-                          key={item.key}
-                          className="flex items-center justify-between rounded-lg border border-cream-dark px-3 py-2 text-sm"
-                        >
-                          <span className="flex items-center gap-3">
-                            <input
-                              type="checkbox"
-                              checked={checkedSet.has(item.key)}
-                              onChange={() => toggleItem(item.key)}
-                              className="h-4 w-4 accent-navy"
-                            />
-                            <span
-                              className={
-                                checkedSet.has(item.key)
-                                  ? "flex items-center gap-2 text-navy-muted line-through"
-                                  : "flex items-center gap-2 text-navy"
-                              }
-                            >
-                              {item.name}
-                              {storeState.pantryItems[item.key.split("|")[0]] && (
-                                <span className="rounded-full bg-teal/10 px-2 py-0.5 text-xs font-medium text-teal no-underline">
-                                  In pantry
-                                </span>
-                              )}
-                            </span>
-                          </span>
-                          <span className="text-right">
-                            <span className="block text-xs font-medium text-navy-muted">
-                              {amountLabel(item.amount, item.unit)}
-                            </span>
-                            <span className="block text-[11px] text-teal">
-                              {item.bestOfferRetailerId && item.bestOfferPence !== null
-                                ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
-                                : "No store price yet"}
-                            </span>
-                            {item.substituteSuggestion && (
-                              <span className="block text-[11px] text-coral">{item.substituteSuggestion}</span>
-                            )}
-                            {item.productUrl && (
-                              <a
-                                href={item.productUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="block text-[11px] text-navy underline underline-offset-2"
-                              >
-                                Open product
-                              </a>
-                            )}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+          <Card as="section" className="md:p-5">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm text-navy-muted">
+                {checkedCount} of {shoppingItems.length} items checked
+              </p>
+              <div className="flex gap-2">
+                <Button type="button" variant="secondary" size="sm" onClick={checkAllForWeek}>
+                  Check all
+                </Button>
+                <Button type="button" variant="secondary" size="sm" onClick={clearCheckedForWeek}>
+                  Clear
+                </Button>
+                <Button type="button" variant="secondary" size="sm" onClick={handleCopyList}>
+                  {copied ? "Copied!" : "Copy list"}
+                </Button>
               </div>
-            </section>
-          </div>
-        )}
-      </div>
-    </main>
+            </div>
+
+            <div className="space-y-5">
+              {shoppingByGroup.map(([group, items]) => (
+                <div key={group}>
+                  <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-navy-muted">
+                    {categoryLabel(group)}
+                  </h3>
+                  <div className="space-y-2">
+                    {items.map((item) => (
+                      <label
+                        key={item.key}
+                        className="flex items-center justify-between rounded-lg border border-cream-dark px-3 py-2 text-sm"
+                      >
+                        <span className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            checked={checkedSet.has(item.key)}
+                            onChange={() => toggleItem(item.key)}
+                            className="h-4 w-4 accent-navy"
+                          />
+                          <span
+                            className={
+                              checkedSet.has(item.key)
+                                ? "flex items-center gap-2 text-navy-muted line-through"
+                                : "flex items-center gap-2 text-navy"
+                            }
+                          >
+                            {item.name}
+                            {storeState.pantryItems[item.key.split("|")[0]] && (
+                              <span className="rounded-full bg-teal/10 px-2 py-0.5 text-xs font-medium text-teal no-underline">
+                                In pantry
+                              </span>
+                            )}
+                          </span>
+                        </span>
+                        <span className="text-right">
+                          <span className="block text-xs font-medium text-navy-muted">
+                            {amountLabel(item.amount, item.unit)}
+                          </span>
+                          <span className="block text-[11px] text-teal">
+                            {item.bestOfferRetailerId && item.bestOfferPence !== null
+                              ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
+                              : "No store price yet"}
+                          </span>
+                          {item.substituteSuggestion && (
+                            <span className="block text-[11px] text-coral">{item.substituteSuggestion}</span>
+                          )}
+                          {item.productUrl && (
+                            <a
+                              href={item.productUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="block text-[11px] text-navy underline underline-offset-2"
+                            >
+                              Open product
+                            </a>
+                          )}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      )}
+    </PageShell>
   );
 }

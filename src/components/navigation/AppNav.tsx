@@ -109,10 +109,10 @@ export function AppNav({ isAdmin }: AppNavProps = {}) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`whitespace-nowrap pb-3 text-sm transition-colors duration-150 ${
+                className={`whitespace-nowrap border-b-2 pb-3 text-sm transition-colors duration-150 ${
                   isActive
-                    ? "font-medium text-navy"
-                    : "font-normal text-navy-muted hover:text-navy"
+                    ? "border-teal font-medium text-navy"
+                    : "border-transparent font-normal text-navy-muted hover:text-navy"
                 }`}
               >
                 {link.label}

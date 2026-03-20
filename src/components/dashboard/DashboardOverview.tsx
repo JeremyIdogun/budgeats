@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
+import { WeeklyBudgetNudge } from "@/components/dashboard/WeeklyBudgetNudge";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
 import { LogismosCard } from "@/components/logismos/LogismosCard";
-import { WeeklyBudgetNudge } from "@/components/dashboard/WeeklyBudgetNudge";
+import { buttonClasses } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { PageShell } from "@/components/ui/PageShell";
 import {
   addDays,
   buildLibraryWeekPlan,
@@ -34,10 +37,7 @@ function dayLabel(date: Date): string {
 }
 
 function dateLabel(date: Date): string {
-  return date.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-  });
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
 export function DashboardOverview({
@@ -68,10 +68,7 @@ export function DashboardOverview({
   const setCurrentWeekPlan = useBudgeAtsStore((state) => state.setCurrentWeekPlan);
 
   const weekStart = useMemo(() => startOfWeek(new Date()), []);
-  const weekDays = useMemo(
-    () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
-    [weekStart],
-  );
+  const weekDays = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
   const weekKey = isoDate(weekStart);
 
   const dashboardLibraryMeals = useMemo(
@@ -119,9 +116,7 @@ export function DashboardOverview({
   }, [libraryWeekPlan, setCurrentWeekPlan, storeWeekStartDate, storeBudgetOverridePence]);
 
   const effectiveWeekPlan =
-    storeState.currentWeekPlan?.weekStartDate === weekKey
-      ? storeState.currentWeekPlan
-      : libraryWeekPlan;
+    storeState.currentWeekPlan?.weekStartDate === weekKey ? storeState.currentWeekPlan : libraryWeekPlan;
 
   const selectorState = useMemo<BudgeAtsState>(
     () => ({
@@ -135,7 +130,6 @@ export function DashboardOverview({
 
   const spentPence = selectWeekSpendPence(selectorState);
   const utilisationPct = selectBudgetUtilisationPct(selectorState);
-  // Use the per-week override if the user has set one, otherwise fall back to the profile default
   const effectiveBudgetPence = selectEffectiveWeeklyBudgetPence(selectorState);
   const remainingPence = effectiveBudgetPence - spentPence;
   const plannedMealCount = selectPlannedMealCount(selectorState);
@@ -145,11 +139,11 @@ export function DashboardOverview({
   const progress = Math.min(Math.max(utilisationPct, 0), 100);
 
   const todayIndex = getTodayDayIndex(weekKey);
-
   const logismosEnabled = effectiveUser?.logismosEnabled !== false;
 
   const hourOfDay = new Date().getHours();
   const currentMealType = hourOfDay < 11 ? "breakfast" : hourOfDay < 16 ? "lunch" : "dinner";
+
   const cookableMealsForToday = useMemo(
     () =>
       dashboardLibraryMeals.filter((meal) => {
@@ -164,19 +158,15 @@ export function DashboardOverview({
   const overagePence = Math.max(spentPence - effectiveBudgetPence, 0);
 
   return (
-    <main className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
-      <div className="mx-auto max-w-7xl">
-        <AppNav />
+    <PageShell>
+      <AppNav />
 
-        <WeeklyBudgetNudge
-          weekStartDate={weekKey}
-          defaultBudgetPence={weeklyBudgetPence}
-        />
+        <WeeklyBudgetNudge weekStartDate={weekKey} defaultBudgetPence={weeklyBudgetPence} />
 
-        <div className="grid gap-5 lg:grid-cols-[340px_1fr] mt-5">
-          <section className="rounded-lg border border-cream-dark bg-white p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
-              Weekly Budget
+        <div className="mt-5 grid gap-5 lg:grid-cols-[320px_1fr]">
+          <Card as="section" className="text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-navy-muted">
+              Weekly budget
             </p>
             <div className="mt-5">
               <div className="h-1 rounded-full bg-cream-dark">
@@ -186,31 +176,29 @@ export function DashboardOverview({
                 />
               </div>
             </div>
-            <p className="mt-4 text-center text-3xl font-semibold text-navy">
-              {Math.round(utilisationPct)}% used
-            </p>
-            <p className="mt-2 text-center text-sm text-navy-muted">
+            <p className="mt-4 text-3xl font-semibold text-navy">{Math.round(utilisationPct)}% used</p>
+            <p className="mt-2 text-sm text-navy-muted">
               {remainingPence >= 0
                 ? `${formatPence(remainingPence)} remaining`
                 : `${formatPence(Math.abs(remainingPence))} over budget`}
             </p>
-          </section>
+          </Card>
 
           {plannedMealCount === 0 ? (
-            <section className="rounded-lg border border-cream-dark bg-white p-8 text-center">
+            <Card as="section" padding="lg" className="text-center">
               <p className="text-lg font-semibold text-navy">No meals planned yet</p>
               <p className="mt-2 text-sm text-navy-muted">
                 Add meals to your weekly plan to see your budget breakdown here.
               </p>
-              <a
+              <Link
                 href="/planner"
-                className="mt-5 inline-block rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white"
+                className={buttonClasses({ variant: "primary", size: "md", className: "mt-5" })}
               >
-                Go to planner →
-              </a>
-            </section>
+                Go to planner
+              </Link>
+            </Card>
           ) : (
-            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
+            <Card as="section" className="md:p-5">
               <p className="text-sm font-semibold text-navy">Week summary</p>
               <div className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-7">
                 {weekDays.map((date, index) => {
@@ -223,11 +211,11 @@ export function DashboardOverview({
                       href="/planner"
                       className={`rounded-lg border px-3 py-3 transition-colors duration-150 ${
                         isToday
-                          ? "border-teal bg-teal/5"
+                          ? "border-navy/25 bg-navy/3"
                           : "border-cream-dark bg-cream/40 hover:border-navy/25"
                       }`}
                     >
-                      <p className="text-xs font-semibold uppercase tracking-[0.1em] text-navy-muted">
+                      <p className="text-[11px] font-semibold uppercase tracking-widest text-navy-muted">
                         {dayLabel(date)}
                       </p>
                       <p className="mt-0.5 text-sm font-semibold text-navy">{dateLabel(date)}</p>
@@ -238,7 +226,7 @@ export function DashboardOverview({
                   );
                 })}
               </div>
-            </section>
+            </Card>
           )}
         </div>
 
@@ -252,80 +240,41 @@ export function DashboardOverview({
           </section>
         )}
 
-        <section className="mt-5 rounded-lg border border-cream-dark bg-white p-5">
-          <p className="text-sm font-semibold text-navy">Quick actions</p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
-            <Link
-              href="/planner"
-              className="rounded-lg bg-navy px-4 py-3 text-center text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
-            >
-              + Add meals to this week
-            </Link>
-            <Link
-              href="/shopping"
-              className="rounded-lg border border-cream-dark bg-white px-4 py-3 text-center text-sm font-semibold text-navy transition-colors duration-150 hover:border-navy/25"
-            >
-              View shopping list
-            </Link>
-            <Link
-              href="/insights"
-              className="rounded-lg border border-cream-dark bg-white px-4 py-3 text-center text-sm font-semibold text-navy transition-colors duration-150 hover:border-navy/25"
-            >
-              See insights
-            </Link>
-          </div>
-        </section>
-
-        <section className="mt-5 rounded-lg border border-cream-dark bg-white p-5">
+        <Card as="section" className="mt-5">
           {alertState === "under-planned" && (
-            <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="flex flex-wrap items-start justify-between gap-4 border-l-2 border-amber-400 pl-4">
               <p className="text-sm text-navy">
-                <span className="mr-2">⚠️</span>
-                You&apos;ve planned {plannedMealCount} meals this week. Aim for at least 14
-                to stay within your {formatPence(effectiveBudgetPence)} budget.
+                You've planned {plannedMealCount} meals this week. Aim for at least 14 to stay within your{" "}
+                {formatPence(effectiveBudgetPence)} budget.
               </p>
-              <Link
-                href="/planner"
-                className="rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white"
-              >
-                Finish planning →
+              <Link href="/planner" className={buttonClasses({ variant: "primary", size: "sm" })}>
+                Finish planning
               </Link>
             </div>
           )}
 
           {alertState === "on-track" && (
-            <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="flex flex-wrap items-start justify-between gap-4 border-l-2 border-teal pl-4">
               <p className="text-sm text-navy">
-                <span className="mr-2">✅</span>
-                Great week ahead. {plannedMealCount} meals planned, {formatPence(remainingPence)}
-                {" "}still available. Your shopping list is ready.
+                {plannedMealCount} meals planned, {formatPence(remainingPence)} still available.
               </p>
-              <Link
-                href="/shopping"
-                className="rounded-lg bg-teal px-4 py-2 text-sm font-semibold text-white"
-              >
-                View shopping list →
+              <Link href="/shopping" className={buttonClasses({ variant: "secondary", size: "sm" })}>
+                View shopping list
               </Link>
             </div>
           )}
 
           {alertState === "over-budget" && (
-            <div className="flex flex-wrap items-start justify-between gap-4">
+            <div className="flex flex-wrap items-start justify-between gap-4 border-l-2 border-danger pl-4">
               <p className="text-sm text-navy">
-                <span className="mr-2">🔴</span>
-                You&apos;re {formatPence(overagePence)} over your weekly budget. Remove a meal
-                or try a cheaper swap.
+                {formatPence(overagePence)} over budget. Remove a meal or try a cheaper swap.
               </p>
-              <Link
-                href="/planner"
-                className="rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white"
-              >
-                Edit meals →
+              <Link href="/planner" className={buttonClasses({ variant: "danger", size: "sm" })}>
+                Edit meals
               </Link>
             </div>
           )}
-        </section>
-      </div>
-    </main>
+        </Card>
+    </PageShell>
   );
 }

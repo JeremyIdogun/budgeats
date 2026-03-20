@@ -6,6 +6,7 @@ import { trackEvent } from "@/lib/analytics";
 import { generateRecommendation, type CookableMeal } from "@/lib/logismos";
 import { POINTS } from "@/lib/points";
 import { getTodayDayIndex } from "@/lib/planner";
+import { getPlannerSessionPlan, setPlannerSessionPlan } from "@/lib/planner-persistence";
 import type { Ingredient, IngredientPrice, Meal, MealType } from "@/models";
 import type { ContextSignals, DecisionLogEntry, LogismosRecommendation } from "@/models/logismos";
 import { useBudgeAtsStore } from "@/store";
@@ -276,6 +277,17 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
           retailerId: preferredRetailer as Parameters<typeof store.addPlannedMeal>[2]["retailerId"],
           portions: householdSize,
         });
+
+        // Sync into the planner session cache so DashboardClient picks it up on next mount
+        const weekStartDate = store.currentWeekPlan?.weekStartDate;
+        const userId = store.user?.id;
+        if (weekStartDate && userId) {
+          const todayDateObj = new Date(`${weekStartDate}T00:00:00Z`);
+          todayDateObj.setUTCDate(todayDateObj.getUTCDate() + todayIndex);
+          const slotKey = `${todayDateObj.toISOString().split("T")[0]}:${mealType}`;
+          const currentPlan = getPlannerSessionPlan(weekStartDate, userId) ?? {};
+          setPlannerSessionPlan(weekStartDate, userId, { ...currentPlan, [slotKey]: meal.id });
+        }
       }
       showToast(`Meal added to your plan. +${awardedPoints} pts!`);
     } else {
@@ -408,14 +420,16 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
               <div
                 className="h-full rounded-full bg-teal transition-all"
                 style={{
-                  width: `${Math.min(
-                    ((isCook && recommendedMeal
-                      ? recommendedMeal.estimatedCostPence
-                      : recommendation.eatOutEstimatePence) /
-                      weeklyBudgetPence) *
-                      100,
-                    100,
-                  )}%`,
+                  width: weeklyBudgetPence > 0
+                    ? `${Math.min(
+                        ((isCook && recommendedMeal
+                          ? recommendedMeal.estimatedCostPence
+                          : recommendation.eatOutEstimatePence) /
+                          weeklyBudgetPence) *
+                          100,
+                        100,
+                      )}%`
+                    : "0%",
                 }}
               />
             </div>

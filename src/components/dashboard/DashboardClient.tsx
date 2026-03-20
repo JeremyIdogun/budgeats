@@ -2,6 +2,11 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
+import { Button, buttonClasses } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { PageShell } from "@/components/ui/PageShell";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { identifyUser, trackEvent } from "@/lib/analytics";
 import { deriveBudgetUtilisationPct, deriveMealCostPence } from "@/lib/budget";
 import { generateShoppingList } from "@/lib/shopping";
@@ -721,110 +726,113 @@ export function DashboardClient({
     budgetUsedPct > 100 ? "#D94F4F" : budgetUsedPct > 85 ? "#E8693A" : "#3DBFB8";
 
   return (
-    <main className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
-      <div className="mx-auto max-w-7xl">
-        <AppNav />
+    <PageShell>
+      <AppNav />
 
-        <section className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-extrabold text-navy md:text-3xl">
-              {activeTab === "planner" ? "Meal planner" : "Shopping list"}
-            </h1>
-            <p className="text-sm text-navy-muted">
-              {activeTab === "planner"
-                ? "Plan meals for the week and track cost per meal."
-                : "Auto-generated from this week&apos;s planned meals."}
-            </p>
-          </div>
+      <SectionHeader
+        title={activeTab === "planner" ? "Meal planner" : "Shopping list"}
+        description={
+          activeTab === "planner"
+            ? "Plan meals for the week and track cost per meal."
+            : "Auto-generated from this week's planned meals."
+        }
+        actions={
           <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-2 rounded-lg border border-cream-dark bg-white p-1 md:flex">
+            <div className="hidden items-center gap-2 rounded-xl border border-cream-dark bg-white p-1 md:flex">
               <button
+                type="button"
                 onClick={() => setActiveTab("planner")}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
                   activeTab === "planner"
                     ? "bg-navy text-white"
-                    : "text-navy-muted hover:text-navy"
+                    : "text-navy-muted hover:bg-cream hover:text-navy"
                 }`}
               >
                 Meal planner
               </button>
               <button
+                type="button"
                 onClick={() => setActiveTab("shopping")}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
                   activeTab === "shopping"
                     ? "bg-navy text-white"
-                    : "text-navy-muted hover:text-navy"
+                    : "text-navy-muted hover:bg-cream hover:text-navy"
                 }`}
               >
                 Shopping list
               </button>
             </div>
             <button
+              type="button"
               onClick={() => setWeekStart((prev) => addDays(prev, -7))}
-              className="h-9 w-9 rounded-lg border border-cream-dark bg-white text-navy transition hover:border-navy/25"
+              className={buttonClasses({ variant: "secondary", size: "sm", className: "w-9 px-0" })}
               aria-label="Previous week"
             >
               ←
             </button>
-            <p className="min-w-40 text-center text-sm font-semibold text-navy">
-              {weekRangeLabel}
-            </p>
+            <p className="min-w-40 text-center text-sm font-semibold text-navy">{weekRangeLabel}</p>
             <button
+              type="button"
               onClick={() => setWeekStart((prev) => addDays(prev, 7))}
-              className="h-9 w-9 rounded-lg border border-cream-dark bg-white text-navy transition hover:border-navy/25"
+              className={buttonClasses({ variant: "secondary", size: "sm", className: "w-9 px-0" })}
               aria-label="Next week"
             >
               →
             </button>
           </div>
-        </section>
+        }
+      />
 
-        <div className="mb-4 flex items-center gap-2 rounded-lg border border-cream-dark bg-white p-1 md:hidden">
-          <button
-            onClick={() => setActiveTab("planner")}
-            className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${
-              activeTab === "planner"
-                ? "bg-navy text-white"
-                : "text-navy-muted hover:text-navy"
-            }`}
-          >
-            Meal planner
-          </button>
-          <button
-            onClick={() => setActiveTab("shopping")}
-            className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${
-              activeTab === "shopping"
-                ? "bg-navy text-white"
-                : "text-navy-muted hover:text-navy"
-            }`}
-          >
-            Shopping list
-          </button>
-        </div>
+      <div className="mb-4 flex items-center gap-2 rounded-xl border border-cream-dark bg-white p-1 md:hidden">
+        <button
+          type="button"
+          onClick={() => setActiveTab("planner")}
+          className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${
+            activeTab === "planner"
+              ? "bg-navy text-white"
+              : "text-navy-muted hover:bg-cream hover:text-navy"
+          }`}
+        >
+          Meal planner
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("shopping")}
+          className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition ${
+            activeTab === "shopping"
+              ? "bg-navy text-white"
+              : "text-navy-muted hover:bg-cream hover:text-navy"
+          }`}
+        >
+          Shopping list
+        </button>
+      </div>
 
-        {activeTab === "planner" ? (
-          <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
-            <div>
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <input
+      {activeTab === "planner" ? (
+        <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
+          <div>
+            <Card className="mb-3 p-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <Input
                   type="text"
                   placeholder="Search meals..."
                   value={mealSearchQuery}
                   onChange={(e) => setMealSearchQuery(e.target.value)}
-                  className="rounded-lg border border-cream-dark bg-white px-3 py-2 text-sm text-navy outline-none focus:border-navy/30"
+                  className="max-w-[260px]"
                 />
                 {(["vegetarian", "vegan", "halal", "gluten-free", "dairy-free"] as DietaryTag[]).map((tag) => (
                   <button
                     key={tag}
+                    type="button"
                     onClick={() =>
                       setActiveDietaryFilters((prev) =>
                         prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
                       )
                     }
-                    className={`rounded-full border px-3 py-1 text-xs font-medium transition ${
+                    className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
                       activeDietaryFilters.includes(tag)
-                        ? "border-teal bg-teal text-white"
-                        : "border-cream-dark bg-white text-navy-muted hover:text-navy"
+                        ? "border-navy/25 bg-navy/5 text-navy"
+                        : "border-cream-dark bg-white text-navy-muted hover:border-navy/25 hover:text-navy"
                     }`}
                   >
                     {tag}
@@ -832,6 +840,7 @@ export function DashboardClient({
                 ))}
                 {(mealSearchQuery || activeDietaryFilters.length > 0) && (
                   <button
+                    type="button"
                     onClick={() => {
                       setMealSearchQuery("");
                       setActiveDietaryFilters([]);
@@ -842,393 +851,385 @@ export function DashboardClient({
                   </button>
                 )}
               </div>
+            </Card>
 
-              <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[860px] border-separate border-spacing-2">
-                  <thead>
-                    <tr>
-                      <th className="px-2 py-2 text-left text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
-                        Meal
+            <Card as="section" className="md:p-5">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[860px] border-separate border-spacing-2">
+                <thead>
+                  <tr>
+                    <th className="px-2 py-2 text-left text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
+                      Meal
+                    </th>
+                    {weekDays.map((day) => (
+                      <th
+                        key={isoDate(day)}
+                        className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted"
+                      >
+                        {day.toLocaleDateString("en-GB", { weekday: "short" })}
+                        <span className="mt-0.5 block text-[11px] font-medium normal-case tracking-normal text-navy">
+                          {day.toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                          })}
+                        </span>
                       </th>
-                      {weekDays.map((day) => (
-                        <th
-                          key={isoDate(day)}
-                          className="px-2 py-2 text-center text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted"
-                        >
-                          {day.toLocaleDateString("en-GB", { weekday: "short" })}
-                          <span className="mt-0.5 block text-[11px] font-medium normal-case tracking-normal text-navy">
-                            {day.toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "short",
-                            })}
-                          </span>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {MEAL_TYPES.map((type) => (
-                      <tr key={type}>
-                        <td className="rounded-lg bg-cream px-3 py-3 align-top text-sm font-semibold text-navy">
-                          {capitalize(type)}
-                        </td>
-                        {weekDays.map((day) => {
-                          const slotKey = `${isoDate(day)}:${type}`;
-                          const selectedMealId = plan[slotKey] ?? "";
-                          const selectedMeal = selectedMealId
-                            ? allMealsById.get(selectedMealId)
-                            : undefined;
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {MEAL_TYPES.map((type) => (
+                    <tr key={type}>
+                      <td className="rounded-lg bg-cream px-3 py-3 align-top text-sm font-semibold text-navy">
+                        {capitalize(type)}
+                      </td>
+                      {weekDays.map((day) => {
+                        const slotKey = `${isoDate(day)}:${type}`;
+                        const selectedMealId = plan[slotKey] ?? "";
+                        const selectedMeal = selectedMealId
+                          ? allMealsById.get(selectedMealId)
+                          : undefined;
 
-                          return (
-                            <td
-                              key={slotKey}
-                              className="rounded-lg border border-cream-dark bg-white px-2 py-2 align-top"
+                        return (
+                          <td
+                            key={slotKey}
+                            className="rounded-lg border border-cream-dark bg-white px-2 py-2 align-top"
+                          >
+                            <label
+                              htmlFor={slotKey}
+                              className="sr-only"
+                            >{`${capitalize(type)} meal for ${isoDate(day)}`}</label>
+                            <select
+                              id={slotKey}
+                              value={selectedMealId}
+                              onChange={(event) =>
+                                setMealForSlot(slotKey, event.target.value)
+                              }
+                              className="w-full rounded-lg border border-cream-dark bg-white px-2 py-2 text-xs text-navy outline-none transition focus:border-navy/30"
                             >
-                              <label
-                                htmlFor={slotKey}
-                                className="sr-only"
-                              >{`${capitalize(type)} meal for ${isoDate(day)}`}</label>
-                              <select
-                                id={slotKey}
-                                value={selectedMealId}
-                                onChange={(event) =>
-                                  setMealForSlot(slotKey, event.target.value)
-                                }
-                                className="w-full rounded-lg border border-cream-dark bg-white px-2 py-2 text-xs text-navy outline-none transition focus:border-navy/30"
-                              >
-                                <option value="">Select meal</option>
-                                {customMealsByType[type].length > 0 && (
-                                  <optgroup label="Your meals">
-                                    {customMealsByType[type].map((meal) => (
-                                      <option key={meal.id} value={meal.id}>
-                                        {meal.name}
-                                      </option>
-                                    ))}
-                                  </optgroup>
-                                )}
-                                <optgroup label="Suggestions">
-                                  {libraryMealsByType[type].map((meal) => (
+                              <option value="">Select meal</option>
+                              {customMealsByType[type].length > 0 && (
+                                <optgroup label="Your meals">
+                                  {customMealsByType[type].map((meal) => (
                                     <option key={meal.id} value={meal.id}>
                                       {meal.name}
                                     </option>
                                   ))}
                                 </optgroup>
-                              </select>
-                              <p className="mt-2 min-h-4 text-xs font-medium text-navy-muted">
-                                {selectedMeal
-                                  ? selectedMeal.costKnown
-                                    ? `${formatPence(selectedMeal.costPence)} per meal`
-                                    : "Price data missing"
-                                  : " "}
-                              </p>
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                  </table>
-                </div>
-              </section>
-            </div>
+                              )}
+                              <optgroup label="Suggestions">
+                                {libraryMealsByType[type].map((meal) => (
+                                  <option key={meal.id} value={meal.id}>
+                                    {meal.name}
+                                  </option>
+                                ))}
+                              </optgroup>
+                            </select>
+                            <p className="mt-2 min-h-4 text-xs font-medium text-navy-muted">
+                              {selectedMeal
+                                ? selectedMeal.costKnown
+                                  ? `${formatPence(selectedMeal.costPence)} per meal`
+                                  : "Price data missing"
+                                : " "}
+                            </p>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
 
-            <aside className="space-y-4">
-              <div className="rounded-lg border border-cream-dark bg-white p-4">
-                <p className="text-sm font-semibold text-navy">Add custom meal</p>
-                <form onSubmit={handleCreateCustomMeal} className="mt-3 space-y-2">
-                  <input
-                    value={customName}
-                    onChange={(event) => setCustomName(event.target.value)}
-                    placeholder="Meal name"
-                    className="w-full rounded-lg border border-cream-dark px-3 py-2 text-xs text-navy outline-none focus:border-navy/30"
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <select
-                      value={customType}
-                      onChange={(event) => setCustomType(event.target.value as DashboardMealType)}
-                      className="rounded-lg border border-cream-dark px-3 py-2 text-xs text-navy outline-none focus:border-navy/30"
-                    >
-                      <option value="breakfast">Breakfast</option>
-                      <option value="lunch">Lunch</option>
-                      <option value="dinner">Dinner</option>
-                    </select>
-                    <input
-                      value={customCost}
-                      onChange={(event) => setCustomCost(event.target.value)}
-                      inputMode="decimal"
-                      placeholder="Cost (£)"
-                      className="rounded-lg border border-cream-dark px-3 py-2 text-xs text-navy outline-none focus:border-navy/30"
-                    />
-                  </div>
-                  <input
-                    value={customIngredients}
-                    onChange={(event) => setCustomIngredients(event.target.value)}
-                    placeholder="Ingredients (comma-separated, optional)"
-                    className="w-full rounded-lg border border-cream-dark px-3 py-2 text-xs text-navy outline-none focus:border-navy/30"
-                  />
-                  {customError && <p className="text-xs text-danger">{customError}</p>}
-                  <button
-                    type="submit"
-                    className="w-full rounded-lg bg-navy px-3 py-2 text-xs font-semibold text-white"
+          <aside className="space-y-4">
+            <Card>
+              <p className="text-sm font-semibold text-navy">Add custom meal</p>
+              <form onSubmit={handleCreateCustomMeal} className="mt-3 space-y-2">
+                <Input
+                  value={customName}
+                  onChange={(event) => setCustomName(event.target.value)}
+                  placeholder="Meal name"
+                  className="text-sm"
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <select
+                    value={customType}
+                    onChange={(event) => setCustomType(event.target.value as DashboardMealType)}
+                    className="rounded-lg border border-cream-dark px-3 py-2 text-xs text-navy outline-none focus:border-navy/30"
                   >
-                    Save meal
-                  </button>
-                </form>
-              </div>
-
-              <div className="rounded-lg border border-cream-dark bg-white p-4">
-                <p className="text-sm font-semibold text-navy">Your custom meals</p>
-                <div className="mt-3 space-y-2">
-                  {customDisplayMeals.length === 0 ? (
-                    <p className="text-xs text-navy-muted">
-                      No custom meals yet. Add one above and it appears in the planner.
-                    </p>
-                  ) : (
-                    customDisplayMeals.map((meal) => (
-                      <div
-                        key={meal.id}
-                        className="flex items-center justify-between rounded-lg bg-cream px-3 py-2"
-                      >
-                        <div>
-                          <p className="text-xs font-semibold text-navy">{meal.name}</p>
-                          <p className="text-[11px] text-navy-muted">
-                            {capitalize(meal.type)} · {formatPence(meal.costPence)}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => removeCustomMeal(meal.id)}
-                          className="text-[11px] font-semibold text-danger"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              <div className="rounded-lg border border-cream-dark bg-white p-4">
-                <p className="text-sm font-semibold text-navy">This week&apos;s budget</p>
-                <p className="mt-3 text-3xl font-semibold text-navy">
-                  {Math.round(budgetUsedPct)}%
-                </p>
-                <p className="text-xs text-navy-muted">budget used</p>
-                <div className="mt-3 h-2 rounded-full bg-cream-dark">
-                  <div
-                    className="h-full rounded-full transition-all"
-                    style={{
-                      width: `${Math.min(Math.max(budgetUsedPct, 0), 100)}%`,
-                      background: budgetColor,
-                    }}
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                  </select>
+                  <Input
+                    value={customCost}
+                    onChange={(event) => setCustomCost(event.target.value)}
+                    inputMode="decimal"
+                    placeholder="Cost (£)"
+                    className="text-sm"
                   />
                 </div>
-                <div className="mt-4 space-y-1 text-sm">
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Budget</span>
-                    <span className="font-medium text-navy">
-                      {formatPence(weeklyBudgetPence)}
-                    </span>
+                <Input
+                  value={customIngredients}
+                  onChange={(event) => setCustomIngredients(event.target.value)}
+                  placeholder="Ingredients (comma-separated, optional)"
+                  className="text-sm"
+                />
+                {customError && <p className="text-xs text-danger">{customError}</p>}
+                <Button type="submit" size="sm" fullWidth>
+                  Save meal
+                </Button>
+              </form>
+            </Card>
+
+            <Card>
+              <p className="text-sm font-semibold text-navy">Your custom meals</p>
+              <div className="mt-3 space-y-2">
+                {customDisplayMeals.length === 0 ? (
+                  <p className="text-xs text-navy-muted">
+                    No custom meals yet. Add one above and it appears in the planner.
                   </p>
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Planned</span>
-                    <span className="font-medium text-navy">
-                      {formatPence(plannedTotalPence)}
-                    </span>
-                  </p>
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Remaining</span>
-                    <span
-                      className={`font-medium ${
-                        remainingPence < 0 ? "text-danger" : "text-teal"
-                      }`}
+                ) : (
+                  customDisplayMeals.map((meal) => (
+                    <div
+                      key={meal.id}
+                      className="flex items-center justify-between rounded-lg bg-cream px-3 py-2"
                     >
-                      {formatPence(remainingPence)}
-                    </span>
-                  </p>
-                </div>
+                      <div>
+                        <p className="text-xs font-semibold text-navy">{meal.name}</p>
+                        <p className="text-[11px] text-navy-muted">
+                          {capitalize(meal.type)} · {formatPence(meal.costPence)}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeCustomMeal(meal.id)}
+                        className="text-[11px] font-semibold text-danger"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))
+                )}
               </div>
-            </aside>
-          </div>
-        ) : (
-          <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
-            <section className="rounded-lg border border-cream-dark bg-white p-4 md:p-5">
-              {mealsWithoutIngredients.length > 0 && (
-                <p className="mb-3 rounded-lg bg-amber-100 px-3 py-2 text-xs text-navy-muted">
-                  Some selected custom meals have no ingredients, so they will not add
-                  items to this list.
+            </Card>
+
+            <Card>
+              <p className="text-sm font-semibold text-navy">This week's budget</p>
+              <p className="mt-3 text-3xl font-semibold text-navy">
+                {Math.round(budgetUsedPct)}%
+              </p>
+              <p className="text-xs text-navy-muted">budget used</p>
+              <div className="mt-3 h-2 rounded-full bg-cream-dark">
+                <div
+                  className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${Math.min(Math.max(budgetUsedPct, 0), 100)}%`,
+                    background: budgetColor,
+                  }}
+                />
+              </div>
+              <div className="mt-4 space-y-1 text-sm">
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Budget</span>
+                  <span className="font-medium text-navy">
+                    {formatPence(weeklyBudgetPence)}
+                  </span>
                 </p>
-              )}
-              {shoppingItems.length === 0 ? (
-                <div className="rounded-lg bg-cream px-5 py-8 text-center">
-                  <p className="text-sm font-semibold text-navy">No shopping items yet</p>
-                  <p className="mt-1 text-sm text-navy-muted">
-                    Plan meals in the weekly grid and your list will appear here.
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Planned</span>
+                  <span className="font-medium text-navy">
+                    {formatPence(plannedTotalPence)}
+                  </span>
+                </p>
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Remaining</span>
+                  <span
+                    className={`font-medium ${
+                      remainingPence < 0 ? "text-danger" : "text-teal"
+                    }`}
+                  >
+                    {formatPence(remainingPence)}
+                  </span>
+                </p>
+              </div>
+            </Card>
+          </aside>
+        </div>
+      ) : (
+        <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
+          <Card as="section" className="md:p-5">
+            {mealsWithoutIngredients.length > 0 && (
+              <p className="mb-3 rounded-lg bg-amber-100 px-3 py-2 text-xs text-navy-muted">
+                Some selected custom meals have no ingredients, so they will not add
+                items to this list.
+              </p>
+            )}
+            {shoppingItems.length === 0 ? (
+              <div className="rounded-lg bg-cream px-5 py-8 text-center">
+                <p className="text-sm font-semibold text-navy">No shopping items yet</p>
+                <p className="mt-1 text-sm text-navy-muted">
+                  Plan meals in the weekly grid and your list will appear here.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-sm text-navy-muted">
+                    {checkedCount} of {shoppingItems.length} items checked
                   </p>
+                  <div className="flex gap-2">
+                    <Button type="button" variant="secondary" size="sm" onClick={checkAllForWeek}>
+                      Check all
+                    </Button>
+                    <Button type="button" variant="secondary" size="sm" onClick={clearCheckedForWeek}>
+                      Clear
+                    </Button>
+                  </div>
                 </div>
-              ) : (
-                <div className="space-y-5">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm text-navy-muted">
-                      {checkedCount} of {shoppingItems.length} items checked
-                    </p>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={checkAllForWeek}
-                        className="rounded-lg border border-cream-dark bg-white px-3 py-1.5 text-xs font-semibold text-navy transition hover:border-navy/25"
-                      >
-                        Check all
-                      </button>
-                      <button
-                        onClick={clearCheckedForWeek}
-                        className="rounded-lg border border-cream-dark bg-white px-3 py-1.5 text-xs font-semibold text-navy transition hover:border-navy/25"
-                      >
-                        Clear
-                      </button>
+
+                {shoppingByGroup.map(([group, items]) => (
+                  <div key={group}>
+                    <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
+                      {capitalize(group.replace(/-/g, " "))}
+                    </h3>
+                    <div className="space-y-2">
+                      {items.map((item) => (
+                        <label
+                          key={item.key}
+                          className="flex items-center justify-between rounded-lg border border-cream-dark px-3 py-2 text-sm"
+                        >
+                          <span className="flex items-center gap-3">
+                            <input
+                              type="checkbox"
+                              checked={checkedSet.has(item.key)}
+                              onChange={() => toggleItem(item.key)}
+                              className="h-4 w-4 accent-navy"
+                            />
+                            <span
+                              className={
+                                checkedSet.has(item.key)
+                                  ? "text-navy-muted line-through"
+                                  : "text-navy"
+                              }
+                            >
+                              {item.name}
+                            </span>
+                          </span>
+                          <span className="text-right">
+                            <span className="block text-xs font-medium text-navy-muted">
+                              {amountLabel(item.amount, item.unit)}
+                            </span>
+                              <span className="block text-[11px] text-teal">
+                                {item.bestOfferRetailerId && item.bestOfferPence !== null
+                                  ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
+                                  : "No store price yet"}
+                              </span>
+                              {item.substituteSuggestion && (
+                                <span className="block text-[11px] text-coral">{item.substituteSuggestion}</span>
+                              )}
+                              {item.productUrl && (
+                                <a
+                                  href={item.productUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="block text-[11px] text-navy underline underline-offset-2"
+                                >
+                                  Open product
+                                </a>
+                              )}
+                            </span>
+                          </label>
+                        ))}
                     </div>
                   </div>
-
-                  {shoppingByGroup.map(([group, items]) => (
-                    <div key={group}>
-                      <h3 className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
-                        {capitalize(group.replace(/-/g, " "))}
-                      </h3>
-                      <div className="space-y-2">
-                        {items.map((item) => (
-                          <label
-                            key={item.key}
-                            className="flex items-center justify-between rounded-lg border border-cream-dark px-3 py-2 text-sm"
-                          >
-                            <span className="flex items-center gap-3">
-                              <input
-                                type="checkbox"
-                                checked={checkedSet.has(item.key)}
-                                onChange={() => toggleItem(item.key)}
-                                className="h-4 w-4 accent-navy"
-                              />
-                              <span
-                                className={
-                                  checkedSet.has(item.key)
-                                    ? "text-navy-muted line-through"
-                                    : "text-navy"
-                                }
-                              >
-                                {item.name}
-                              </span>
-                            </span>
-                            <span className="text-right">
-                              <span className="block text-xs font-medium text-navy-muted">
-                                {amountLabel(item.amount, item.unit)}
-                              </span>
-                                <span className="block text-[11px] text-teal">
-                                  {item.bestOfferRetailerId && item.bestOfferPence !== null
-                                    ? `Best: ${RETAILER_NAMES[item.bestOfferRetailerId]} ${formatPence(item.bestOfferPence)}`
-                                    : "No store price yet"}
-                                </span>
-                                {item.substituteSuggestion && (
-                                  <span className="block text-[11px] text-coral">{item.substituteSuggestion}</span>
-                                )}
-                                {item.productUrl && (
-                                  <a
-                                    href={item.productUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="block text-[11px] text-navy underline underline-offset-2"
-                                  >
-                                    Open product
-                                  </a>
-                                )}
-                              </span>
-                            </label>
-                          ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <aside className="space-y-4">
-              <div className="rounded-lg border border-cream-dark bg-white p-4">
-                <p className="text-sm font-semibold text-navy">Shopping summary</p>
-                <div className="mt-3 space-y-1 text-sm">
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Items</span>
-                    <span className="font-medium text-navy">{shoppingItems.length}</span>
-                  </p>
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Checked</span>
-                    <span className="font-medium text-navy">{checkedCount}</span>
-                  </p>
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Planned cost</span>
-                    <span className="font-medium text-navy">
-                      {formatPence(plannedTotalPence)}
-                    </span>
-                  </p>
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Priced items</span>
-                    <span className="font-medium text-navy">
-                      {pricedItemCount}/{shoppingItems.length}
-                    </span>
-                  </p>
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Best basket</span>
-                    <span className="font-medium text-navy">
-                      {bestBasket
-                        ? `${RETAILER_NAMES[bestBasket.retailerId]} ${formatPence(bestBasket.totalPence)}`
-                        : "No estimate"}
-                    </span>
-                  </p>
-                  <p className="flex items-center justify-between text-navy-muted">
-                    <span>Cheapest retailer</span>
-                    <span className="font-medium text-navy">
-                      {cheapestRetailer ? RETAILER_NAMES[cheapestRetailer] : "No estimate"}
-                    </span>
-                  </p>
-                </div>
+                ))}
               </div>
+            )}
+          </Card>
 
-              <div className="rounded-lg border border-cream-dark bg-white p-4">
-                <p className="text-sm font-semibold text-navy">Basket by retailer</p>
-                <div className="mt-3 space-y-2">
-                  {basketByRetailer.map((retailer) => (
-                    <p
-                      key={retailer.retailerId}
-                      className="flex items-center justify-between text-xs text-navy-muted"
-                    >
-                      <span>
-                        {RETAILER_NAMES[retailer.retailerId]} ({retailer.matchedCount}/
-                        {generatedShoppingList.items.length})
-                      </span>
-                      <span className="font-semibold text-navy">
-                        {retailer.matchedCount > 0
-                          ? formatPence(retailer.totalPence)
-                          : "No matches"}
-                      </span>
-                    </p>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-lg border border-cream-dark bg-white p-4">
-                <p className="text-sm font-semibold text-navy">Preferred retailers</p>
-                <p className="mt-2 text-xs leading-relaxed text-navy-muted">
-                  {selectedRetailers || "No preferred retailers set yet."}
+          <aside className="space-y-4">
+            <Card>
+              <p className="text-sm font-semibold text-navy">Shopping summary</p>
+              <div className="mt-3 space-y-1 text-sm">
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Items</span>
+                  <span className="font-medium text-navy">{shoppingItems.length}</span>
+                </p>
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Checked</span>
+                  <span className="font-medium text-navy">{checkedCount}</span>
+                </p>
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Planned cost</span>
+                  <span className="font-medium text-navy">
+                    {formatPence(plannedTotalPence)}
+                  </span>
+                </p>
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Priced items</span>
+                  <span className="font-medium text-navy">
+                    {pricedItemCount}/{shoppingItems.length}
+                  </span>
+                </p>
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Best basket</span>
+                  <span className="font-medium text-navy">
+                    {bestBasket
+                      ? `${RETAILER_NAMES[bestBasket.retailerId]} ${formatPence(bestBasket.totalPence)}`
+                      : "No estimate"}
+                  </span>
+                </p>
+                <p className="flex items-center justify-between text-navy-muted">
+                  <span>Cheapest retailer</span>
+                  <span className="font-medium text-navy">
+                    {cheapestRetailer ? RETAILER_NAMES[cheapestRetailer] : "No estimate"}
+                  </span>
                 </p>
               </div>
+            </Card>
 
-              <div className="rounded-lg border border-cream-dark bg-white p-4">
-                <p className="text-sm font-semibold text-navy">Tip</p>
-                <p className="mt-2 text-xs leading-relaxed text-navy-muted">
-                  Keep this list open in-store and check items as you shop to avoid
-                  duplicate buys.
-                </p>
+            <Card>
+              <p className="text-sm font-semibold text-navy">Basket by retailer</p>
+              <div className="mt-3 space-y-2">
+                {basketByRetailer.map((retailer) => (
+                  <p
+                    key={retailer.retailerId}
+                    className="flex items-center justify-between text-xs text-navy-muted"
+                  >
+                    <span>
+                      {RETAILER_NAMES[retailer.retailerId]} ({retailer.matchedCount}/
+                      {generatedShoppingList.items.length})
+                    </span>
+                    <span className="font-semibold text-navy">
+                      {retailer.matchedCount > 0
+                        ? formatPence(retailer.totalPence)
+                        : "No matches"}
+                    </span>
+                  </p>
+                ))}
               </div>
-            </aside>
-          </div>
-        )}
-      </div>
-    </main>
+            </Card>
+
+            <Card>
+              <p className="text-sm font-semibold text-navy">Preferred retailers</p>
+              <p className="mt-2 text-xs leading-relaxed text-navy-muted">
+                {selectedRetailers || "No preferred retailers set yet."}
+              </p>
+            </Card>
+
+            <Card>
+              <p className="text-sm font-semibold text-navy">Tip</p>
+              <p className="mt-2 text-xs leading-relaxed text-navy-muted">
+                Keep this list open in-store and check items as you shop to avoid
+                duplicate buys.
+              </p>
+            </Card>
+          </aside>
+        </div>
+      )}
+    </PageShell>
   );
 }
