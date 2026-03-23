@@ -6,13 +6,31 @@
     "type": "breakfast",
     "prepTimeMinutes": 10,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "aldi",
     "ingredients": [
-      { "ingredientId": "rolled-oats", "quantity": 100, "unit": "g" },
-      { "ingredientId": "greek-yogurt", "quantity": 200, "unit": "g" },
-      { "ingredientId": "frozen-berries", "quantity": 150, "unit": "g" },
-      { "ingredientId": "bananas", "quantity": 1, "unit": "unit" }
+      {
+        "ingredientId": "rolled-oats",
+        "quantity": 100,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "greek-yogurt",
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "frozen-berries",
+        "quantity": 150,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "bananas",
+        "quantity": 1,
+        "unit": "unit"
+      }
     ]
   },
   {
@@ -22,12 +40,26 @@
     "type": "breakfast",
     "prepTimeMinutes": 12,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "eggs", "quantity": 4, "unit": "unit" },
-      { "ingredientId": "wholemeal-bread", "quantity": 0.5, "unit": "unit" },
-      { "ingredientId": "butter", "quantity": 20, "unit": "g" }
+      {
+        "ingredientId": "eggs",
+        "quantity": 4,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 20,
+        "unit": "g"
+      }
     ]
   },
   {
@@ -37,12 +69,26 @@
     "type": "breakfast",
     "prepTimeMinutes": 8,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "aldi",
     "ingredients": [
-      { "ingredientId": "greek-yogurt", "quantity": 250, "unit": "g" },
-      { "ingredientId": "bananas", "quantity": 2, "unit": "unit" },
-      { "ingredientId": "rolled-oats", "quantity": 40, "unit": "g" }
+      {
+        "ingredientId": "greek-yogurt",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "bananas",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "rolled-oats",
+        "quantity": 40,
+        "unit": "g"
+      }
     ]
   },
   {
@@ -52,12 +98,26 @@
     "type": "breakfast",
     "prepTimeMinutes": 6,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "wholemeal-bread", "quantity": 0.5, "unit": "unit" },
-      { "ingredientId": "peanut-butter", "quantity": 60, "unit": "g" },
-      { "ingredientId": "bananas", "quantity": 1, "unit": "unit" }
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "peanut-butter",
+        "quantity": 60,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "bananas",
+        "quantity": 1,
+        "unit": "unit"
+      }
     ]
   },
   {
@@ -67,13 +127,32 @@
     "type": "breakfast",
     "prepTimeMinutes": 15,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian", "gluten-free"],
+    "dietaryTags": [
+      "vegetarian",
+      "gluten-free"
+    ],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "eggs", "quantity": 4, "unit": "unit" },
-      { "ingredientId": "spinach", "quantity": 120, "unit": "g" },
-      { "ingredientId": "cheddar-cheese", "quantity": 80, "unit": "g" },
-      { "ingredientId": "butter", "quantity": 15, "unit": "g" }
+      {
+        "ingredientId": "eggs",
+        "quantity": 4,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 80,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 15,
+        "unit": "g"
+      }
     ]
   },
   {
@@ -83,13 +162,31 @@
     "type": "lunch",
     "prepTimeMinutes": 15,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "aldi",
     "ingredients": [
-      { "ingredientId": "tortilla-wraps", "quantity": 4, "unit": "unit" },
-      { "ingredientId": "chickpeas", "quantity": 1, "unit": "unit" },
-      { "ingredientId": "cucumber", "quantity": 1, "unit": "unit" },
-      { "ingredientId": "spinach", "quantity": 60, "unit": "g" }
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 4,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "cucumber",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 60,
+        "unit": "g"
+      }
     ]
   },
   {
@@ -102,10 +199,26 @@
     "dietaryTags": [],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "pasta", "quantity": 250, "unit": "g" },
-      { "ingredientId": "tuna", "quantity": 2, "unit": "unit" },
-      { "ingredientId": "cherry-tomatoes", "quantity": 200, "unit": "g" },
-      { "ingredientId": "cucumber", "quantity": 1, "unit": "unit" }
+      {
+        "ingredientId": "pasta",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tuna",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "cherry-tomatoes",
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cucumber",
+        "quantity": 1,
+        "unit": "unit"
+      }
     ]
   },
   {
@@ -115,13 +228,31 @@
     "type": "lunch",
     "prepTimeMinutes": 14,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "aldi",
     "ingredients": [
-      { "ingredientId": "microwave-rice", "quantity": 2, "unit": "unit" },
-      { "ingredientId": "mixed-veg", "quantity": 500, "unit": "g" },
-      { "ingredientId": "soy-sauce", "quantity": 30, "unit": "ml" },
-      { "ingredientId": "eggs", "quantity": 2, "unit": "unit" }
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "mixed-veg",
+        "quantity": 500,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 30,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "eggs",
+        "quantity": 2,
+        "unit": "unit"
+      }
     ]
   },
   {
@@ -131,13 +262,31 @@
     "type": "lunch",
     "prepTimeMinutes": 16,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "tomato-soup", "quantity": 600, "unit": "ml" },
-      { "ingredientId": "wholemeal-bread", "quantity": 0.5, "unit": "unit" },
-      { "ingredientId": "cheddar-cheese", "quantity": 120, "unit": "g" },
-      { "ingredientId": "butter", "quantity": 20, "unit": "g" }
+      {
+        "ingredientId": "tomato-soup",
+        "quantity": 600,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 20,
+        "unit": "g"
+      }
     ]
   },
   {
@@ -150,10 +299,26 @@
     "dietaryTags": [],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "tortilla-wraps", "quantity": 4, "unit": "unit" },
-      { "ingredientId": "chicken-breast", "quantity": 400, "unit": "g" },
-      { "ingredientId": "lettuce", "quantity": 200, "unit": "g" },
-      { "ingredientId": "cucumber", "quantity": 1, "unit": "unit" }
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 4,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 400,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lettuce",
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cucumber",
+        "quantity": 1,
+        "unit": "unit"
+      }
     ]
   },
   {
@@ -166,12 +331,37 @@
     "dietaryTags": [],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "beef-mince-500g", "quantity": 250, "unit": "g" },
-      { "ingredientId": "pasta", "quantity": 250, "unit": "g" },
-      { "ingredientId": "tinned-tomatoes", "quantity": 400, "unit": "g" },
-      { "ingredientId": "onion", "quantity": 1, "unit": "unit" },
-      { "ingredientId": "garlic", "quantity": 2, "unit": "unit" },
-      { "ingredientId": "olive-oil", "quantity": 15, "unit": "ml", "optional": true }
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "pasta",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 400,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 15,
+        "unit": "ml",
+        "optional": true
+      }
     ]
   },
   {
@@ -181,14 +371,36 @@
     "type": "dinner",
     "prepTimeMinutes": 30,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "aldi",
     "ingredients": [
-      { "ingredientId": "red-lentils", "quantity": 250, "unit": "g" },
-      { "ingredientId": "coconut-milk", "quantity": 400, "unit": "ml" },
-      { "ingredientId": "onion", "quantity": 1, "unit": "unit" },
-      { "ingredientId": "garlic", "quantity": 2, "unit": "unit" },
-      { "ingredientId": "spinach", "quantity": 100, "unit": "g" }
+      {
+        "ingredientId": "red-lentils",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 400,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 100,
+        "unit": "g"
+      }
     ]
   },
   {
@@ -198,13 +410,31 @@
     "type": "dinner",
     "prepTimeMinutes": 28,
     "basePortions": 2,
-    "dietaryTags": ["gluten-free"],
+    "dietaryTags": [
+      "gluten-free"
+    ],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "salmon-fillets", "quantity": 2, "unit": "unit" },
-      { "ingredientId": "green-beans", "quantity": 300, "unit": "g" },
-      { "ingredientId": "baby-potatoes", "quantity": 600, "unit": "g" },
-      { "ingredientId": "lemon", "quantity": 1, "unit": "unit" }
+      {
+        "ingredientId": "salmon-fillets",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "green-beans",
+        "quantity": 300,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 600,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      }
     ]
   },
   {
@@ -214,14 +444,36 @@
     "type": "dinner",
     "prepTimeMinutes": 22,
     "basePortions": 2,
-    "dietaryTags": ["vegetarian"],
+    "dietaryTags": [
+      "vegetarian"
+    ],
     "preferredRetailer": "aldi",
     "ingredients": [
-      { "ingredientId": "pasta", "quantity": 250, "unit": "g" },
-      { "ingredientId": "passata", "quantity": 500, "unit": "ml" },
-      { "ingredientId": "parmesan", "quantity": 80, "unit": "g" },
-      { "ingredientId": "garlic", "quantity": 2, "unit": "unit" },
-      { "ingredientId": "olive-oil", "quantity": 15, "unit": "ml" }
+      {
+        "ingredientId": "pasta",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 500,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "parmesan",
+        "quantity": 80,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 15,
+        "unit": "ml"
+      }
     ]
   },
   {
@@ -234,10 +486,2644 @@
     "dietaryTags": [],
     "preferredRetailer": "tesco",
     "ingredients": [
-      { "ingredientId": "chicken-breast", "quantity": 500, "unit": "g" },
-      { "ingredientId": "baby-potatoes", "quantity": 800, "unit": "g" },
-      { "ingredientId": "broccoli", "quantity": 300, "unit": "g" },
-      { "ingredientId": "olive-oil", "quantity": 20, "unit": "ml" }
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 500,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 800,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 300,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 20,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "overnight-oats-banana-berry",
+    "name": "Overnight Oats Banana Berry",
+    "emoji": "🥣",
+    "type": "breakfast",
+    "prepTimeMinutes": 8,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "rolled-oats",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "greek-yogurt",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "frozen-berries",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "bananas",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "coconut-berry-oats-bowl",
+    "name": "Coconut Berry Oats Bowl",
+    "emoji": "🥥",
+    "type": "breakfast",
+    "prepTimeMinutes": 10,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "rolled-oats",
+        "quantity": 110,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 180,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "frozen-berries",
+        "quantity": 140,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "bananas",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "scrambled-eggs-spinach-toast",
+    "name": "Scrambled Eggs Spinach Toast",
+    "emoji": "🍳",
+    "type": "breakfast",
+    "prepTimeMinutes": 12,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "eggs",
+        "quantity": 4,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 90,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 15,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "cheesy-spinach-eggs-wrap",
+    "name": "Cheesy Spinach Eggs Wrap",
+    "emoji": "🌯",
+    "type": "breakfast",
+    "prepTimeMinutes": 14,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "eggs",
+        "quantity": 3,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 80,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 60,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "peanut-banana-overnight-oats",
+    "name": "Peanut Banana Overnight Oats",
+    "emoji": "🥜",
+    "type": "breakfast",
+    "prepTimeMinutes": 7,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "rolled-oats",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 200,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "peanut-butter",
+        "quantity": 45,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "bananas",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "tomato-egg-breakfast-wrap",
+    "name": "Tomato Egg Breakfast Wrap",
+    "emoji": "🍅",
+    "type": "breakfast",
+    "prepTimeMinutes": 15,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "eggs",
+        "quantity": 3,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 180,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 0.5,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "chickpea-breakfast-wrap",
+    "name": "Chickpea Breakfast Wrap",
+    "emoji": "🌯",
+    "type": "breakfast",
+    "prepTimeMinutes": 14,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 70,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 0.5,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "lemon-yogurt-berry-parfait",
+    "name": "Lemon Yogurt Berry Parfait",
+    "emoji": "🍋",
+    "type": "breakfast",
+    "prepTimeMinutes": 9,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "greek-yogurt",
+        "quantity": 260,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "frozen-berries",
+        "quantity": 140,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "bananas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 0.5,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "savory-lentil-breakfast-bowl",
+    "name": "Savory Lentil Breakfast Bowl",
+    "emoji": "🍲",
+    "type": "breakfast",
+    "prepTimeMinutes": 18,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "red-lentils",
+        "quantity": 180,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 80,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 10,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "garlic-spinach-egg-scramble",
+    "name": "Garlic Spinach Egg Scramble",
+    "emoji": "🧄",
+    "type": "breakfast",
+    "prepTimeMinutes": 11,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "eggs",
+        "quantity": 4,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 90,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "banana-oat-egg-bowl",
+    "name": "Banana Oat Egg Bowl",
+    "emoji": "🍌",
+    "type": "breakfast",
+    "prepTimeMinutes": 13,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "rolled-oats",
+        "quantity": 100,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "eggs",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "bananas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "peanut-butter",
+        "quantity": 30,
+        "unit": "g",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "id": "berry-coconut-porridge",
+    "name": "Berry Coconut Porridge",
+    "emoji": "🥣",
+    "type": "breakfast",
+    "prepTimeMinutes": 9,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "rolled-oats",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 200,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "frozen-berries",
+        "quantity": 130,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "tuna-egg-breakfast-toast",
+    "name": "Tuna Egg Breakfast Toast",
+    "emoji": "🍞",
+    "type": "breakfast",
+    "prepTimeMinutes": 15,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "tuna",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "eggs",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 0.5,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "spinach-cheddar-breakfast-toast",
+    "name": "Spinach Cheddar Breakfast Toast",
+    "emoji": "🧀",
+    "type": "breakfast",
+    "prepTimeMinutes": 10,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 70,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 70,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "hearty-breakfast-rice-bowl",
+    "name": "Hearty Breakfast Rice Bowl",
+    "emoji": "🍚",
+    "type": "breakfast",
+    "prepTimeMinutes": 14,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "eggs",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 60,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 10,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "lentil-tomato-soup",
+    "name": "Lentil Tomato Soup",
+    "emoji": "🍲",
+    "type": "lunch",
+    "prepTimeMinutes": 24,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "red-lentils",
+        "quantity": 180,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 400,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "chickpea-cucumber-wrap",
+    "name": "Chickpea Cucumber Wrap",
+    "emoji": "🌯",
+    "type": "lunch",
+    "prepTimeMinutes": 12,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "cucumber",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lettuce",
+        "quantity": 80,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "tuna-lemon-pasta-salad",
+    "name": "Tuna Lemon Pasta Salad",
+    "emoji": "🥗",
+    "type": "lunch",
+    "prepTimeMinutes": 16,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tuna",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "cucumber",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "egg-lettuce-sandwich",
+    "name": "Egg Lettuce Sandwich",
+    "emoji": "🥪",
+    "type": "lunch",
+    "prepTimeMinutes": 14,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "eggs",
+        "quantity": 3,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lettuce",
+        "quantity": 80,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 10,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "tomato-cheddar-toastie",
+    "name": "Tomato Cheddar Toastie",
+    "emoji": "🍞",
+    "type": "lunch",
+    "prepTimeMinutes": 13,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 90,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 150,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 15,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "veggie-rice-lunch-bowl",
+    "name": "Veggie Rice Lunch Bowl",
+    "emoji": "🍚",
+    "type": "lunch",
+    "prepTimeMinutes": 12,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "mixed-veg",
+        "quantity": 350,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 20,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chicken-cucumber-wrap",
+    "name": "Chicken Cucumber Wrap",
+    "emoji": "🥙",
+    "type": "lunch",
+    "prepTimeMinutes": 18,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 280,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cucumber",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lettuce",
+        "quantity": 80,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "chickpea-spinach-salad",
+    "name": "Chickpea Spinach Salad",
+    "emoji": "🥗",
+    "type": "lunch",
+    "prepTimeMinutes": 11,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 10,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "garlic-tomato-pasta-lunch",
+    "name": "Garlic Tomato Pasta Lunch",
+    "emoji": "🍝",
+    "type": "lunch",
+    "prepTimeMinutes": 17,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 350,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 12,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "broccoli-cheddar-pasta-salad",
+    "name": "Broccoli Cheddar Pasta Salad",
+    "emoji": "🥗",
+    "type": "lunch",
+    "prepTimeMinutes": 18,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 180,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 70,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "tuna-chickpea-salad-bowl",
+    "name": "Tuna Chickpea Salad Bowl",
+    "emoji": "🥗",
+    "type": "lunch",
+    "prepTimeMinutes": 13,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "tuna",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lettuce",
+        "quantity": 100,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 0.5,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "coconut-lentil-soup",
+    "name": "Coconut Lentil Soup",
+    "emoji": "🥥",
+    "type": "lunch",
+    "prepTimeMinutes": 22,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "red-lentils",
+        "quantity": 170,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 220,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "lemon-chicken-rice-lunch-bowl",
+    "name": "Lemon Chicken Rice Lunch Bowl",
+    "emoji": "🍋",
+    "type": "lunch",
+    "prepTimeMinutes": 19,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 300,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "green-beans",
+        "quantity": 180,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "spinach-parmesan-pasta-lunch",
+    "name": "Spinach Parmesan Pasta Lunch",
+    "emoji": "🧀",
+    "type": "lunch",
+    "prepTimeMinutes": 16,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 90,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "parmesan",
+        "quantity": 50,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "tomato-passata-pasta-lunch",
+    "name": "Tomato Passata Pasta Lunch",
+    "emoji": "🍅",
+    "type": "lunch",
+    "prepTimeMinutes": 15,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 320,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 10,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "salmon-potato-lunch-salad",
+    "name": "Salmon Potato Lunch Salad",
+    "emoji": "🐟",
+    "type": "lunch",
+    "prepTimeMinutes": 20,
+    "basePortions": 2,
+    "dietaryTags": [
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "salmon-fillets",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 450,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lettuce",
+        "quantity": 90,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 0.5,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "chickpea-tuna-wrap",
+    "name": "Chickpea Tuna Wrap",
+    "emoji": "🌯",
+    "type": "lunch",
+    "prepTimeMinutes": 14,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "tuna",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "cucumber",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "egg-spinach-wrap",
+    "name": "Egg Spinach Wrap",
+    "emoji": "🌯",
+    "type": "lunch",
+    "prepTimeMinutes": 13,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "eggs",
+        "quantity": 3,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 80,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 40,
+        "unit": "g",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "id": "quick-beef-rice-lunch-bowl",
+    "name": "Quick Beef Rice Lunch Bowl",
+    "emoji": "🥩",
+    "type": "lunch",
+    "prepTimeMinutes": 19,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "gluten-free",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 15,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "garlic-broccoli-rice-bowl",
+    "name": "Garlic Broccoli Rice Bowl",
+    "emoji": "🥦",
+    "type": "lunch",
+    "prepTimeMinutes": 13,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 15,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chicken-tomato-curry",
+    "name": "Chicken Tomato Curry",
+    "emoji": "🍛",
+    "type": "dinner",
+    "prepTimeMinutes": 28,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 350,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 300,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 180,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chicken-garlic-pasta",
+    "name": "Chicken Garlic Pasta",
+    "emoji": "🍝",
+    "type": "dinner",
+    "prepTimeMinutes": 24,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 320,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "pasta",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 15,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chicken-lemon-potato-tray",
+    "name": "Chicken Lemon Potato Tray",
+    "emoji": "🍋",
+    "type": "dinner",
+    "prepTimeMinutes": 35,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 400,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 700,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 18,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chicken-broccoli-rice-stir-fry",
+    "name": "Chicken Broccoli Rice Stir Fry",
+    "emoji": "🍚",
+    "type": "dinner",
+    "prepTimeMinutes": 23,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 320,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 20,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chicken-spinach-coconut-stew",
+    "name": "Chicken Spinach Coconut Stew",
+    "emoji": "🥥",
+    "type": "dinner",
+    "prepTimeMinutes": 27,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 330,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 130,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 220,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "chicken-tomato-rice-pot",
+    "name": "Chicken Tomato Rice Pot",
+    "emoji": "🍅",
+    "type": "dinner",
+    "prepTimeMinutes": 26,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 320,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 0.5,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "halal-chicken-wrap-platter",
+    "name": "Halal Chicken Wrap Platter",
+    "emoji": "🌯",
+    "type": "dinner",
+    "prepTimeMinutes": 22,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "tortilla-wraps",
+        "quantity": 4,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 340,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lettuce",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cucumber",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "beef-tomato-pasta",
+    "name": "Beef Tomato Pasta",
+    "emoji": "🍝",
+    "type": "dinner",
+    "prepTimeMinutes": 30,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 260,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "pasta",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 320,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "beef-garlic-rice",
+    "name": "Beef Garlic Rice",
+    "emoji": "🥩",
+    "type": "dinner",
+    "prepTimeMinutes": 24,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 260,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 20,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "beef-potato-skillet",
+    "name": "Beef Potato Skillet",
+    "emoji": "🥔",
+    "type": "dinner",
+    "prepTimeMinutes": 29,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 260,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 600,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 15,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "beef-spinach-tomato-bowl",
+    "name": "Beef Spinach Tomato Bowl",
+    "emoji": "🥩",
+    "type": "dinner",
+    "prepTimeMinutes": 25,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 100,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "beef-broccoli-rice-stir-fry",
+    "name": "Beef Broccoli Rice Stir Fry",
+    "emoji": "🥦",
+    "type": "dinner",
+    "prepTimeMinutes": 24,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 18,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "beef-passata-pasta-bake",
+    "name": "Beef Passata Pasta Bake",
+    "emoji": "🍝",
+    "type": "dinner",
+    "prepTimeMinutes": 34,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 260,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "pasta",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 350,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 70,
+        "unit": "g",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "id": "lentil-bolognese",
+    "name": "Lentil Bolognese",
+    "emoji": "🍝",
+    "type": "dinner",
+    "prepTimeMinutes": 28,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "red-lentils",
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "pasta",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 360,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "lentil-coconut-stew",
+    "name": "Lentil Coconut Stew",
+    "emoji": "🥥",
+    "type": "dinner",
+    "prepTimeMinutes": 26,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "red-lentils",
+        "quantity": 190,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 250,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 120,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "lentil-spinach-dhal",
+    "name": "Lentil Spinach Dhal",
+    "emoji": "🍲",
+    "type": "dinner",
+    "prepTimeMinutes": 27,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "red-lentils",
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 130,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "chickpea-tomato-curry-dinner",
+    "name": "Chickpea Tomato Curry",
+    "emoji": "🍛",
+    "type": "dinner",
+    "prepTimeMinutes": 25,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 350,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 180,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chickpea-broccoli-rice-bowl",
+    "name": "Chickpea Broccoli Rice Bowl",
+    "emoji": "🥦",
+    "type": "dinner",
+    "prepTimeMinutes": 20,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 18,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chickpea-spinach-pasta",
+    "name": "Chickpea Spinach Pasta",
+    "emoji": "🍝",
+    "type": "dinner",
+    "prepTimeMinutes": 22,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 100,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 250,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "salmon-lemon-rice",
+    "name": "Salmon Lemon Rice",
+    "emoji": "🐟",
+    "type": "dinner",
+    "prepTimeMinutes": 24,
+    "basePortions": 2,
+    "dietaryTags": [
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "salmon-fillets",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "green-beans",
+        "quantity": 220,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "salmon-garlic-pasta",
+    "name": "Salmon Garlic Pasta",
+    "emoji": "🐟",
+    "type": "dinner",
+    "prepTimeMinutes": 26,
+    "basePortions": 2,
+    "dietaryTags": [],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "salmon-fillets",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "pasta",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 15,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "salmon-potato-green-beans",
+    "name": "Salmon Potato Green Beans",
+    "emoji": "🥔",
+    "type": "dinner",
+    "prepTimeMinutes": 30,
+    "basePortions": 2,
+    "dietaryTags": [
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "salmon-fillets",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 700,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "green-beans",
+        "quantity": 260,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "salmon-tomato-stew",
+    "name": "Salmon Tomato Stew",
+    "emoji": "🍅",
+    "type": "dinner",
+    "prepTimeMinutes": 27,
+    "basePortions": 2,
+    "dietaryTags": [
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "salmon-fillets",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 300,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "salmon-broccoli-traybake",
+    "name": "Salmon Broccoli Traybake",
+    "emoji": "🐟",
+    "type": "dinner",
+    "prepTimeMinutes": 29,
+    "basePortions": 2,
+    "dietaryTags": [
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "salmon-fillets",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 550,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 16,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "veggie-fried-rice",
+    "name": "Veggie Fried Rice",
+    "emoji": "🍚",
+    "type": "dinner",
+    "prepTimeMinutes": 18,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "mixed-veg",
+        "quantity": 420,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 20,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "tomato-spinach-pasta-dinner",
+    "name": "Tomato Spinach Pasta",
+    "emoji": "🍝",
+    "type": "dinner",
+    "prepTimeMinutes": 21,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 300,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 90,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "parmesan",
+        "quantity": 50,
+        "unit": "g",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "id": "broccoli-cheddar-potato-bake",
+    "name": "Broccoli Cheddar Potato Bake",
+    "emoji": "🥔",
+    "type": "dinner",
+    "prepTimeMinutes": 33,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 700,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 110,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 20,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "tuna-tomato-pasta-bake",
+    "name": "Tuna Tomato Pasta Bake",
+    "emoji": "🍝",
+    "type": "dinner",
+    "prepTimeMinutes": 31,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tuna",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "passata",
+        "quantity": 350,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 80,
+        "unit": "g",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "id": "coconut-veg-rice-bowl",
+    "name": "Coconut Veg Rice Bowl",
+    "emoji": "🥥",
+    "type": "dinner",
+    "prepTimeMinutes": 20,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "mixed-veg",
+        "quantity": 400,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 160,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 10,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "garlic-lemon-green-bean-pasta",
+    "name": "Garlic Lemon Green Bean Pasta",
+    "emoji": "🧄",
+    "type": "dinner",
+    "prepTimeMinutes": 23,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "green-beans",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "tomato-soup-grilled-cheese-dinner",
+    "name": "Tomato Soup Grilled Cheese Dinner",
+    "emoji": "🍅",
+    "type": "dinner",
+    "prepTimeMinutes": 19,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "tomato-soup",
+        "quantity": 600,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "wholemeal-bread",
+        "quantity": 0.5,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "cheddar-cheese",
+        "quantity": 90,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "butter",
+        "quantity": 12,
+        "unit": "g"
+      }
+    ]
+  },
+  {
+    "id": "lemon-chickpea-pasta",
+    "name": "Lemon Chickpea Pasta",
+    "emoji": "🍋",
+    "type": "dinner",
+    "prepTimeMinutes": 21,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 12,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "beef-and-broccoli-pasta",
+    "name": "Beef and Broccoli Pasta",
+    "emoji": "🥩",
+    "type": "dinner",
+    "prepTimeMinutes": 26,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "pasta",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "chicken-lemon-green-beans",
+    "name": "Chicken Lemon Green Beans",
+    "emoji": "🍗",
+    "type": "dinner",
+    "prepTimeMinutes": 25,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "chicken-breast",
+        "quantity": 320,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "green-beans",
+        "quantity": 260,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 500,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "spinach-egg-fried-rice-dinner",
+    "name": "Spinach Egg Fried Rice",
+    "emoji": "🍳",
+    "type": "dinner",
+    "prepTimeMinutes": 17,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegetarian",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "eggs",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 90,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 12,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "chickpea-potato-stew",
+    "name": "Chickpea Potato Stew",
+    "emoji": "🥔",
+    "type": "dinner",
+    "prepTimeMinutes": 27,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "chickpeas",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "baby-potatoes",
+        "quantity": 650,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 300,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 1,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "salmon-spinach-rice-bowl",
+    "name": "Salmon Spinach Rice Bowl",
+    "emoji": "🐟",
+    "type": "dinner",
+    "prepTimeMinutes": 22,
+    "basePortions": 2,
+    "dietaryTags": [
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "salmon-fillets",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "spinach",
+        "quantity": 110,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "soy-sauce",
+        "quantity": 12,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "broccoli-garlic-pasta-dinner",
+    "name": "Broccoli Garlic Pasta",
+    "emoji": "🥦",
+    "type": "dinner",
+    "prepTimeMinutes": 20,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "pasta",
+        "quantity": 240,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "broccoli",
+        "quantity": 220,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "olive-oil",
+        "quantity": 12,
+        "unit": "ml"
+      }
+    ]
+  },
+  {
+    "id": "lemon-beef-rice-bowl",
+    "name": "Lemon Beef Rice Bowl",
+    "emoji": "🍋",
+    "type": "dinner",
+    "prepTimeMinutes": 23,
+    "basePortions": 2,
+    "dietaryTags": [
+      "halal",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "tesco",
+    "ingredients": [
+      {
+        "ingredientId": "beef-mince-500g",
+        "quantity": 250,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "microwave-rice",
+        "quantity": 2,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "lemon",
+        "quantity": 1,
+        "unit": "unit"
+      },
+      {
+        "ingredientId": "onion",
+        "quantity": 0.5,
+        "unit": "unit"
+      }
+    ]
+  },
+  {
+    "id": "coconut-tomato-lentils",
+    "name": "Coconut Tomato Lentils",
+    "emoji": "🥥",
+    "type": "dinner",
+    "prepTimeMinutes": 24,
+    "basePortions": 2,
+    "dietaryTags": [
+      "vegan",
+      "dairy-free",
+      "gluten-free"
+    ],
+    "preferredRetailer": "aldi",
+    "ingredients": [
+      {
+        "ingredientId": "red-lentils",
+        "quantity": 190,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "tinned-tomatoes",
+        "quantity": 280,
+        "unit": "g"
+      },
+      {
+        "ingredientId": "coconut-milk",
+        "quantity": 200,
+        "unit": "ml"
+      },
+      {
+        "ingredientId": "garlic",
+        "quantity": 1,
+        "unit": "unit"
+      }
     ]
   }
 ]

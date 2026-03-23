@@ -4,13 +4,17 @@ import Image from "next/image";
 interface BrandLogoProps {
   href?: string;
   className?: string;
+  logoClassName?: string;
   variant?: "brand" | "wordmark";
+  align?: "left" | "center";
 }
 
 export function BrandLogo({
   href = "/",
   className = "",
+  logoClassName = "",
   variant = "brand",
+  align = "left",
 }: BrandLogoProps) {
   const isWordmark = variant === "wordmark";
 
@@ -21,18 +25,18 @@ export function BrandLogo({
       aria-label="Loavish home"
     >
       <span
-        className={
+        className={`${
           isWordmark
             ? "relative block h-10 w-47.5 overflow-hidden md:h-14 md:w-70"
             : "relative block h-7 w-25 overflow-hidden md:h-8 md:w-31"
-        }
+        } ${logoClassName}`}
       >
         <Image
           src={isWordmark ? "/loavish-wordmark.svg" : "/loavish-brand-logo.svg"}
           alt="Loavish"
           fill
           priority
-          className={`object-contain ${isWordmark ? "object-center" : "object-left"}`}
+          className={`object-contain ${align === "center" ? "object-center" : "object-left"}`}
           sizes={isWordmark ? "(min-width: 768px) 220px, 180px" : "(min-width: 768px) 124px, 100px"}
         />
       </span>

@@ -43,3 +43,7 @@ next-env.d.ts
 
 # local execution/task docs (must never be committed)
 TASKS.md
+CLAUDE.md
+CLAUDE 2.md
+PRODUCT.md
+PRODUCT 2.md

@@ -1,30 +1,29 @@
 "use client";
 
-import { useOnboardingStore } from "@/stores/onboarding-store";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { useOnboardingStore } from "@/stores/onboarding-store";
 
 interface StepSuccessProps {
   onComplete?: () => void;
 }
 
 export function StepSuccess({ onComplete }: StepSuccessProps) {
-  const { budget, period, household, dietary, retailers } =
-    useOnboardingStore();
+  const { budget, period, household, dietary, retailers } = useOnboardingStore();
   const router = useRouter();
 
   const budgetLabel = `£${budget} / ${period === "weekly" ? "week" : "month"}`;
   const householdLabel = `${household === 5 ? "5+" : household} ${household === 1 ? "person" : "people"}`;
   const dietLabel =
-    dietary.length === 0 || dietary[0] === "none"
-      ? "No dietary restrictions"
-      : dietary.join(", ");
+    dietary.length === 0 || dietary[0] === "none" ? "No dietary restrictions" : dietary.join(", ");
   const retailersLabel = `${retailers.length} retailer${retailers.length !== 1 ? "s" : ""} selected`;
 
   const summaryItems = [
-    { label: budgetLabel, highlight: true },
-    { label: householdLabel, highlight: true },
-    { label: dietLabel, highlight: false },
-    { label: retailersLabel, highlight: false },
+    { label: budgetLabel, emphasis: true },
+    { label: householdLabel, emphasis: true },
+    { label: dietLabel, emphasis: false },
+    { label: retailersLabel, emphasis: false },
   ];
 
   function handleContinue() {
@@ -33,24 +32,24 @@ export function StepSuccess({ onComplete }: StepSuccessProps) {
   }
 
   return (
-    <div className="text-center py-5">
-      <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-4xl">
-        👍
+    <div className="space-y-7 py-3 text-center">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-teal/15 text-sm font-semibold uppercase tracking-[0.08em] text-teal">
+        Done
       </div>
-      <h2 className="font-heading text-3xl font-extrabold text-navy mb-3">
-        You&apos;re all set!
-      </h2>
-      <p className="text-navy-muted text-sm leading-relaxed mb-8">
-        Here&apos;s what we&apos;ve set up for you. You can update any of this
-        in your profile settings.
-      </p>
 
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {summaryItems.map(({ label, highlight }) => (
+      <header>
+        <h2 className="font-heading text-3xl font-bold text-navy">You're all set</h2>
+        <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-navy-muted">
+          Here's what we've configured. You can update these preferences at any time in settings.
+        </p>
+      </header>
+
+      <div className="flex flex-wrap justify-center gap-2">
+        {summaryItems.map(({ label, emphasis }) => (
           <span
             key={label}
-            className={`px-4 py-2 rounded-full text-sm font-medium ${
-              highlight ? "bg-teal/20 text-navy" : "bg-cream text-navy"
+            className={`rounded-full px-4 py-2 text-sm ${
+              emphasis ? "bg-navy/8 font-medium text-navy" : "bg-cream text-navy-muted"
             }`}
           >
             {label}
@@ -58,23 +57,16 @@ export function StepSuccess({ onComplete }: StepSuccessProps) {
         ))}
       </div>
 
-      <div className="mb-6 rounded-lg border border-teal/30 bg-teal/5 px-5 py-4 text-left">
-        <p className="text-sm font-semibold text-navy">
-          Your Logismos advisor is ready
-        </p>
+      <Card padding="md" className="bg-cream text-left">
+        <p className="text-sm font-semibold text-navy">Your Logismos advisor is ready</p>
         <p className="mt-1 text-sm text-navy-muted">
-          Plan 3 meals on the dashboard and Logismos will start giving you
-          personalised cook-or-eat-out recommendations — and reward you with
-          LoavishPoints for every smart decision.
+          Plan at least 3 meals and you'll start getting personalized cook-or-eat-out recommendations.
         </p>
-      </div>
+      </Card>
 
-      <button
-        onClick={handleContinue}
-        className="w-full rounded-lg bg-teal py-4 text-base font-bold text-white transition-colors duration-150 hover:bg-teal/90"
-      >
-        Go to my dashboard →
-      </button>
+      <Button type="button" variant="success" size="lg" fullWidth onClick={handleContinue}>
+        Go to my dashboard
+      </Button>
     </div>
   );
 }

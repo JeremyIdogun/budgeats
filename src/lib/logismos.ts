@@ -20,6 +20,10 @@ function mealTypeForHour(hour: number): "breakfast" | "lunch" | "dinner" {
   return "dinner";
 }
 
+function formatPenceInEngine(pence: number): string {
+  return `£${(pence / 100).toFixed(2)}`;
+}
+
 function buildReason(
   type: "cook" | "eat_out",
   signals: ContextSignals,
@@ -43,6 +47,68 @@ function buildReason(
     return `Cooking saves you ${savingPence}p vs eating out tonight.`;
   }
   return "No cookable meals fit your current time or budget — eating out makes sense tonight.";
+}
+
+function buildConfidenceBand(params: {
+  bestMeal: CookableMeal | null;
+  eatOutEstimatePence: number;
+  budgetPerDayPence: number;
+}): "low" | "medium" | "high" {
+  const { bestMeal, eatOutEstimatePence, budgetPerDayPence } = params;
+  if (bestMeal && bestMeal.estimatedCostPence < eatOutEstimatePence * 0.7) {
+    return "high";
+  }
+  if (!bestMeal || budgetPerDayPence < 200) {
+    return "low";
+  }
+  return "medium";
+}
+
+function buildTopFactors(params: {
+  type: "cook" | "eat_out";
+  signals: ContextSignals;
+  meal: CookableMeal | null;
+  savingPence: number;
+  budgetPerDayPence: number;
+}): [string, string, string] {
+  const { type, signals, meal, savingPence, budgetPerDayPence } = params;
+  const factors: string[] = [];
+
+  if (type === "cook" && savingPence > 0) {
+    factors.push(`Cooking saves ${formatPenceInEngine(savingPence)} vs eating out`);
+  }
+  if (signals.energyLevel === "low" && meal) {
+    factors.push(`Low energy: ${meal.prepTimeMinutes}-minute meal`);
+  }
+  if (signals.wasteRiskIngredients.length > 0) {
+    factors.push("Ingredient expiry risk detected");
+  }
+  if (signals.calendarEventSoon) {
+    factors.push(`Time window is ${signals.timeWindowMinutes} minutes`);
+  } else {
+    factors.push("No time pressure today");
+  }
+  if (budgetPerDayPence < 200) {
+    factors.push("Budget tight: cooking keeps costs down");
+  } else {
+    factors.push(`${signals.daysRemainingInWeek} days left in budget week`);
+  }
+  if (type === "eat_out" && !meal) {
+    factors.push("No cookable meals fit your current context");
+  }
+
+  const unique = Array.from(new Set(factors));
+  const fallbackFactors = [
+    `${formatPenceInEngine(signals.budgetRemainingPence)} budget remaining this week`,
+    `${signals.daysRemainingInWeek} days left in budget week`,
+    "Recommendation based on your current context",
+  ];
+  for (const fallback of fallbackFactors) {
+    if (unique.length >= 3) break;
+    if (!unique.includes(fallback)) unique.push(fallback);
+  }
+
+  return [unique[0], unique[1], unique[2]];
 }
 
 export function generateRecommendation(
@@ -92,10 +158,31 @@ export function generateRecommendation(
   if (signals.calendarEventSoon && signals.timeWindowMinutes < 35) {
     const now = new Date();
     const expires = new Date(now.getTime() + 30 * 60 * 1000);
+    const confidenceBand = buildConfidenceBand({
+      bestMeal: best,
+      eatOutEstimatePence,
+      budgetPerDayPence: budgetPerDay,
+    });
+    const topFactors = buildTopFactors({
+      type: "eat_out",
+      signals,
+      meal: null,
+      savingPence: 0,
+      budgetPerDayPence: budgetPerDay,
+    });
     return {
       type: "eat_out",
       mealId: null,
       reason: buildReason("eat_out", signals, null, 0),
+      confidenceBand,
+      topFactors,
+      assumptions: {
+        householdSize,
+        energyLevel: signals.energyLevel,
+        daysRemainingInWeek: signals.daysRemainingInWeek,
+        budgetRemainingPence: signals.budgetRemainingPence,
+        eatOutBaseline: `ONS estimate: ${mealType} ${formatPenceInEngine(eatOutEstimatePence)}`,
+      },
       cookCostPence: 0,
       eatOutEstimatePence,
       savingPence: 0,
@@ -112,10 +199,31 @@ export function generateRecommendation(
 
   if (best && best.estimatedCostPence < eatOutEstimatePence) {
     const savingPence = eatOutEstimatePence - best.estimatedCostPence;
+    const confidenceBand = buildConfidenceBand({
+      bestMeal: best,
+      eatOutEstimatePence,
+      budgetPerDayPence: budgetPerDay,
+    });
+    const topFactors = buildTopFactors({
+      type: "cook",
+      signals,
+      meal: best,
+      savingPence,
+      budgetPerDayPence: budgetPerDay,
+    });
     return {
       type: "cook",
       mealId: best.id,
       reason: buildReason("cook", signals, best, savingPence),
+      confidenceBand,
+      topFactors,
+      assumptions: {
+        householdSize,
+        energyLevel: signals.energyLevel,
+        daysRemainingInWeek: signals.daysRemainingInWeek,
+        budgetRemainingPence: signals.budgetRemainingPence,
+        eatOutBaseline: `ONS estimate: ${mealType} ${formatPenceInEngine(eatOutEstimatePence)}`,
+      },
       cookCostPence: best.estimatedCostPence,
       eatOutEstimatePence,
       savingPence,
@@ -127,10 +235,31 @@ export function generateRecommendation(
   }
 
   // Fall back to eat_out
+  const confidenceBand = buildConfidenceBand({
+    bestMeal: best,
+    eatOutEstimatePence,
+    budgetPerDayPence: budgetPerDay,
+  });
+  const topFactors = buildTopFactors({
+    type: "eat_out",
+    signals,
+    meal: best,
+    savingPence: 0,
+    budgetPerDayPence: budgetPerDay,
+  });
   return {
     type: "eat_out",
     mealId: null,
     reason: buildReason("eat_out", signals, null, 0),
+    confidenceBand,
+    topFactors,
+    assumptions: {
+      householdSize,
+      energyLevel: signals.energyLevel,
+      daysRemainingInWeek: signals.daysRemainingInWeek,
+      budgetRemainingPence: signals.budgetRemainingPence,
+      eatOutBaseline: `ONS estimate: ${mealType} ${formatPenceInEngine(eatOutEstimatePence)}`,
+    },
     cookCostPence: best?.estimatedCostPence ?? 0,
     eatOutEstimatePence,
     savingPence: 0,

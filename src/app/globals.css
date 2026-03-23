@@ -19,6 +19,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body), Arial, Helvetica, sans-serif;
+  line-height: 1.5;
 }
 
 h1,
@@ -29,7 +30,20 @@ h5,
 h6 {
   font-family: var(--font-heading), Arial, Helvetica, sans-serif;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
+}
+
+a,
+button,
+input,
+summary {
+  outline-color: rgba(30, 45, 78, 0.35);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(61, 191, 184, 0.25);
+  color: var(--foreground);
 }
 
 .budget-range {

@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { deriveMealCostPence } from "@/lib/budget";
+import { trackEvent } from "@/lib/analytics";
 import { generateRecommendation, type CookableMeal } from "@/lib/logismos";
 import { POINTS } from "@/lib/points";
 import { getTodayDayIndex } from "@/lib/planner";
+import { getPlannerSessionPlan, setPlannerSessionPlan } from "@/lib/planner-persistence";
 import type { Ingredient, IngredientPrice, Meal, MealType } from "@/models";
 import type { ContextSignals, DecisionLogEntry, LogismosRecommendation } from "@/models/logismos";
 import { useBudgeAtsStore } from "@/store";
@@ -53,6 +55,7 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
 
   const [toast, setToast] = useState<string | null>(null);
   const [showAlternatives, setShowAlternatives] = useState(false);
+  const viewedRecommendationsRef = useRef<Set<string>>(new Set());
 
   const selectorState = useMemo(
     () => ({
@@ -66,7 +69,11 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
 
   const budgetRemainingPence = selectBudgetRemainingPence(selectorState);
   const daysRemainingInWeek = selectDaysRemainingInWeek();
-  const wasteRiskIngredients = selectWasteRiskIngredientIds(store);
+  const wasteRiskIngredients = useMemo(
+    () => selectWasteRiskIngredientIds(store),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store.pantryItems],
+  );
 
   const now = new Date();
   const hourOfDay = now.getHours();
@@ -179,6 +186,19 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
     setStoreRecommendation(recommendation);
   }, [recommendation, setStoreRecommendation]);
 
+  useEffect(() => {
+    const recommendationKey = `${recommendation.generatedAt}:${recommendation.mealId ?? recommendation.type}`;
+    if (viewedRecommendationsRef.current.has(recommendationKey)) return;
+    viewedRecommendationsRef.current.add(recommendationKey);
+
+    trackEvent("recommendation_viewed", {
+      decision_type: recommendation.type,
+      confidence_band: recommendation.confidenceBand,
+      projected_savings_pence: recommendation.savingPence,
+      meal_id: recommendation.mealId,
+    });
+  }, [recommendation]);
+
   const recommendedMeal = useMemo(
     () => cookableMealsWithCost.find((m) => m.id === recommendation.mealId) ?? null,
     [cookableMealsWithCost, recommendation.mealId],
@@ -217,6 +237,7 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
       ? POINTS.ACCEPT_COOK_RECOMMENDATION
       : POINTS.ACCEPT_EAT_OUT_RECOMMENDATION;
     let awardedPoints = fallbackPoints;
+    let acceptApiSucceeded = false;
 
     try {
       const response = await fetch("/api/logismos/accept", {
@@ -230,6 +251,7 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
         }),
       });
       if (response.ok) {
+        acceptApiSucceeded = true;
         const payload = (await response.json()) as {
           data?: { pointsAwarded?: number };
         };
@@ -255,11 +277,32 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
           retailerId: preferredRetailer as Parameters<typeof store.addPlannedMeal>[2]["retailerId"],
           portions: householdSize,
         });
+
+        // Sync into the planner session cache so DashboardClient picks it up on next mount
+        const weekStartDate = store.currentWeekPlan?.weekStartDate;
+        const userId = store.user?.id;
+        if (weekStartDate && userId) {
+          const todayDateObj = new Date(`${weekStartDate}T00:00:00Z`);
+          todayDateObj.setUTCDate(todayDateObj.getUTCDate() + todayIndex);
+          const slotKey = `${todayDateObj.toISOString().split("T")[0]}:${mealType}`;
+          const currentPlan = getPlannerSessionPlan(weekStartDate, userId) ?? {};
+          setPlannerSessionPlan(weekStartDate, userId, { ...currentPlan, [slotKey]: meal.id });
+        }
       }
       showToast(`Meal added to your plan. +${awardedPoints} pts!`);
     } else {
       showToast(`Noted! +${awardedPoints} pts!`);
     }
+
+    if (acceptApiSucceeded) {
+      trackEvent("recommendation_accepted", {
+        decision_type: recommendation.type,
+        meal_id: meal?.id ?? null,
+        cost_pence: meal?.estimatedCostPence ?? recommendation.eatOutEstimatePence,
+        points_awarded: awardedPoints,
+      });
+    }
+
     setDismissed(true);
   }
 
@@ -278,6 +321,10 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
       // noop - keep local UX flow
     }
     store.dismissRecommendation();
+    trackEvent("recommendation_overridden", {
+      decision_type: recommendation.type,
+      override_reason: "user_dismissed",
+    });
     setShowAlternatives(true);
   }
 
@@ -300,13 +347,26 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-muted">
           Logismos Recommendation
         </p>
-        <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            isCook ? "bg-teal/10 text-teal" : "bg-coral/10 text-coral"
-          }`}
-        >
-          {isCook ? "Cook" : "Eat out"}
-        </span>
+        <div className="flex items-center gap-2">
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+              isCook ? "bg-teal/10 text-teal" : "bg-coral/10 text-coral"
+            }`}
+          >
+            {isCook ? "Cook" : "Eat out"}
+          </span>
+          <span
+            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+              recommendation.confidenceBand === "high"
+                ? "bg-teal/10 text-teal"
+                : recommendation.confidenceBand === "medium"
+                  ? "bg-amber-100 text-amber-700"
+                  : "bg-cream-dark text-navy-muted"
+            }`}
+          >
+            {recommendation.confidenceBand} confidence
+          </span>
+        </div>
       </div>
 
       {!showAlternatives ? (
@@ -333,7 +393,14 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
                 </p>
               </>
             )}
-            <p className="mt-2 text-sm text-navy">{recommendation.reason}</p>
+            <ul className="mt-2 space-y-1">
+              {recommendation.topFactors.map((factor, i) => (
+                <li key={`${factor}-${i}`} className="flex items-start gap-1.5 text-sm text-navy">
+                  <span className="mt-0.5 text-teal">·</span>
+                  <span>{factor}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Budget impact bar */}
@@ -353,18 +420,33 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
               <div
                 className="h-full rounded-full bg-teal transition-all"
                 style={{
-                  width: `${Math.min(
-                    ((isCook && recommendedMeal
-                      ? recommendedMeal.estimatedCostPence
-                      : recommendation.eatOutEstimatePence) /
-                      weeklyBudgetPence) *
-                      100,
-                    100,
-                  )}%`,
+                  width: weeklyBudgetPence > 0
+                    ? `${Math.min(
+                        ((isCook && recommendedMeal
+                          ? recommendedMeal.estimatedCostPence
+                          : recommendation.eatOutEstimatePence) /
+                          weeklyBudgetPence) *
+                          100,
+                        100,
+                      )}%`
+                    : "0%",
                 }}
               />
             </div>
           </div>
+
+          <details className="mt-3">
+            <summary className="cursor-pointer text-xs text-navy-muted underline">
+              View assumptions
+            </summary>
+            <div className="mt-2 space-y-0.5 text-xs text-navy-muted">
+              <p>Household size: {recommendation.assumptions.householdSize}</p>
+              <p>Energy: {recommendation.assumptions.energyLevel ?? "not set"}</p>
+              <p>Days left in week: {recommendation.assumptions.daysRemainingInWeek}</p>
+              <p>Budget remaining: {formatPence(recommendation.assumptions.budgetRemainingPence)}</p>
+              <p>Eat-out baseline: {recommendation.assumptions.eatOutBaseline}</p>
+            </div>
+          </details>
 
           {/* Actions */}
           <div className="mt-4 flex gap-2">

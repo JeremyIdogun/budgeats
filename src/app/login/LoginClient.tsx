@@ -3,8 +3,12 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { BrandLogo } from "@/components/BrandLogo";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { FieldLabel } from "@/components/ui/FieldLabel";
+import { Input } from "@/components/ui/Input";
+import { createClient } from "@/lib/supabase/client";
 
 export function LoginClient() {
   const router = useRouter();
@@ -25,8 +29,8 @@ export function LoginClient() {
     setLoading(true);
     setError(null);
     setInfo(null);
-    const supabase = createClient();
 
+    const supabase = createClient();
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -44,69 +48,59 @@ export function LoginClient() {
   }
 
   return (
-    <main className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
-      <div className="mx-auto w-full max-w-md">
-        <header className="mb-8 flex justify-center">
-          <BrandLogo href="/" variant="wordmark" />
+    <main className="min-h-screen bg-cream px-4 py-8 md:px-8 md:py-10">
+      <div className="mx-auto w-full max-w-md space-y-6">
+        <header className="flex justify-center">
+          <BrandLogo href="/" variant="wordmark" align="center" />
         </header>
 
-        <section className="rounded-lg border border-cream-dark bg-white p-6 md:p-8">
-          <h1 className="text-2xl font-extrabold text-navy">Sign in</h1>
-          <p className="mt-1 text-sm text-navy-muted">
-            Continue to your dashboard and synced meal plan.
-          </p>
+        <Card as="section" padding="lg" className="space-y-6">
+          <header>
+            <h1 className="text-2xl font-bold text-navy">Sign in</h1>
+            <p className="mt-1 text-sm text-navy-muted">
+              Continue to your dashboard and synced meal plan.
+            </p>
+          </header>
 
-          <form onSubmit={handleSignIn} className="mt-6 space-y-4">
-            <label className="block text-sm font-medium text-navy">
+          <form onSubmit={handleSignIn} className="space-y-4">
+            <FieldLabel>
               Email
-              <input
+              <Input
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 required
-                className="mt-1 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                className="mt-1"
               />
-            </label>
+            </FieldLabel>
 
-            <label className="block text-sm font-medium text-navy">
+            <FieldLabel>
               Password
-              <input
+              <Input
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 required
                 minLength={6}
-                className="mt-1 w-full rounded-lg border border-cream-dark bg-white px-3 py-2.5 text-sm text-navy outline-none transition focus:border-navy/30"
+                className="mt-1"
               />
-            </label>
+            </FieldLabel>
 
-            {error && (
-              <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
-                {error}
-              </p>
-            )}
-            {info && (
-              <p className="rounded-lg bg-teal/10 px-3 py-2 text-sm text-navy">
-                {info}
-              </p>
-            )}
+            {error && <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
+            {info && <p className="rounded-lg bg-teal/10 px-3 py-2 text-sm text-navy">{info}</p>}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-navy px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#172744] disabled:cursor-not-allowed disabled:opacity-60"
-            >
+            <Button type="submit" size="md" fullWidth disabled={loading}>
               {loading ? "Signing in..." : "Sign in"}
-            </button>
+            </Button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-navy-muted">
+          <p className="text-center text-sm text-navy-muted">
             New here?{" "}
             <Link href="/signup" className="font-semibold text-navy hover:underline">
               Create an account
             </Link>
           </p>
-        </section>
+        </Card>
       </div>
     </main>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -14,15 +15,60 @@ const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/planner", label: "Meal Planner" },
   { href: "/shopping", label: "Shopping List" },
+  { href: "/pantry", label: "Pantry" },
   { href: "/insights", label: "Insights" },
   { href: "/settings", label: "Settings" },
   { href: "/rewards", label: "Rewards" },
   { href: "/admin", label: "Admin" },
 ];
 
-export function AppNav() {
+interface AppNavProps {
+  isAdmin?: boolean;
+}
+
+export function AppNav({ isAdmin }: AppNavProps = {}) {
   const pathname = usePathname();
   const router = useRouter();
+  const [resolvedIsAdmin, setResolvedIsAdmin] = useState<boolean>(Boolean(isAdmin));
+  const adminEmails = useMemo(
+    () =>
+      (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "")
+        .split(",")
+        .map((email) => email.trim().toLowerCase())
+        .filter(Boolean),
+    [],
+  );
+
+  const visibleLinks = resolvedIsAdmin
+    ? NAV_LINKS
+    : NAV_LINKS.filter((link) => link.href !== "/admin");
+
+  useEffect(() => {
+    if (typeof isAdmin === "boolean") {
+      setResolvedIsAdmin(isAdmin);
+      return;
+    }
+
+    let cancelled = false;
+    async function resolveAdminState() {
+      if (adminEmails.length === 0) {
+        if (!cancelled) setResolvedIsAdmin(false);
+        return;
+      }
+
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const email = (user?.email ?? "").trim().toLowerCase();
+      if (!cancelled) setResolvedIsAdmin(adminEmails.includes(email));
+    }
+
+    void resolveAdminState();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAdmin, adminEmails]);
 
   async function handleLogout() {
     await flushPlannerStateToServer();
@@ -57,16 +103,16 @@ export function AppNav() {
 
       <div className="mt-3 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <nav className="flex min-w-max flex-nowrap items-center gap-6">
-          {NAV_LINKS.map((link) => {
+          {visibleLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`whitespace-nowrap pb-3 text-sm transition-colors duration-150 ${
+                className={`whitespace-nowrap border-b-2 pb-3 text-sm transition-colors duration-150 ${
                   isActive
-                    ? "font-medium text-navy"
-                    : "font-normal text-navy-muted hover:text-navy"
+                    ? "border-teal font-medium text-navy"
+                    : "border-transparent font-normal text-navy-muted hover:text-navy"
                 }`}
               >
                 {link.label}

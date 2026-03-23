@@ -94,6 +94,9 @@ export default function SignupPage() {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
+      },
     });
 
     setLoading(false);
@@ -145,7 +148,7 @@ export default function SignupPage() {
     <main className="min-h-screen bg-cream px-4 py-5 md:px-8 md:py-7">
       <div className="mx-auto w-full max-w-md">
         <header className="mb-8 flex justify-center">
-          <BrandLogo href="/" variant="wordmark" />
+          <BrandLogo href="/" variant="wordmark" align="center" />
         </header>
 
         <section className="rounded-lg border border-cream-dark bg-white p-6 md:p-8">

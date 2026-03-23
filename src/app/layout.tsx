@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, Plus_Jakarta_Sans } from "next/font/google";
+import { AnalyticsInit } from "@/components/analytics/AnalyticsInit";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -45,7 +46,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} ${plusJakarta.variable} font-body bg-cream`}>{children}</body>
+      <body className={`${manrope.variable} ${plusJakarta.variable} font-body bg-cream`}>
+        <AnalyticsInit />
+        {children}
+      </body>
     </html>
   );
 }
