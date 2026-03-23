@@ -7,6 +7,8 @@ import { useOnboardingStore } from "@/stores/onboarding-store";
 interface Props {
   onNext: () => void;
   onBack: () => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
 export const RETAILER_OPTIONS = [
@@ -51,7 +53,7 @@ export const RETAILER_OPTIONS = [
   },
 ];
 
-export function StepRetailers({ onNext, onBack }: Props) {
+export function StepRetailers({ onNext, onBack, loading = false, error = null }: Props) {
   const { retailers: selected, toggleRetailer } = useOnboardingStore();
 
   return (
@@ -93,8 +95,16 @@ export function StepRetailers({ onNext, onBack }: Props) {
         })}
       </div>
 
-      <Button type="button" onClick={onNext} size="lg" fullWidth disabled={selected.length === 0}>
-        Let's go
+      {error && <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
+
+      <Button
+        type="button"
+        onClick={onNext}
+        size="lg"
+        fullWidth
+        disabled={selected.length === 0 || loading}
+      >
+        {loading ? "Saving..." : "Let's go"}
       </Button>
     </div>
   );

@@ -9,17 +9,32 @@ function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [invalid, setInvalid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       setInvalid(true);
       return;
     }
     setInvalid(false);
-    setSubmitted(true);
-    // TODO: POST to waitlist endpoint (e.g. Resend / Loops)
-    console.log("Waitlist signup:", email);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) {
+        setInvalid(true);
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setInvalid(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (submitted) {
@@ -54,9 +69,10 @@ function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
       />
       <button
         type="submit"
-        className="flex-shrink-0 rounded-xl bg-navy px-5 py-2.5 text-sm font-bold text-white transition hover:-translate-y-px hover:bg-[#162340] hover:shadow-[0_4px_16px_rgba(30,45,78,0.2)]"
+        disabled={loading}
+        className="flex-shrink-0 rounded-xl bg-navy px-5 py-2.5 text-sm font-bold text-white transition hover:-translate-y-px hover:bg-[#162340] hover:shadow-[0_4px_16px_rgba(30,45,78,0.2)] disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {cta}
+        {loading ? "Sending…" : cta}
       </button>
     </form>
   );

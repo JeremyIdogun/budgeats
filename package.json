@@ -14,6 +14,8 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
+    "@react-email/components": "^1.0.10",
+    "@react-email/render": "^2.0.4",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.4",
     "next": "16.1.6",
@@ -22,6 +24,8 @@
     "posthog-node": "^5.28.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "resend": "^6.9.4",
+    "zod": "^4.3.6",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
