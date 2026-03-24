@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -51,27 +51,6 @@ function FacebookIcon() {
   );
 }
 
-function InstagramIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4 shrink-0"
-      role="img"
-    >
-      <defs>
-        <linearGradient id="ig-gradient" x1="0%" x2="100%" y1="100%" y2="0%">
-          <stop offset="0%" stopColor="#F58529" />
-          <stop offset="50%" stopColor="#DD2A7B" />
-          <stop offset="100%" stopColor="#515BD4" />
-        </linearGradient>
-      </defs>
-      <rect x="2.2" y="2.2" width="19.6" height="19.6" rx="6" fill="url(#ig-gradient)" />
-      <circle cx="12" cy="12" r="4.2" fill="none" stroke="#fff" strokeWidth="1.8" />
-      <circle cx="17.1" cy="6.9" r="1.2" fill="#fff" />
-    </svg>
-  );
-}
 
 export default function SignupPage() {
   const router = useRouter();
@@ -80,12 +59,10 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [confirmationSent, setConfirmationSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [oauthLoading, setOauthLoading] = useState<"google" | "facebook" | null>(
-    null,
-  );
+  const [oauthLoading, setOauthLoading] = useState<"google" | "facebook" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleSignUp(event: FormEvent<HTMLFormElement>) {
+  async function handleSignUp(event: React.SyntheticEvent) {
     event.preventDefault();
     setLoading(true);
     setError(null);
@@ -130,12 +107,6 @@ export default function SignupPage() {
       setOauthLoading(null);
       setError(oauthError.message);
     }
-  }
-
-  function handleInstagramClick() {
-    setError(
-      "Instagram sign-up is not supported by Supabase Auth directly yet. Use Google, Facebook, or email/password.",
-    );
   }
 
   function handleUseDifferentEmail() {
@@ -241,15 +212,6 @@ export default function SignupPage() {
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-cream-dark bg-white transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <FacebookIcon />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleInstagramClick}
-                  disabled={loading || oauthLoading !== null}
-                  title="Sign up with Instagram"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-cream-dark bg-white transition hover:border-navy/25 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <InstagramIcon />
                 </button>
               </div>
 
