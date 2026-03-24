@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Plus_Jakarta_Sans } from "next/font/google";
 import { AnalyticsInit } from "@/components/analytics/AnalyticsInit";
 import "./globals.css";
@@ -20,6 +20,15 @@ export const metadata: Metadata = {
   title: "Loavish",
   description: "Plan meals, track food spending, and optimize grocery costs.",
   applicationName: "Loavish",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Loavish",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: "Loavish",
     description: "Plan meals, track food spending, and optimize grocery costs.",
@@ -35,8 +44,18 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     shortcut: ["/favicon.svg"],
-    apple: [{ url: "/favicon.svg" }],
+    apple: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1B2C4D",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

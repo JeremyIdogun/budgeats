@@ -17,7 +17,8 @@ export async function getOptionalPrisma(): Promise<unknown | null> {
       const { PrismaPg } = await import("@prisma/adapter-pg");
       const { Pool } = await import("pg");
       const pool = new Pool({ connectionString: url });
-      const adapter = new PrismaPg(pool);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const adapter = new PrismaPg(pool as any);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const client = new PrismaClient({ adapter } as any);
       return client;

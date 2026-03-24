@@ -1,17 +1,10 @@
-import fs from 'fs';
-import path from 'path';
 import { render } from '@react-email/render';
 import { WaitlistConfirmation } from './templates/WaitlistConfirmation';
 import { resend, FROM_EMAIL } from './resend';
 
-function getLogoDataUri(): string {
-  const logoPath = path.join(process.cwd(), 'public', 'loavish-email-logo.png');
-  const buffer = fs.readFileSync(logoPath);
-  return `data:image/png;base64,${buffer.toString('base64')}`;
-}
-
 export async function sendWaitlistConfirmation(email: string): Promise<void> {
-  const logoSrc = getLogoDataUri();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://loavish.com';
+  const logoSrc = `${appUrl}/loavish-email-logo.png`;
   const html = await render(WaitlistConfirmation({ email, logoSrc }));
 
   const { error } = await resend.emails.send({
