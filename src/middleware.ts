@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 const COMING_SOON = process.env.NEXT_PUBLIC_COMING_SOON === "true";
 
 // Routes allowed through in coming-soon mode
-const ALLOWED_PREFIXES = ["/_next", "/api", "/favicon", "/robots", "/sitemap"];
+const ALLOWED_PREFIXES = ["/_next", "/api", "/favicon", "/robots", "/sitemap", "/icons"];
 const STATIC_FILE_EXTENSIONS = [
   ".png",
   ".jpg",
@@ -23,6 +23,7 @@ const STATIC_FILE_EXTENSIONS = [
   ".txt",
   ".xml",
   ".json",
+  ".webmanifest",
 ];
 
 export function middleware(request: NextRequest) {
