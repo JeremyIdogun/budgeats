@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Plus_Jakarta_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { AnalyticsInit } from "@/components/analytics/AnalyticsInit";
 import "./globals.css";
 
@@ -68,6 +69,7 @@ export default function RootLayout({
       <body className={`${manrope.variable} ${plusJakarta.variable} font-body bg-cream`}>
         <AnalyticsInit />
         {children}
+        <Analytics />
       </body>
     </html>
   );
