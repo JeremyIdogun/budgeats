@@ -1,5 +1,6 @@
-import { ReviewQueueClient } from "@/components/products/ReviewQueueClient";
+import { redirect } from "next/navigation";
+import { launchFlags } from "@/lib/launch-flags";
 
 export default function ProductReviewPage() {
-  return <ReviewQueueClient />;
+  redirect(launchFlags.adminProductReview ? "/admin/products/review" : "/dashboard");
 }

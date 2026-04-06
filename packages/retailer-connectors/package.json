@@ -6,6 +6,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "test": "node ../../node_modules/.pnpm/vitest@*/node_modules/vitest/vitest.mjs run"
+  },
   "dependencies": {
     "apify-client": "^2.22.3"
   }

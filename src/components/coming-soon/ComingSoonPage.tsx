@@ -3,35 +3,42 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { FooterLinks } from "@/components/site/FooterLinks";
 
 /* ── Waitlist form ── */
 function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [invalid, setInvalid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       setInvalid(true);
+      setErrorMessage("Enter a valid email address.");
       return;
     }
     setInvalid(false);
+    setErrorMessage(null);
     setLoading(true);
     try {
-      const res = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
       if (!res.ok) {
+        const payload = (await res.json().catch(() => null)) as { error?: string } | null;
         setInvalid(true);
+        setErrorMessage(payload?.error ?? "Unable to join the waitlist right now.");
         return;
       }
       setSubmitted(true);
     } catch {
       setInvalid(true);
+      setErrorMessage("Unable to join the waitlist right now.");
     } finally {
       setLoading(false);
     }
@@ -47,34 +54,42 @@ function WaitlistForm({ cta = "Join waitlist →" }: { cta?: string }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex gap-2.5 rounded-2xl border bg-white px-5 py-2 shadow-card transition-all focus-within:shadow-[0_2px_24px_rgba(61,191,184,0.15)]"
-      style={{
-        borderColor: invalid ? "#E8693A" : "#EDEBE7",
-        // @ts-expect-error CSS variable
-        "--tw-ring-color": "transparent",
-      }}
-    >
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-          setInvalid(false);
+    <div>
+      <form
+        onSubmit={handleSubmit}
+        className="flex gap-2.5 rounded-2xl border bg-white px-5 py-2 shadow-card transition-all focus-within:shadow-[0_2px_24px_rgba(61,191,184,0.15)]"
+        style={{
+          borderColor: invalid ? "#E8693A" : "#EDEBE7",
+          // @ts-expect-error CSS variable
+          "--tw-ring-color": "transparent",
         }}
-        placeholder="your@email.com"
-        autoComplete="email"
-        className="min-w-0 flex-1 bg-transparent text-sm text-navy outline-none placeholder:text-navy-muted"
-      />
-      <button
-        type="submit"
-        disabled={loading}
-        className="flex-shrink-0 rounded-xl bg-navy px-5 py-2.5 text-sm font-bold text-white transition hover:-translate-y-px hover:bg-[#162340] hover:shadow-[0_4px_16px_rgba(30,45,78,0.2)] disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {loading ? "Sending…" : cta}
-      </button>
-    </form>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setInvalid(false);
+            setErrorMessage(null);
+          }}
+          placeholder="your@email.com"
+          autoComplete="email"
+          className="min-w-0 flex-1 bg-transparent text-sm text-navy outline-none placeholder:text-navy-muted"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-shrink-0 rounded-xl bg-navy px-5 py-2.5 text-sm font-bold text-white transition hover:-translate-y-px hover:bg-[#162340] hover:shadow-[0_4px_16px_rgba(30,45,78,0.2)] disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? "Sending…" : cta}
+        </button>
+      </form>
+      {errorMessage && (
+        <p className="mt-3 text-left text-xs font-medium text-coral">
+          {errorMessage}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -348,26 +363,7 @@ export function ComingSoonPage() {
         <span className="relative block h-10 w-[190px] md:h-11 md:w-[220px]">
           <Image src="/loavish-wordmark-white.svg" alt="Loavish" fill className="object-contain object-left" sizes="(min-width: 768px) 220px, 190px" />
         </span>
-        <ul className="flex list-none gap-6">
-          <li>
-            <a href="#" className="text-xs text-white/50 transition hover:text-white/90">
-              Privacy
-            </a>
-          </li>
-          <li>
-            <a href="#" className="text-xs text-white/50 transition hover:text-white/90">
-              Terms
-            </a>
-          </li>
-          <li>
-            <a
-              href="mailto:hello@loavish.app"
-              className="text-xs text-white/50 transition hover:text-white/90"
-            >
-              Contact
-            </a>
-          </li>
-        </ul>
+        <FooterLinks linkClassName="text-xs text-white/50 transition hover:text-white/90" />
         <span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
           &copy; 2025 Loavish. All rights reserved.
         </span>

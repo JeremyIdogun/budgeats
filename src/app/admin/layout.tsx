@@ -1,10 +1,15 @@
 import Link from "next/link";
+import { launchFlags } from "@/lib/launch-flags";
 import { requireAdminPage } from "@/lib/server/auth";
 
 const ADMIN_LINKS = [
   { href: "/admin/runs", label: "Runs" },
-  { href: "/admin/products/unmatched", label: "Unmatched" },
-  { href: "/admin/products/review", label: "Review Queue" },
+  ...(launchFlags.adminProductReview
+    ? [
+        { href: "/admin/products/unmatched", label: "Unmatched" },
+        { href: "/admin/products/review", label: "Review Queue" },
+      ]
+    : []),
   { href: "/admin/ingredients", label: "Ingredients" },
   { href: "/admin/meals", label: "Meals Coverage" },
   { href: "/admin/retailers", label: "Retailers" },

@@ -2,6 +2,7 @@ import { ComingSoonPage } from "@/components/coming-soon/ComingSoonPage";
 import Link from "next/link";
 import Image from "next/image";
 import { BrandLogo } from "@/components/BrandLogo";
+import { FooterLinks } from "@/components/site/FooterLinks";
 
 const STATS = [
   {
@@ -226,17 +227,7 @@ export default function HomePage() {
             sizes="(min-width: 768px) 220px, 190px"
           />
         </span>
-        <ul className="flex list-none gap-6">
-          <li>
-            <a href="#" className="text-xs text-white/50 transition-colors duration-150 hover:text-white/90">Privacy</a>
-          </li>
-          <li>
-            <a href="#" className="text-xs text-white/50 transition-colors duration-150 hover:text-white/90">Terms</a>
-          </li>
-          <li>
-            <a href="mailto:hello@loavish.app" className="text-xs text-white/50 transition-colors duration-150 hover:text-white/90">Contact</a>
-          </li>
-        </ul>
+        <FooterLinks linkClassName="text-xs text-white/50 transition-colors duration-150 hover:text-white/90" />
         <span className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
           &copy; 2025 Loavish. All rights reserved.
         </span>

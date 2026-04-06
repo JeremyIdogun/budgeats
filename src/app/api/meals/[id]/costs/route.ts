@@ -1,20 +1,32 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import mealsData from "@/data/meals.json";
 import type { Ingredient, Meal, RetailerId } from "@/models";
 import { computeMealPricing, toRetailerId } from "@/lib/pricing-engine-adapter";
 import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
+import { captureServerError } from "@/lib/server/observability";
+import { applyRateLimitHeaders, enforceRateLimit } from "@/lib/server/rate-limit";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-export async function GET(request: Request, context: RouteContext) {
+export async function GET(request: NextRequest, context: RouteContext) {
+  const rateLimit = await enforceRateLimit(request, {
+    name: "meal-cost-preview",
+    limit: 60,
+    windowMs: 5 * 60 * 1000,
+  });
+  if (rateLimit.response) return rateLimit.response;
+
   try {
     const { id } = await context.params;
     const meal = (mealsData as Meal[]).find((row) => row.id === id);
     if (!meal) {
-      return NextResponse.json({ error: `Meal not found for id=${id}` }, { status: 404 });
+      return applyRateLimitHeaders(
+        NextResponse.json({ error: `Meal not found for id=${id}` }, { status: 404 }),
+        rateLimit.state,
+      );
     }
 
     const url = new URL(request.url);
@@ -40,14 +52,15 @@ export async function GET(request: Request, context: RouteContext) {
       forcedRetailerId: retailerId ?? undefined,
     });
 
-    return NextResponse.json({
+    return applyRateLimitHeaders(NextResponse.json({
       data: priced,
       explanation: priced.explanation,
-    });
+    }), rateLimit.state);
   } catch (error) {
-    return NextResponse.json(
+    captureServerError(error, { event: "api.meal.costs.failed", route: "/api/meals/[id]/costs" });
+    return applyRateLimitHeaders(NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to compute meal costs" },
       { status: 500 },
-    );
+    ), rateLimit.state);
   }
 }

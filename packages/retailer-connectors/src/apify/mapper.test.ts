@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, expect, it } from "vitest";
 import { mapAsdaApifyItem } from "../asda/apify-mapper";
 import { mapSainsburysApifyItem } from "../sainsburys/apify-mapper";
 import { mapTescoApifyItem } from "../tesco/apify-mapper";
@@ -14,14 +13,14 @@ describe("tesco apify mapper", () => {
       url: "https://www.tesco.com/groceries/en-GB/products/123",
     });
 
-    assert.equal(result?.base_price_pence, 185);
-    assert.equal(result?.loyalty_price_pence, 150);
-    assert.equal(result?.loyalty_scheme, "clubcard");
+    expect(result?.base_price_pence).toBe(185);
+    expect(result?.loyalty_price_pence).toBe(150);
+    expect(result?.loyalty_scheme).toBe("clubcard");
   });
 
   it("drops rows with missing or zero base price", () => {
-    assert.equal(mapTescoApifyItem({ name: "No Price" }), null);
-    assert.equal(mapTescoApifyItem({ name: "Zero", price: 0 }), null);
+    expect(mapTescoApifyItem({ name: "No Price" })).toBeNull();
+    expect(mapTescoApifyItem({ name: "Zero", price: 0 })).toBeNull();
   });
 });
 
@@ -35,9 +34,9 @@ describe("asda apify mapper", () => {
       url: "https://groceries.asda.com/product/abc",
     });
 
-    assert.equal(result?.base_price_pence, 150);
-    assert.equal(result?.promo_price_pence, 120);
-    assert.equal(result?.loyalty_price_pence, null);
+    expect(result?.base_price_pence).toBe(150);
+    expect(result?.promo_price_pence).toBe(120);
+    expect(result?.loyalty_price_pence).toBeNull();
   });
 
   it("keeps current price as base when no valid discount exists", () => {
@@ -49,8 +48,8 @@ describe("asda apify mapper", () => {
       url: "https://groceries.asda.com/product/abc",
     });
 
-    assert.equal(result?.base_price_pence, 120);
-    assert.equal(result?.promo_price_pence, null);
+    expect(result?.base_price_pence).toBe(120);
+    expect(result?.promo_price_pence).toBeNull();
   });
 });
 
@@ -64,8 +63,8 @@ describe("sainsburys apify mapper", () => {
       url: "https://www.sainsburys.co.uk/gol-ui/product/xyz",
     });
 
-    assert.equal(result?.base_price_pence, 150);
-    assert.equal(result?.loyalty_price_pence, 125);
-    assert.equal(result?.loyalty_scheme, "nectar");
+    expect(result?.base_price_pence).toBe(150);
+    expect(result?.loyalty_price_pence).toBe(125);
+    expect(result?.loyalty_scheme).toBe("nectar");
   });
 });

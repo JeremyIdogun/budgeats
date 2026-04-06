@@ -59,8 +59,6 @@ export function RewardsClient({
   const entries = useDecisionStore((s) => s.entries);
   const [summary, setSummary] = useState<RewardsSummary | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(true);
-  const [showProModal, setShowProModal] = useState(false);
-  const [proToast, setProToast] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -103,12 +101,6 @@ export function RewardsClient({
       ? Math.min(Math.max(logismosScore, 0), 100)
       : 0;
 
-  function handleProClick() {
-    setShowProModal(false);
-    setProToast(true);
-    setTimeout(() => setProToast(false), 3000);
-  }
-
   const achievements = [
     {
       label: "First Cook",
@@ -130,12 +122,6 @@ export function RewardsClient({
           <h1 className="text-2xl font-extrabold text-navy md:text-3xl">Rewards</h1>
           <p className="text-sm text-navy-muted">Your LoavishPoints &amp; Logismos Score.</p>
         </section>
-
-        {proToast && (
-          <div className="mb-4 rounded-lg bg-navy px-4 py-3 text-center text-sm font-semibold text-white">
-            Pro coming soon — you&apos;ll be first to know!
-          </div>
-        )}
 
         <section className="rounded-lg border border-cream-dark bg-white p-5">
           <div className="flex items-center justify-between">
@@ -275,53 +261,7 @@ export function RewardsClient({
           </div>
         </section>
 
-        <section className="mt-4 rounded-lg border border-cream-dark bg-white p-5">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="font-semibold text-navy">Upgrade to Loavish Pro</p>
-              <p className="mt-1 text-sm text-navy-muted">
-                £3.99/mo or £39/yr · Unlock advanced insights, calendar sync, and more.
-              </p>
-            </div>
-            <button
-              onClick={() => setShowProModal(true)}
-              className="shrink-0 rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
-            >
-              Upgrade
-            </button>
-          </div>
-        </section>
       </div>
-
-      {showProModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/40 px-4">
-          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-card">
-            <p className="text-lg font-semibold text-navy">Loavish Pro</p>
-            <ul className="mt-3 space-y-2 text-sm text-navy-muted">
-              <li>Calendar sync for smarter recommendations</li>
-              <li>Geo-aware eat-out deals near you</li>
-              <li>Advanced spending analytics</li>
-              <li>Social leaderboard</li>
-              <li>Priority support</li>
-            </ul>
-            <p className="mt-4 text-sm font-semibold text-navy">£3.99/mo or £39/yr</p>
-            <div className="mt-5 flex gap-3">
-              <button
-                onClick={handleProClick}
-                className="flex-1 rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#172744]"
-              >
-                Join the waitlist
-              </button>
-              <button
-                onClick={() => setShowProModal(false)}
-                className="rounded-lg border border-cream-dark px-4 py-2.5 text-sm font-semibold text-navy-muted"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </main>
   );
 }

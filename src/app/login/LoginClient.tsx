@@ -86,6 +86,15 @@ export function LoginClient() {
               />
             </FieldLabel>
 
+            <div className="flex justify-end">
+              <Link
+                href="/forgot-password"
+                className="text-sm font-semibold text-navy hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
             {error && <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>}
             {info && <p className="rounded-lg bg-teal/10 px-3 py-2 text-sm text-navy">{info}</p>}
 

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import type { Ingredient, RetailerId } from "@/models";
 import {
@@ -8,23 +8,32 @@ import {
 } from "@/lib/pricing-engine-adapter";
 import { withCache } from "@/lib/server/cache";
 import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
+import { captureServerError } from "@/lib/server/observability";
+import { applyRateLimitHeaders, enforceRateLimit } from "@/lib/server/rate-limit";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  const rateLimit = await enforceRateLimit(request, {
+    name: "pricing-ingredient",
+    limit: 90,
+    windowMs: 5 * 60 * 1000,
+  });
+  if (rateLimit.response) return rateLimit.response;
+
   const url = new URL(request.url);
   const ingredientId = url.searchParams.get("id");
   if (!ingredientId) {
-    return NextResponse.json(
+    return applyRateLimitHeaders(NextResponse.json(
       { error: "Missing required query param: id" },
       { status: 400 },
-    );
+    ), rateLimit.state);
   }
 
   const ingredient = (ingredientsData as Ingredient[]).find((item) => item.id === ingredientId);
   if (!ingredient) {
-    return NextResponse.json(
+    return applyRateLimitHeaders(NextResponse.json(
       { error: `Ingredient not found for id=${ingredientId}` },
       { status: 404 },
-    );
+    ), rateLimit.state);
   }
 
   const retailer = toRetailerId(url.searchParams.get("retailerId"));
@@ -53,14 +62,15 @@ export async function GET(request: Request) {
         forcedRetailerId: retailer ?? undefined,
       }));
 
-    return NextResponse.json({
+    return applyRateLimitHeaders(NextResponse.json({
       data: priced,
       explanation: priced.explanation,
-    });
+    }), rateLimit.state);
   } catch (error) {
-    return NextResponse.json(
+    captureServerError(error, { event: "api.pricing.ingredient.failed", route: "/api/v1/pricing/ingredient" });
+    return applyRateLimitHeaders(NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to price ingredient" },
       { status: 400 },
-    );
+    ), rateLimit.state);
   }
 }

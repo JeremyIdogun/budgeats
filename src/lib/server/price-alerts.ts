@@ -1,6 +1,6 @@
-import pricesData from "@/data/prices.json";
 import type { IngredientPrice, RetailerId } from "@/models";
 import { getOptionalPrisma } from "@/lib/server/optional-prisma";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
 
 export interface PriceAlertRow {
   id: string;
@@ -55,32 +55,25 @@ type MinimalPrisma = {
   };
 };
 
-function buildCurrentPriceMap(): Map<string, number> {
-  const map = new Map<string, number>();
-  for (const row of pricesData as IngredientPrice[]) {
-    const key = `${row.ingredientId}:${row.retailerId}`;
-    const existing = map.get(key);
-    if (typeof existing !== "number" || row.pricePerStorageUnit < existing) {
-      map.set(key, row.pricePerStorageUnit);
-    }
-  }
-  return map;
-}
+async function resolveCurrentPrice(
+  ingredientId: string,
+  retailerId: string | null,
+): Promise<number | null> {
+  const prices = (await loadIngredientPrices({
+    ingredientIds: [ingredientId],
+    retailerIds: retailerId ? [retailerId as RetailerId] : undefined,
+  })) as IngredientPrice[];
 
-function resolveCurrentPrice(ingredientId: string, retailerId: string | null): number | null {
-  const map = buildCurrentPriceMap();
-  if (retailerId) {
-    const direct = map.get(`${ingredientId}:${retailerId}`);
-    return typeof direct === "number" ? direct : null;
-  }
+  const relevant = prices.filter((row) => {
+    if (row.ingredientId !== ingredientId) return false;
+    return retailerId ? row.retailerId === retailerId : true;
+  });
 
-  let best: number | null = null;
-  for (const [key, value] of map.entries()) {
-    const [ing] = key.split(":");
-    if (ing !== ingredientId) continue;
-    if (best === null || value < best) best = value;
-  }
-  return best;
+  if (relevant.length === 0) return null;
+  return relevant.reduce<number | null>((best, row) => {
+    if (best === null || row.pricePerStorageUnit < best) return row.pricePerStorageUnit;
+    return best;
+  }, null);
 }
 
 export async function createPriceAlert(input: {
@@ -155,7 +148,7 @@ export async function runPriceAlertsCheck(): Promise<{
   const updated: PriceAlertRow[] = [];
 
   for (const row of rows) {
-    const current = resolveCurrentPrice(row.canonical_ingredient_id, row.retailer_id);
+    const current = await resolveCurrentPrice(row.canonical_ingredient_id, row.retailer_id);
     if (current !== null && current <= row.threshold_price_pence) {
       row.last_notified_price_pence = current;
       row.triggered_at = now;

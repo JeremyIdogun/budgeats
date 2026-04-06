@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/BrandLogo";
 import { NavBudgetPill } from "@/components/navigation/NavBudgetPill";
+import { launchFlags } from "@/lib/launch-flags";
 import { createClient } from "@/lib/supabase/client";
 import {
   clearPlannerSessionCache,
@@ -20,7 +21,7 @@ const NAV_LINKS = [
   { href: "/pantry", label: "Pantry" },
   { href: "/insights", label: "Insights" },
   { href: "/settings", label: "Settings" },
-  { href: "/rewards", label: "Rewards" },
+  ...(launchFlags.rewards ? [{ href: "/rewards", label: "Rewards" }] : []),
   { href: "/admin", label: "Admin" },
 ];
 
