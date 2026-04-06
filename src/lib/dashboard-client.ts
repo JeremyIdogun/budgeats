@@ -22,6 +22,10 @@ export interface DashboardClientCommonProps {
   initialPlan: Record<string, string>;
   initialCheckedItems: string[];
   initialCustomMeals: DashboardCustomMeal[];
+  initialPantryItems: Record<string, boolean>;
+  initialBudgetNudgeDismissedForWeek: string | null;
+  initialBudgetOverridePence: number | null;
+  initialBudgetOverrideWeekStartDate: string | null;
   profileRetailers: string[];
   profileWeeklyBudgetPence: number | null;
   profileBudgetPeriod: "weekly" | "monthly" | null;

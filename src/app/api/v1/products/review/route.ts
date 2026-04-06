@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { listReviewQueue, setMatchDecision } from "@/lib/product-match-review";
+import { requireAdminApiUser } from "@/lib/server/auth";
 import { cacheDeleteByPrefix } from "@/lib/server/cache";
 
 interface ReviewDecisionBody {
@@ -8,6 +9,9 @@ interface ReviewDecisionBody {
 }
 
 export async function GET() {
+  const auth = await requireAdminApiUser();
+  if ("response" in auth) return auth.response;
+
   const queue = listReviewQueue();
   return NextResponse.json({
     data: queue,
@@ -16,6 +20,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAdminApiUser();
+  if ("response" in auth) return auth.response;
+
   let body: ReviewDecisionBody;
   try {
     body = (await request.json()) as ReviewDecisionBody;

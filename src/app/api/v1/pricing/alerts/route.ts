@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createPriceAlert, listPriceAlerts } from "@/lib/server/price-alerts";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedApiUser } from "@/lib/server/auth";
 import { toRetailerId } from "@/lib/pricing-engine-adapter";
 import { captureServerError } from "@/lib/server/observability";
 
@@ -12,12 +12,10 @@ interface PriceAlertBody {
 
 export async function GET() {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const auth = await requireAuthenticatedApiUser();
+    if ("response" in auth) return auth.response;
 
-    const rows = await listPriceAlerts({ userId: user?.id ?? "anonymous" });
+    const rows = await listPriceAlerts({ userId: auth.user.id });
     return NextResponse.json({
       data: rows,
       explanation: `Loaded ${rows.length} active price alerts.`,
@@ -33,10 +31,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const auth = await requireAuthenticatedApiUser();
+    if ("response" in auth) return auth.response;
 
     const body = (await request.json()) as PriceAlertBody;
     const ingredientId = typeof body.ingredientId === "string" ? body.ingredientId.trim() : "";
@@ -52,7 +48,7 @@ export async function POST(request: Request) {
     }
 
     const row = await createPriceAlert({
-      userId: user?.id ?? "anonymous",
+      userId: auth.user.id,
       ingredientId,
       retailerId,
       thresholdPricePence: Math.round(threshold),

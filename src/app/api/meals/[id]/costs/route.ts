@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import mealsData from "@/data/meals.json";
-import pricesData from "@/data/prices.json";
-import type { Ingredient, IngredientPrice, Meal, RetailerId } from "@/models";
+import type { Ingredient, Meal, RetailerId } from "@/models";
 import { computeMealPricing, toRetailerId } from "@/lib/pricing-engine-adapter";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -19,9 +19,12 @@ export async function GET(request: Request, context: RouteContext) {
 
     const url = new URL(request.url);
     const retailerId = toRetailerId(url.searchParams.get("retailerId"));
+    const prices = await loadIngredientPrices({
+      ingredientIds: meal.ingredients.map((entry) => entry.ingredientId),
+    });
     const preferredRetailers = Array.from(
       new Set(
-        (pricesData as IngredientPrice[])
+        prices
           .filter((price) => meal.ingredients.some((entry) => entry.ingredientId === price.ingredientId))
           .map((price) => price.retailerId),
       ),
@@ -30,7 +33,7 @@ export async function GET(request: Request, context: RouteContext) {
     const priced = computeMealPricing({
       meal,
       ingredients: ingredientsData as Ingredient[],
-      prices: pricesData as IngredientPrice[],
+      prices,
       preferredRetailers: preferredRetailers.length > 0 ? preferredRetailers : (["tesco"] as RetailerId[]),
       loyaltyEnabled: false,
       householdSize: 2,

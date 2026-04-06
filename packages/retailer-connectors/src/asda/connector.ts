@@ -1,7 +1,9 @@
 import { parsePackSize } from "../../../shared/src/units";
+import { runApifyActor, type ApifyFetcherOptions } from "../apify/fetcher";
 import { scrapeWithPlaywright } from "../internal/scraping";
 import { buildRawProduct, extract, parsePriceToPence, splitBlocks } from "../internal/parsing";
-import type { SnapshotStore } from "../runtime";
+import { persistSnapshot, withExponentialBackoff, type SnapshotStore } from "../runtime";
+import { ASDA_ACTOR_ID, mapAsdaApifyItems } from "./apify-mapper";
 import type {
   BootstrapInput,
   NormalizedRetailerProduct,
@@ -55,6 +57,7 @@ export class AsdaConnector implements RetailerConnector {
   constructor(
     private readonly snapshotStore: SnapshotStore,
     private readonly htmlFetcher?: (url: string, context: RetailerContext) => Promise<string>,
+    private readonly apifyOptions?: ApifyFetcherOptions,
   ) {}
 
   async bootstrapContext(input: BootstrapInput): Promise<RetailerContext> {
@@ -89,19 +92,66 @@ export class AsdaConnector implements RetailerConnector {
     });
   }
 
+  private async fetchApify(
+    resourceKey: string,
+    input: Record<string, unknown>,
+  ): Promise<RawProduct[]> {
+    const items = await withExponentialBackoff(
+      () => runApifyActor(this.apifyOptions!, { actorId: ASDA_ACTOR_ID, input }),
+      { attempts: 3, baseDelayMs: 2000 },
+    );
+
+    await persistSnapshot({
+      retailerId: "asda",
+      resource: resourceKey,
+      body: JSON.stringify(items),
+      contentType: "application/json",
+      store: this.snapshotStore,
+    });
+
+    return mapAsdaApifyItems(items);
+  }
+
   async searchProducts(query: string, context: RetailerContext): Promise<RawProduct[]> {
+    if (this.apifyOptions) {
+      return this.fetchApify(`search/${query}`, {
+        query,
+        postcode: context.postcode ?? undefined,
+        maxItems: 50,
+      });
+    }
+
     const url = `https://groceries.asda.com/search/${encodeURIComponent(query)}`;
     const html = await this.fetchHtml(url, context, `search/${query}`);
     return parseAsdaHtml(html);
   }
 
   async fetchCategory(categoryId: string, context: RetailerContext): Promise<RawProduct[]> {
+    if (this.apifyOptions) {
+      return this.fetchApify(`category/${categoryId}`, {
+        query: categoryId,
+        postcode: context.postcode ?? undefined,
+        maxItems: 50,
+      });
+    }
+
     const url = `https://groceries.asda.com/section/${encodeURIComponent(categoryId)}`;
     const html = await this.fetchHtml(url, context, `category/${categoryId}`);
     return parseAsdaHtml(html);
   }
 
   async fetchProduct(productId: string, context: RetailerContext): Promise<RawProduct> {
+    if (this.apifyOptions) {
+      const products = await this.fetchApify(`product/${productId}`, {
+        query: productId,
+        postcode: context.postcode ?? undefined,
+        maxItems: 25,
+      });
+      const product = products.find((item) => item.retailer_product_id === productId) ?? products[0];
+      if (!product) throw new Error(`Asda product not found for productId=${productId}`);
+      return product;
+    }
+
     const url = `https://groceries.asda.com/product/${encodeURIComponent(productId)}`;
     const html = await this.fetchHtml(url, context, `product/${productId}`);
     const product = parseAsdaHtml(html).find((item) => item.retailer_product_id === productId) ?? parseAsdaHtml(html)[0];
@@ -121,6 +171,7 @@ export class AsdaConnector implements RetailerConnector {
       category: raw.category,
       pack_size_raw: normalizePackSize(raw.pack_size_raw, raw.name),
       base_price_pence: raw.base_price_pence,
+      promo_price_pence: raw.promo_price_pence ?? undefined,
       product_url: raw.product_url,
       scraped_at: raw.scraped_at,
       image_url: raw.image_url,

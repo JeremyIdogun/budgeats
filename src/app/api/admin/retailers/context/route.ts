@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import { getRetailerContextSummary } from "@/lib/server/admin-metrics";
+import { requireAdminApiUser } from "@/lib/server/auth";
 
 export async function GET() {
-  const summary = await getRetailerContextSummary();
-  return NextResponse.json({
-    data: summary,
-    explanation: `Loaded ${summary.total} retailer context rows.`,
-  });
+  const auth = await requireAdminApiUser();
+  if ("response" in auth) return auth.response;
+
+  return NextResponse.json(
+    { error: "Retailer context persistence is temporarily unavailable." },
+    { status: 503 },
+  );
 }

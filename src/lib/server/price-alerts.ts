@@ -15,10 +15,6 @@ export interface PriceAlertRow {
   updated_at: string;
 }
 
-declare global {
-  var __priceAlertsStore: PriceAlertRow[] | undefined;
-}
-
 type MinimalPrisma = {
   priceAlert: {
     create: (input: {
@@ -59,13 +55,6 @@ type MinimalPrisma = {
   };
 };
 
-function priceAlertsStore(): PriceAlertRow[] {
-  if (!globalThis.__priceAlertsStore) {
-    globalThis.__priceAlertsStore = [];
-  }
-  return globalThis.__priceAlertsStore;
-}
-
 function buildCurrentPriceMap(): Map<string, number> {
   const map = new Map<string, number>();
   for (const row of pricesData as IngredientPrice[]) {
@@ -101,82 +90,58 @@ export async function createPriceAlert(input: {
   thresholdPricePence: number;
 }): Promise<PriceAlertRow> {
   const prisma = (await getOptionalPrisma()) as MinimalPrisma | null;
-  if (prisma) {
-    try {
-      const row = await prisma.priceAlert.create({
-        data: {
-          user_id: input.userId,
-          canonical_ingredient_id: input.ingredientId,
-          retailer_id: input.retailerId,
-          threshold_price_pence: input.thresholdPricePence,
-          is_active: true,
-        },
-      });
-      return {
-        id: row.id,
-        user_id: row.user_id,
-        canonical_ingredient_id: row.canonical_ingredient_id,
-        retailer_id: row.retailer_id,
-        threshold_price_pence: row.threshold_price_pence,
-        last_notified_price_pence: row.last_notified_price_pence,
-        is_active: row.is_active,
-        triggered_at: row.triggered_at ? row.triggered_at.toISOString() : null,
-        created_at: row.created_at.toISOString(),
-        updated_at: row.updated_at.toISOString(),
-      };
-    } catch {
-      // fallback
-    }
+  if (!prisma) {
+    throw new Error("Persistent price-alert storage is unavailable");
   }
 
-  const now = new Date().toISOString();
-  const row: PriceAlertRow = {
-    id: crypto.randomUUID(),
-    user_id: input.userId,
-    canonical_ingredient_id: input.ingredientId,
-    retailer_id: input.retailerId,
-    threshold_price_pence: input.thresholdPricePence,
-    last_notified_price_pence: null,
-    is_active: true,
-    triggered_at: null,
-    created_at: now,
-    updated_at: now,
+  const row = await prisma.priceAlert.create({
+    data: {
+      user_id: input.userId,
+      canonical_ingredient_id: input.ingredientId,
+      retailer_id: input.retailerId,
+      threshold_price_pence: input.thresholdPricePence,
+      is_active: true,
+    },
+  });
+  return {
+    id: row.id,
+    user_id: row.user_id,
+    canonical_ingredient_id: row.canonical_ingredient_id,
+    retailer_id: row.retailer_id,
+    threshold_price_pence: row.threshold_price_pence,
+    last_notified_price_pence: row.last_notified_price_pence,
+    is_active: row.is_active,
+    triggered_at: row.triggered_at ? row.triggered_at.toISOString() : null,
+    created_at: row.created_at.toISOString(),
+    updated_at: row.updated_at.toISOString(),
   };
-  priceAlertsStore().unshift(row);
-  return row;
 }
 
 export async function listPriceAlerts(input?: { userId?: string }): Promise<PriceAlertRow[]> {
   const prisma = (await getOptionalPrisma()) as MinimalPrisma | null;
-  if (prisma) {
-    try {
-      const rows = await prisma.priceAlert.findMany({
-        where: {
-          user_id: input?.userId ?? undefined,
-          is_active: true,
-        },
-        orderBy: { created_at: "desc" },
-      });
-      return rows.map((row) => ({
-        id: row.id,
-        user_id: row.user_id,
-        canonical_ingredient_id: row.canonical_ingredient_id,
-        retailer_id: row.retailer_id,
-        threshold_price_pence: row.threshold_price_pence,
-        last_notified_price_pence: row.last_notified_price_pence,
-        is_active: row.is_active,
-        triggered_at: row.triggered_at ? row.triggered_at.toISOString() : null,
-        created_at: row.created_at.toISOString(),
-        updated_at: row.updated_at.toISOString(),
-      }));
-    } catch {
-      // fallback
-    }
+  if (!prisma) {
+    throw new Error("Persistent price-alert storage is unavailable");
   }
 
-  const rows = [...priceAlertsStore()].filter((row) => row.is_active);
-  if (!input?.userId) return rows;
-  return rows.filter((row) => row.user_id === input.userId);
+  const rows = await prisma.priceAlert.findMany({
+    where: {
+      user_id: input?.userId ?? undefined,
+      is_active: true,
+    },
+    orderBy: { created_at: "desc" },
+  });
+  return rows.map((row) => ({
+    id: row.id,
+    user_id: row.user_id,
+    canonical_ingredient_id: row.canonical_ingredient_id,
+    retailer_id: row.retailer_id,
+    threshold_price_pence: row.threshold_price_pence,
+    last_notified_price_pence: row.last_notified_price_pence,
+    is_active: row.is_active,
+    triggered_at: row.triggered_at ? row.triggered_at.toISOString() : null,
+    created_at: row.created_at.toISOString(),
+    updated_at: row.updated_at.toISOString(),
+  }));
 }
 
 export async function runPriceAlertsCheck(): Promise<{

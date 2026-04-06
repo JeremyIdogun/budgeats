@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import mealsData from "@/data/meals.json";
-import pricesData from "@/data/prices.json";
-import type { Ingredient, IngredientPrice, Meal, RetailerId } from "@/models";
+import type { Ingredient, Meal, RetailerId } from "@/models";
 import { computeBasketPricing, toRetailerId } from "@/lib/pricing-engine-adapter";
 import { withCache } from "@/lib/server/cache";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
 
 interface BasketRequestBody {
   mealIds?: unknown;
@@ -59,10 +59,14 @@ export async function POST(request: Request) {
     );
   }
 
+  const prices = await loadIngredientPrices({
+    ingredientIds: Array.from(new Set(meals.flatMap((meal) => meal.ingredients.map((entry) => entry.ingredientId)))),
+  });
+
   const requestedRetailers = parseRetailerIds(body.retailerIds);
   const fallbackRetailers = Array.from(
     new Set(
-      (pricesData as IngredientPrice[]).map((price) => price.retailerId),
+      prices.map((price) => price.retailerId),
     ),
   ) as RetailerId[];
   const retailerIds = requestedRetailers.length > 0 ? requestedRetailers : fallbackRetailers;
@@ -80,7 +84,7 @@ export async function POST(request: Request) {
       computeBasketPricing({
         meals,
         ingredients: ingredientsData as Ingredient[],
-        prices: pricesData as IngredientPrice[],
+        prices,
         retailerIds,
         loyaltyPrefs,
       }));

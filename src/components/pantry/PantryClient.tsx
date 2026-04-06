@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useDashboardPersistState } from "@/components/dashboard/useDashboardPersistState";
 import { AppNav } from "@/components/navigation/AppNav";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
 import type { DashboardClientCommonProps } from "@/lib/dashboard-client";
@@ -37,6 +38,13 @@ export function PantryClient({
   profileBudgetPeriod,
   profileHouseholdSize,
   profileDietaryPreferences,
+  initialPlan,
+  initialCheckedItems,
+  initialCustomMeals,
+  initialPantryItems,
+  initialBudgetNudgeDismissedForWeek,
+  initialBudgetOverridePence,
+  initialBudgetOverrideWeekStartDate,
 }: DashboardClientCommonProps) {
   useHydratedProfile({
     userId,
@@ -50,6 +58,32 @@ export function PantryClient({
   const ingredients = useBudgeAtsStore((state) => state.ingredients);
   const pantryItems = useBudgeAtsStore((state) => state.pantryItems);
   const togglePantryItem = useBudgeAtsStore((state) => state.togglePantryItem);
+  const setPantryItems = useBudgeAtsStore((state) => state.setPantryItems);
+  const budgetNudgeDismissedForWeek = useBudgeAtsStore((state) => state.budgetNudgeDismissedForWeek);
+  const setBudgetNudgeDismissedForWeek = useBudgeAtsStore(
+    (state) => state.setBudgetNudgeDismissedForWeek,
+  );
+
+  useEffect(() => {
+    setPantryItems(initialPantryItems);
+    setBudgetNudgeDismissedForWeek(initialBudgetNudgeDismissedForWeek);
+  }, [
+    initialPantryItems,
+    initialBudgetNudgeDismissedForWeek,
+    setPantryItems,
+    setBudgetNudgeDismissedForWeek,
+  ]);
+
+  useDashboardPersistState({
+    userId,
+    plan: initialPlan,
+    checkedItems: initialCheckedItems,
+    customMeals: initialCustomMeals,
+    pantryItems,
+    budgetNudgeDismissedForWeek,
+    budgetOverridePence: initialBudgetOverridePence,
+    budgetOverrideWeekStartDate: initialBudgetOverrideWeekStartDate,
+  });
 
   const inStockCount = useMemo(
     () => Object.values(pantryItems).filter(Boolean).length,

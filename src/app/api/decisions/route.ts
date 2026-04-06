@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { listDecisionLog } from "@/lib/logismos-ledger";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedApiUser } from "@/lib/server/auth";
 import { captureServerError } from "@/lib/server/observability";
 
 function parseAcceptedFilter(value: string | null): boolean | undefined {
@@ -14,10 +14,8 @@ function parseAcceptedFilter(value: string | null): boolean | undefined {
 
 export async function GET(request: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const auth = await requireAuthenticatedApiUser();
+    if ("response" in auth) return auth.response;
 
     const url = new URL(request.url);
     const accepted = parseAcceptedFilter(url.searchParams.get("accepted"));
@@ -27,7 +25,7 @@ export async function GET(request: Request) {
       : 200;
 
     const rows = await listDecisionLog({
-      userId: user?.id ?? undefined,
+      userId: auth.user.id,
       accepted,
       limit,
     });

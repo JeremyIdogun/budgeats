@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import mealsData from "@/data/meals.json";
-import pricesData from "@/data/prices.json";
-import type { Ingredient, IngredientPrice, Meal, UserProfile, WeekPlan } from "@/models";
+import type { Ingredient, Meal, UserProfile, WeekPlan } from "@/models";
 import { generateShoppingList } from "@/lib/shopping";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -40,8 +40,12 @@ export async function GET(_request: Request, context: RouteContext) {
       updatedAt: new Date().toISOString(),
     };
 
+    const prices = await loadIngredientPrices({
+      ingredientIds: meal.ingredients.map((entry) => entry.ingredientId),
+    });
+
     const retailerIds = Array.from(
-      new Set((pricesData as IngredientPrice[]).map((price) => price.retailerId)),
+      new Set(prices.map((price) => price.retailerId)),
     );
     const user: UserProfile = {
       id: "preview-user",
@@ -58,7 +62,7 @@ export async function GET(_request: Request, context: RouteContext) {
       weekPlan,
       mealsData as Meal[],
       ingredientsData as Ingredient[],
-      pricesData as IngredientPrice[],
+      prices,
       user,
     );
 

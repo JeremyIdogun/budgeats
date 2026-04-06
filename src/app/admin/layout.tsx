@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireAdminPage } from "@/lib/server/auth";
 
 const ADMIN_LINKS = [
   { href: "/admin/runs", label: "Runs" },
@@ -9,7 +10,9 @@ const ADMIN_LINKS = [
   { href: "/admin/retailers", label: "Retailers" },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  await requireAdminPage("/admin");
+
   return (
     <div className="flex min-h-screen">
       <aside className="w-52 shrink-0 bg-navy text-cream flex flex-col">

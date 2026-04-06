@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
+import { useDashboardPersistState } from "@/components/dashboard/useDashboardPersistState";
 import { WeeklyBudgetNudge } from "@/components/dashboard/WeeklyBudgetNudge";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
 import { LogismosCard } from "@/components/logismos/LogismosCard";
@@ -45,15 +46,16 @@ export function DashboardOverview({
   initialPlan,
   initialCheckedItems,
   initialCustomMeals,
+  initialPantryItems,
+  initialBudgetNudgeDismissedForWeek,
+  initialBudgetOverridePence,
+  initialBudgetOverrideWeekStartDate,
   profileRetailers,
   profileWeeklyBudgetPence,
   profileBudgetPeriod,
   profileHouseholdSize,
   profileDietaryPreferences,
 }: DashboardClientCommonProps) {
-  void initialCheckedItems;
-  void initialCustomMeals;
-
   const { effectiveUser, householdSize, preferredRetailers, weeklyBudgetPence } =
     useHydratedProfile({
       userId,
@@ -66,10 +68,26 @@ export function DashboardOverview({
 
   const storeState = useBudgeAtsStore();
   const setCurrentWeekPlan = useBudgeAtsStore((state) => state.setCurrentWeekPlan);
+  const setPantryItems = useBudgeAtsStore((state) => state.setPantryItems);
+  const setBudgetNudgeDismissedForWeek = useBudgeAtsStore(
+    (state) => state.setBudgetNudgeDismissedForWeek,
+  );
 
   const weekStart = useMemo(() => startOfWeek(new Date()), []);
   const weekDays = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
   const weekKey = isoDate(weekStart);
+  const persistedBudgetOverridePence =
+    initialBudgetOverrideWeekStartDate === weekKey ? initialBudgetOverridePence : null;
+
+  useEffect(() => {
+    setPantryItems(initialPantryItems);
+    setBudgetNudgeDismissedForWeek(initialBudgetNudgeDismissedForWeek);
+  }, [
+    initialPantryItems,
+    initialBudgetNudgeDismissedForWeek,
+    setPantryItems,
+    setBudgetNudgeDismissedForWeek,
+  ]);
 
   const dashboardLibraryMeals = useMemo(
     () => storeState.meals.filter((meal) => isDashboardMealType(meal.type)),
@@ -110,13 +128,42 @@ export function DashboardOverview({
     const weekPlanWithOverride =
       storeWeekStartDate === libraryWeekPlan.weekStartDate && storeBudgetOverridePence !== undefined
         ? { ...libraryWeekPlan, budgetOverridePence: storeBudgetOverridePence }
+        : persistedBudgetOverridePence !== null
+          ? { ...libraryWeekPlan, budgetOverridePence: persistedBudgetOverridePence }
         : libraryWeekPlan;
 
     setCurrentWeekPlan(weekPlanWithOverride);
-  }, [libraryWeekPlan, setCurrentWeekPlan, storeWeekStartDate, storeBudgetOverridePence]);
+  }, [
+    libraryWeekPlan,
+    setCurrentWeekPlan,
+    storeWeekStartDate,
+    storeBudgetOverridePence,
+    persistedBudgetOverridePence,
+  ]);
 
   const effectiveWeekPlan =
     storeState.currentWeekPlan?.weekStartDate === weekKey ? storeState.currentWeekPlan : libraryWeekPlan;
+
+  useDashboardPersistState({
+    userId,
+    plan: initialPlan,
+    checkedItems: initialCheckedItems,
+    customMeals: initialCustomMeals,
+    pantryItems: storeState.pantryItems,
+    budgetNudgeDismissedForWeek: storeState.budgetNudgeDismissedForWeek,
+    budgetOverridePence:
+      effectiveWeekPlan.weekStartDate === weekKey
+        ? effectiveWeekPlan.budgetOverridePence ?? persistedBudgetOverridePence
+        : persistedBudgetOverridePence,
+    budgetOverrideWeekStartDate:
+      (
+        effectiveWeekPlan.weekStartDate === weekKey
+          ? effectiveWeekPlan.budgetOverridePence ?? persistedBudgetOverridePence
+          : persistedBudgetOverridePence
+      ) !== null
+        ? weekKey
+        : null,
+  });
 
   const selectorState = useMemo<BudgeAtsState>(
     () => ({
@@ -244,7 +291,7 @@ export function DashboardOverview({
           {alertState === "under-planned" && (
             <div className="flex flex-wrap items-start justify-between gap-4 border-l-2 border-amber-400 pl-4">
               <p className="text-sm text-navy">
-                You've planned {plannedMealCount} meals this week. Aim for at least 14 to stay within your{" "}
+                You&apos;ve planned {plannedMealCount} meals this week. Aim for at least 14 to stay within your{" "}
                 {formatPence(effectiveBudgetPence)} budget.
               </p>
               <Link href="/planner" className={buttonClasses({ variant: "primary", size: "sm" })}>

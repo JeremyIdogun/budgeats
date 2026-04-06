@@ -1,4 +1,4 @@
-import { assertNotBlocked, persistSnapshot, requiredSnapshotBucket, withExponentialBackoff } from "../runtime";
+import { assertNotBlocked, persistSnapshot, withExponentialBackoff } from "../runtime";
 import type { RetailerContext } from "../types";
 import type { SnapshotStore } from "../runtime";
 
@@ -33,7 +33,6 @@ export async function scrapeWithPlaywright(input: {
   snapshotStore: SnapshotStore;
   resourceKey: string;
 }): Promise<string> {
-  requiredSnapshotBucket();
   const dynamicImport = new Function("m", "return import(m)") as (moduleName: string) => Promise<unknown>;
   const playwright = (await dynamicImport("playwright")) as PlaywrightModule;
 

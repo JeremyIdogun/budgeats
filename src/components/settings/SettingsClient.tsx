@@ -24,6 +24,7 @@ import { HOUSEHOLD_OPTIONS } from "@/components/onboarding/StepHousehold";
 import { RETAILER_OPTIONS } from "@/components/onboarding/StepRetailers";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { useBudgeAtsStore } from "@/store";
+import { useDecisionStore } from "@/store/decisions";
 import { poundsToPence } from "@/utils/currency";
 import type { BudgetPeriod, DietaryTag, RetailerId, UserProfile } from "@/models";
 import type { DashboardClientCommonProps } from "@/lib/dashboard-client";
@@ -78,6 +79,8 @@ export function SettingsClient({
   profileHouseholdSize,
   profileDietaryPreferences,
   profileEmail,
+  initialBudgetOverridePence,
+  initialBudgetOverrideWeekStartDate,
 }: DashboardClientCommonProps) {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
@@ -103,6 +106,8 @@ export function SettingsClient({
     [weekStart],
   );
   const weekKey = isoDate(weekStart);
+  const persistedBudgetOverridePence =
+    initialBudgetOverrideWeekStartDate === weekKey ? initialBudgetOverridePence : null;
 
   const dashboardLibraryMeals = useMemo(
     () => storeMeals.filter((meal) => isDashboardMealType(meal.type)),
@@ -137,8 +142,12 @@ export function SettingsClient({
   );
 
   useEffect(() => {
-    setCurrentWeekPlan(weekPlan);
-  }, [setCurrentWeekPlan, weekPlan]);
+    setCurrentWeekPlan(
+      persistedBudgetOverridePence !== null
+        ? { ...weekPlan, budgetOverridePence: persistedBudgetOverridePence }
+        : weekPlan,
+    );
+  }, [persistedBudgetOverridePence, setCurrentWeekPlan, weekPlan]);
 
   const initialBudgetPeriod = profileBudgetPeriod ?? "weekly";
 
@@ -334,9 +343,11 @@ export function SettingsClient({
   }
 
   function handleDeleteLocalData() {
-    useBudgeAtsStore.setState({ user: null, currentWeekPlan: null });
+    useBudgeAtsStore.getState().clearUserSession();
+    useDecisionStore.getState().setActiveUser(null);
     useOnboardingStore.getState().reset();
     localStorage.removeItem("budgeats-storage");
+    localStorage.removeItem("loavish-decisions");
     router.push("/");
   }
 

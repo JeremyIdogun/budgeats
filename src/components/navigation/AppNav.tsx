@@ -10,6 +10,8 @@ import {
   clearPlannerSessionCache,
   flushPlannerStateToServer,
 } from "@/lib/planner-persistence";
+import { useBudgeAtsStore } from "@/store";
+import { useDecisionStore } from "@/store/decisions";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -30,6 +32,7 @@ export function AppNav({ isAdmin }: AppNavProps = {}) {
   const pathname = usePathname();
   const router = useRouter();
   const [resolvedIsAdmin, setResolvedIsAdmin] = useState<boolean>(Boolean(isAdmin));
+  const explicitIsAdmin = typeof isAdmin === "boolean" ? isAdmin : null;
   const adminEmails = useMemo(
     () =>
       (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "")
@@ -39,13 +42,14 @@ export function AppNav({ isAdmin }: AppNavProps = {}) {
     [],
   );
 
-  const visibleLinks = resolvedIsAdmin
+  const showAdminLinks = explicitIsAdmin ?? resolvedIsAdmin;
+
+  const visibleLinks = showAdminLinks
     ? NAV_LINKS
     : NAV_LINKS.filter((link) => link.href !== "/admin");
 
   useEffect(() => {
-    if (typeof isAdmin === "boolean") {
-      setResolvedIsAdmin(isAdmin);
+    if (explicitIsAdmin !== null) {
       return;
     }
 
@@ -68,11 +72,13 @@ export function AppNav({ isAdmin }: AppNavProps = {}) {
     return () => {
       cancelled = true;
     };
-  }, [isAdmin, adminEmails]);
+  }, [explicitIsAdmin, adminEmails]);
 
   async function handleLogout() {
     await flushPlannerStateToServer();
     clearPlannerSessionCache();
+    useBudgeAtsStore.getState().clearUserSession();
+    useDecisionStore.getState().setActiveUser(null);
     const supabase = createClient();
     await supabase.auth.signOut();
     router.replace("/login");

@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import mealsData from "@/data/meals.json";
-import pricesData from "@/data/prices.json";
-import type { Ingredient, IngredientPrice, Meal, RetailerId } from "@/models";
+import type { Ingredient, Meal, RetailerId } from "@/models";
 import { computeMealPricing, parseBooleanFlag, toRetailerId } from "@/lib/pricing-engine-adapter";
 import { withCache } from "@/lib/server/cache";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -26,11 +26,14 @@ export async function GET(request: Request) {
 
   const retailer = toRetailerId(url.searchParams.get("retailerId"));
   const loyaltyEnabled = parseBooleanFlag(url.searchParams.get("loyalty"));
+  const prices = await loadIngredientPrices({
+    ingredientIds: meal.ingredients.map((entry) => entry.ingredientId),
+  });
   const preferredRetailers = Array.from(
     new Set(
       meal.ingredients
         .flatMap((entry) =>
-          (pricesData as IngredientPrice[])
+          prices
             .filter((price) => price.ingredientId === entry.ingredientId)
             .map((price) => price.retailerId),
         ),
@@ -48,7 +51,7 @@ export async function GET(request: Request) {
       computeMealPricing({
         meal,
         ingredients: ingredientsData as Ingredient[],
-        prices: pricesData as IngredientPrice[],
+        prices,
         preferredRetailers: preferredRetailers.length > 0 ? preferredRetailers : (["tesco"] as RetailerId[]),
         loyaltyEnabled,
         householdSize: 2,

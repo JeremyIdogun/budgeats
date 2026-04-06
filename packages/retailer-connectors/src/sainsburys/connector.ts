@@ -1,7 +1,9 @@
 import { parsePackSize } from "../../../shared/src/units";
+import { runApifyActor, type ApifyFetcherOptions } from "../apify/fetcher";
 import { scrapeWithPlaywright } from "../internal/scraping";
 import { buildRawProduct, extract, parsePriceToPence, splitBlocks } from "../internal/parsing";
-import type { SnapshotStore } from "../runtime";
+import { persistSnapshot, withExponentialBackoff, type SnapshotStore } from "../runtime";
+import { SAINSBURYS_ACTOR_ID, mapSainsburysApifyItems } from "./apify-mapper";
 import type {
   BootstrapInput,
   NormalizedRetailerProduct,
@@ -58,6 +60,7 @@ export class SainsburysConnector implements RetailerConnector {
   constructor(
     private readonly snapshotStore: SnapshotStore,
     private readonly htmlFetcher?: (url: string, context: RetailerContext) => Promise<string>,
+    private readonly apifyOptions?: ApifyFetcherOptions,
   ) {}
 
   async bootstrapContext(input: BootstrapInput): Promise<RetailerContext> {
@@ -81,19 +84,51 @@ export class SainsburysConnector implements RetailerConnector {
     });
   }
 
+  private async fetchApify(resourceKey: string, input: Record<string, unknown>): Promise<RawProduct[]> {
+    const items = await withExponentialBackoff(
+      () => runApifyActor(this.apifyOptions!, { actorId: SAINSBURYS_ACTOR_ID, input }),
+      { attempts: 3, baseDelayMs: 2000 },
+    );
+
+    await persistSnapshot({
+      retailerId: "sainsburys",
+      resource: resourceKey,
+      body: JSON.stringify(items),
+      contentType: "application/json",
+      store: this.snapshotStore,
+    });
+
+    return mapSainsburysApifyItems(items);
+  }
+
   async searchProducts(query: string, context: RetailerContext): Promise<RawProduct[]> {
+    if (this.apifyOptions) {
+      return this.fetchApify(`search/${query}`, { query, maxItems: 50 });
+    }
+
     const url = `https://www.sainsburys.co.uk/gol-ui/SearchResults/${encodeURIComponent(query)}`;
     const html = await this.fetchHtml(url, context, `search/${query}`);
     return parseSainsburysHtml(html);
   }
 
   async fetchCategory(categoryId: string, context: RetailerContext): Promise<RawProduct[]> {
+    if (this.apifyOptions) {
+      return this.fetchApify(`category/${categoryId}`, { query: categoryId, maxItems: 50 });
+    }
+
     const url = `https://www.sainsburys.co.uk/gol-ui/groceries/${encodeURIComponent(categoryId)}`;
     const html = await this.fetchHtml(url, context, `category/${categoryId}`);
     return parseSainsburysHtml(html);
   }
 
   async fetchProduct(productId: string, context: RetailerContext): Promise<RawProduct> {
+    if (this.apifyOptions) {
+      const products = await this.fetchApify(`product/${productId}`, { query: productId, maxItems: 25 });
+      const product = products.find((item) => item.retailer_product_id === productId) ?? products[0];
+      if (!product) throw new Error(`Sainsburys product not found for productId=${productId}`);
+      return product;
+    }
+
     const url = `https://www.sainsburys.co.uk/gol-ui/product/${encodeURIComponent(productId)}`;
     const html = await this.fetchHtml(url, context, `product/${productId}`);
     const product =

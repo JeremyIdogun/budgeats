@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
-import pricesData from "@/data/prices.json";
-import type { Ingredient, IngredientPrice, RetailerId } from "@/models";
+import type { Ingredient, RetailerId } from "@/models";
 import {
   parseBooleanFlag,
   resolveIngredientPricing,
   toRetailerId,
 } from "@/lib/pricing-engine-adapter";
 import { withCache } from "@/lib/server/cache";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -30,7 +30,8 @@ export async function GET(request: Request) {
   const retailer = toRetailerId(url.searchParams.get("retailerId"));
   const loyaltyEnabled = parseBooleanFlag(url.searchParams.get("loyalty"));
 
-  const prices = (pricesData as IngredientPrice[]).filter((item) => item.ingredientId === ingredientId);
+  const prices = (await loadIngredientPrices({ ingredientIds: [ingredientId] }))
+    .filter((item) => item.ingredientId === ingredientId);
   const preferredRetailers = Array.from(
     new Set(prices.map((price) => price.retailerId)),
   ) as RetailerId[];

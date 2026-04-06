@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "react";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 import { useBudgeAtsStore } from "@/store";
+import { useDecisionStore } from "@/store/decisions";
 import { isRetailerId, normalizeKey } from "@/lib/dashboard-client";
 import { poundsToPence } from "@/utils/currency";
 import type { DietaryTag, RetailerId, UserProfile } from "@/models";
@@ -51,6 +52,7 @@ export function useHydratedProfile({
 
   const storedUser = useBudgeAtsStore((state) => state.user);
   const setUser = useBudgeAtsStore((state) => state.setUser);
+  const setDecisionStoreUser = useDecisionStore((state) => state.setActiveUser);
 
   const preferredRetailers = useMemo<RetailerId[]>(() => {
     const source =
@@ -149,7 +151,8 @@ export function useHydratedProfile({
     if (!sameUser || !sameBudget || !sameHousehold || !sameRetailers || !sameDietary) {
       setUser(effectiveUser);
     }
-  }, [storedUser, effectiveUser, setUser]);
+    setDecisionStoreUser(effectiveUser.id);
+  }, [storedUser, effectiveUser, setUser, setDecisionStoreUser]);
 
   return {
     effectiveUser,

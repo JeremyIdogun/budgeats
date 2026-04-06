@@ -12,6 +12,10 @@ export default async function ShoppingPage() {
       initialPlan={data.initialPlan}
       initialCheckedItems={data.initialCheckedItems}
       initialCustomMeals={data.initialCustomMeals}
+      initialPantryItems={data.initialPantryItems}
+      initialBudgetNudgeDismissedForWeek={data.initialBudgetNudgeDismissedForWeek}
+      initialBudgetOverridePence={data.initialBudgetOverridePence}
+      initialBudgetOverrideWeekStartDate={data.initialBudgetOverrideWeekStartDate}
       profileRetailers={data.profileRetailers}
       profileWeeklyBudgetPence={data.profileWeeklyBudgetPence}
       profileBudgetPeriod={data.profileBudgetPeriod}
