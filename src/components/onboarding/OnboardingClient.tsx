@@ -68,6 +68,23 @@ export function OnboardingClient() {
         region: "UK",
       };
 
+      const response = await fetch("/api/onboarding", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          budget: store.budget,
+          period: store.period,
+          household: store.household,
+          dietary: store.dietary,
+          retailers: store.retailers,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error ?? "We couldn't save your setup. Please try again.");
+      }
+
       setCanonicalUser(canonicalUser);
       setCurrentWeekPlan(createEmptyWeekPlan(user.id, getCurrentWeekStartDateIso()));
 
@@ -75,24 +92,6 @@ export function OnboardingClient() {
         store.period === "weekly"
           ? store.budget * 100
           : Math.round((store.budget * 100) / 4.33);
-
-      const { error: upsertError } = await supabase.from("user_profiles").upsert(
-        {
-          id: user.id,
-          email: user.email!,
-          household_size: store.household,
-          weekly_budget_pence,
-          budget_period: store.period,
-          dietary_preferences: store.dietary,
-          preferred_retailer_ids: store.retailers,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" },
-      );
-
-      if (upsertError) {
-        throw upsertError;
-      }
 
       trackEvent("onboarding_completed", {
         household_size: store.household,
@@ -108,7 +107,11 @@ export function OnboardingClient() {
       setStep(5);
     } catch (error) {
       console.error("Failed to save profile:", error);
-      setSaveError("We couldn't save your setup. Please try again.");
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : "We couldn't save your setup. Please try again.",
+      );
     } finally {
       setSavingProfile(false);
     }
