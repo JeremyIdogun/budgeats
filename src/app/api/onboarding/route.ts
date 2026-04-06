@@ -134,14 +134,12 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     captureServerError(error, { event: "api.onboarding.save.failed", route: "/api/onboarding" });
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "We couldn't save your setup. Please try again.",
-      },
-      { status: 500 },
-    );
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message: unknown }).message)
+          : "We couldn't save your setup. Please try again.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
