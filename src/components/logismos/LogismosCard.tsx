@@ -226,6 +226,7 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
       meal_id: mealId,
       estimated_cost_pence: costPence,
       actual_cost_pence: null,
+      saving_pence: accepted ? recommendation.savingPence : null,
       context_signals: recommendation.contextSignals,
       points_awarded: points,
     };

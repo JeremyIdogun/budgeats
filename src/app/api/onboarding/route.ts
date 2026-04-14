@@ -140,6 +140,9 @@ export async function POST(request: Request) {
         : typeof error === "object" && error !== null && "message" in error
           ? String((error as { message: unknown }).message)
           : "We couldn't save your setup. Please try again.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const friendlyMessage = message.toLowerCase().includes("row-level security policy")
+      ? "Your account profile could not be created in the database yet. Apply the latest Supabase migration for user_profiles, then try onboarding again."
+      : message;
+    return NextResponse.json({ error: friendlyMessage }, { status: 500 });
   }
 }

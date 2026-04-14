@@ -99,7 +99,7 @@ npm run dev
 - `NEXT_PUBLIC_COMING_SOON`
   When `true`, middleware redirects app routes to the marketing page.
 - `NEXT_PUBLIC_ENABLE_REWARDS`
-  When `true`, exposes the rewards route and nav item.
+  Defaults to `true`. Set to `false` to hide the rewards route and nav item.
 - `NEXT_PUBLIC_ENABLE_ADMIN_PRODUCT_REVIEW`
   When `true`, exposes the admin product review and unmatched-product tooling.
 - `SENTRY_DSN`
@@ -196,7 +196,7 @@ npm run prisma:generate
 Use these levers in order if a release is unhealthy:
 
 1. Set `NEXT_PUBLIC_COMING_SOON=true` to gate the app behind the marketing page while keeping system routes available.
-2. Keep `NEXT_PUBLIC_ENABLE_REWARDS=false` and `NEXT_PUBLIC_ENABLE_ADMIN_PRODUCT_REVIEW=false` unless those surfaces are explicitly ready.
+2. Rewards is on by default; set `NEXT_PUBLIC_ENABLE_REWARDS=false` to hide it quickly if the surface is misbehaving. Keep `NEXT_PUBLIC_ENABLE_ADMIN_PRODUCT_REVIEW=false` unless that surface is explicitly ready.
 3. Disable live retailer ingestion by removing `APIFY_TOKEN` if connector failures are causing instability.
 4. Check `/api/health` and `/admin/retailers` after every deploy before reopening traffic.
 5. If a bad deploy is already live, roll back to the last known good deployment, then rerun `npm run smoke -- <base-url>` against the restored build.

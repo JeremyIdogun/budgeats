@@ -7,6 +7,7 @@ import { useDashboardPersistState } from "@/components/dashboard/useDashboardPer
 import { WeeklyBudgetNudge } from "@/components/dashboard/WeeklyBudgetNudge";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
 import { LogismosCard } from "@/components/logismos/LogismosCard";
+import { SavingsNarrative } from "@/components/savings/SavingsNarrative";
 import { buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { PageShell } from "@/components/ui/PageShell";
@@ -275,6 +276,10 @@ export function DashboardOverview({
               </div>
             </Card>
           )}
+        </div>
+
+        <div className="mt-5">
+          <SavingsNarrative variant="compact" />
         </div>
 
         {logismosEnabled && plannedMealCount >= 3 && (

@@ -5,6 +5,6 @@ function parseBooleanFlag(value: string | undefined, defaultValue = false): bool
 }
 
 export const launchFlags = {
-  rewards: parseBooleanFlag(process.env.NEXT_PUBLIC_ENABLE_REWARDS, false),
+  rewards: parseBooleanFlag(process.env.NEXT_PUBLIC_ENABLE_REWARDS, true),
   adminProductReview: parseBooleanFlag(process.env.NEXT_PUBLIC_ENABLE_ADMIN_PRODUCT_REVIEW, false),
 };

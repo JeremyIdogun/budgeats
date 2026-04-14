@@ -108,9 +108,8 @@ export function RewardsClient({
     },
     { label: "3-Day Streak", unlocked: displayedStreak >= 3 },
     { label: "Budget Hero", unlocked: displayedPoints >= 100 },
-    { label: "Waste Warrior", unlocked: false },
-    { label: "Loavish Star", unlocked: logismosScore !== null && logismosScore >= 86 },
     { label: "Smart Spender", unlocked: logismosScore !== null && logismosScore >= 66 },
+    { label: "Loavish Star", unlocked: logismosScore !== null && logismosScore >= 86 },
   ];
 
   return (
@@ -228,12 +227,9 @@ export function RewardsClient({
           <div className="mt-2 flex items-center gap-6">
             <div>
               <p className="text-3xl font-semibold text-navy">{displayedStreak}</p>
-              <p className="text-xs text-navy-muted">Current streak</p>
-            </div>
-            <div className="h-10 w-px bg-cream-dark" />
-            <div>
-              <p className="text-3xl font-semibold text-navy-muted">{displayedStreak}</p>
-              <p className="text-xs text-navy-muted">Personal best</p>
+              <p className="text-xs text-navy-muted">
+                {displayedStreak === 1 ? "day" : "days"} in a row
+              </p>
             </div>
           </div>
         </section>

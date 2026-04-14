@@ -42,6 +42,7 @@ export interface DecisionLogEntry {
   meal_id: string | null;
   estimated_cost_pence: number;
   actual_cost_pence: number | null; // Phase II
+  saving_pence: number | null; // projected savings vs alternative; null for legacy entries
   context_signals: ContextSignals;
   points_awarded: number;
 }
