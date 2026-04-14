@@ -1,6 +1,6 @@
-import { render } from '@react-email/render';
-import { PriceAlert } from './templates/PriceAlert';
-import { resend, FROM_EMAIL } from './resend';
+import { render } from "@react-email/render";
+import { PriceAlert } from "./templates/PriceAlert";
+import { getFromEmail, getResendClient } from "./resend";
 
 export interface PriceAlertPayload {
   to: string;
@@ -13,13 +13,14 @@ export interface PriceAlertPayload {
 
 export async function sendPriceAlert(payload: PriceAlertPayload): Promise<void> {
   const { to, ingredientName, retailerName, oldPricePence, newPricePence, appUrl } = payload;
+  const resend = getResendClient();
 
   const html = await render(
-    PriceAlert({ ingredientName, retailerName, oldPricePence, newPricePence, appUrl })
+    PriceAlert({ ingredientName, retailerName, oldPricePence, newPricePence, appUrl }),
   );
 
   const { error } = await resend.emails.send({
-    from: FROM_EMAIL,
+    from: getFromEmail(),
     to,
     subject: `Price drop alert — ${ingredientName} is cheaper at ${retailerName}`,
     html,

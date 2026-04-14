@@ -50,6 +50,10 @@ export function toDecisionLogEntry(row: DecisionLogRow): DecisionLogEntry {
       ? actualCostValue
       : null;
 
+  const savingValue = recommendation.savingPence;
+  const savingPence =
+    typeof savingValue === "number" && Number.isFinite(savingValue) ? savingValue : null;
+
   return {
     decision_id: row.id,
     timestamp: row.created_at,
@@ -58,6 +62,7 @@ export function toDecisionLogEntry(row: DecisionLogRow): DecisionLogEntry {
     meal_id: row.meal_id,
     estimated_cost_pence: estimatedCostPence,
     actual_cost_pence: actualCostPence,
+    saving_pence: savingPence,
     context_signals: contextSignals,
     points_awarded: row.points_awarded ?? 0,
   };

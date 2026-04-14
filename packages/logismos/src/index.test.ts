@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, expect, it } from "vitest";
 import { runLogismos, type CookOption } from "./index";
 
 const baseUser = {
@@ -42,8 +41,8 @@ describe("runLogismos guardrails and scoring", () => {
       spendThisWeekPence: 3800,
     });
 
-    assert.equal(result.recommendation, "cook");
-    assert.equal(result.guardrailTriggered, "budget_critically_low");
+    expect(result.recommendation).toBe("cook");
+    expect(result.guardrailTriggered).toBe("budget_critically_low");
   });
 
   it("energy level 1 forces eat out", () => {
@@ -60,8 +59,8 @@ describe("runLogismos guardrails and scoring", () => {
       spendThisWeekPence: 1200,
     });
 
-    assert.equal(result.recommendation, "eat-out");
-    assert.equal(result.guardrailTriggered, "energy_low");
+    expect(result.recommendation).toBe("eat-out");
+    expect(result.guardrailTriggered).toBe("energy_low");
   });
 
   it("waste risk ingredient in plan helps cook score", () => {
@@ -78,8 +77,8 @@ describe("runLogismos guardrails and scoring", () => {
       spendThisWeekPence: 1000,
     });
 
-    assert.equal(result.recommendation, "cook");
-    assert.equal(result.primaryMeal?.meal.id, "m1");
+    expect(result.recommendation).toBe("cook");
+    expect(result.primaryMeal?.meal.id).toBe("m1");
   });
 
   it("time too short for all meals recommends eat out", () => {
@@ -96,8 +95,8 @@ describe("runLogismos guardrails and scoring", () => {
       spendThisWeekPence: 1200,
     });
 
-    assert.equal(result.recommendation, "eat-out");
-    assert.equal(result.guardrailTriggered, "time_too_short");
+    expect(result.recommendation).toBe("eat-out");
+    expect(result.guardrailTriggered).toBe("time_too_short");
   });
 
   it("normal conditions cook wins on cost efficiency", () => {
@@ -114,8 +113,8 @@ describe("runLogismos guardrails and scoring", () => {
       spendThisWeekPence: 500,
     });
 
-    assert.equal(result.recommendation, "cook");
-    assert.equal(result.primaryMeal?.meal.id, "m1");
+    expect(result.recommendation).toBe("cook");
+    expect(result.primaryMeal?.meal.id).toBe("m1");
   });
 
   it("eat-out wins when all cook options exceed budget", () => {
@@ -147,6 +146,6 @@ describe("runLogismos guardrails and scoring", () => {
       spendThisWeekPence: 600,
     });
 
-    assert.equal(result.recommendation, "eat-out");
+    expect(result.recommendation).toBe("eat-out");
   });
 });

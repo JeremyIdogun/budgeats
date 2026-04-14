@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
+import { SavingsNarrative } from "@/components/savings/SavingsNarrative";
 import {
   MEAL_TYPES,
   RETAILER_NAMES,
@@ -216,10 +217,14 @@ export function InsightsClient({
           </Link>
         </section>
 
+        <div className="mb-4">
+          <SavingsNarrative variant="full" />
+        </div>
+
         {!hasMeals ? (
           <section className="rounded-lg border border-cream-dark bg-white p-8 text-center">
             <p className="text-lg font-semibold text-navy">
-              No data yet. Plan your first week of meals to see insights.
+              No plan yet for this week. Plan some meals to see weekly insights.
             </p>
             <Link
               href="/planner"

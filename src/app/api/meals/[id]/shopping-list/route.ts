@@ -1,20 +1,32 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import mealsData from "@/data/meals.json";
-import pricesData from "@/data/prices.json";
-import type { Ingredient, IngredientPrice, Meal, UserProfile, WeekPlan } from "@/models";
+import type { Ingredient, Meal, UserProfile, WeekPlan } from "@/models";
 import { generateShoppingList } from "@/lib/shopping";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
+import { captureServerError } from "@/lib/server/observability";
+import { applyRateLimitHeaders, enforceRateLimit } from "@/lib/server/rate-limit";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-export async function GET(_request: Request, context: RouteContext) {
+export async function GET(request: NextRequest, context: RouteContext) {
+  const rateLimit = await enforceRateLimit(request, {
+    name: "shopping-list-preview",
+    limit: 45,
+    windowMs: 5 * 60 * 1000,
+  });
+  if (rateLimit.response) return rateLimit.response;
+
   try {
     const { id } = await context.params;
     const meal = (mealsData as Meal[]).find((row) => row.id === id);
     if (!meal) {
-      return NextResponse.json({ error: `Meal not found for id=${id}` }, { status: 404 });
+      return applyRateLimitHeaders(
+        NextResponse.json({ error: `Meal not found for id=${id}` }, { status: 404 }),
+        rateLimit.state,
+      );
     }
 
     const today = new Date();
@@ -40,8 +52,12 @@ export async function GET(_request: Request, context: RouteContext) {
       updatedAt: new Date().toISOString(),
     };
 
+    const prices = await loadIngredientPrices({
+      ingredientIds: meal.ingredients.map((entry) => entry.ingredientId),
+    });
+
     const retailerIds = Array.from(
-      new Set((pricesData as IngredientPrice[]).map((price) => price.retailerId)),
+      new Set(prices.map((price) => price.retailerId)),
     );
     const user: UserProfile = {
       id: "preview-user",
@@ -58,18 +74,19 @@ export async function GET(_request: Request, context: RouteContext) {
       weekPlan,
       mealsData as Meal[],
       ingredientsData as Ingredient[],
-      pricesData as IngredientPrice[],
+      prices,
       user,
     );
 
-    return NextResponse.json({
+    return applyRateLimitHeaders(NextResponse.json({
       data: shopping,
       explanation: `Generated shopping list for meal ${meal.name}.`,
-    });
+    }), rateLimit.state);
   } catch (error) {
-    return NextResponse.json(
+    captureServerError(error, { event: "api.meal.shopping_list.failed", route: "/api/meals/[id]/shopping-list" });
+    return applyRateLimitHeaders(NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to build meal shopping list" },
       { status: 500 },
-    );
+    ), rateLimit.state);
   }
 }

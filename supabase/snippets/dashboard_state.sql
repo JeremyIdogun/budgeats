@@ -4,12 +4,20 @@ create table if not exists public.user_dashboard_state (
   plan jsonb not null default '{}'::jsonb,
   checked_item_keys text[] not null default '{}',
   custom_meals jsonb not null default '[]'::jsonb,
+  pantry_items jsonb not null default '{}'::jsonb,
+  budget_nudge_dismissed_for_week text,
+  budget_override_pence integer,
+  budget_override_week_start_date text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 alter table public.user_dashboard_state
-  add column if not exists custom_meals jsonb not null default '[]'::jsonb;
+  add column if not exists custom_meals jsonb not null default '[]'::jsonb,
+  add column if not exists pantry_items jsonb not null default '{}'::jsonb,
+  add column if not exists budget_nudge_dismissed_for_week text,
+  add column if not exists budget_override_pence integer,
+  add column if not exists budget_override_week_start_date text;
 
 alter table public.user_dashboard_state enable row level security;
 

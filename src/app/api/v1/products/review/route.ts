@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { launchFlags } from "@/lib/launch-flags";
 import { listReviewQueue, setMatchDecision } from "@/lib/product-match-review";
+import { requireAdminApiUser } from "@/lib/server/auth";
 import { cacheDeleteByPrefix } from "@/lib/server/cache";
 
 interface ReviewDecisionBody {
@@ -8,6 +10,13 @@ interface ReviewDecisionBody {
 }
 
 export async function GET() {
+  if (!launchFlags.adminProductReview) {
+    return NextResponse.json({ error: "Product review is disabled for this beta." }, { status: 404 });
+  }
+
+  const auth = await requireAdminApiUser();
+  if ("response" in auth) return auth.response;
+
   const queue = listReviewQueue();
   return NextResponse.json({
     data: queue,
@@ -16,6 +25,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!launchFlags.adminProductReview) {
+    return NextResponse.json({ error: "Product review is disabled for this beta." }, { status: 404 });
+  }
+
+  const auth = await requireAdminApiUser();
+  if ("response" in auth) return auth.response;
+
   let body: ReviewDecisionBody;
   try {
     body = (await request.json()) as ReviewDecisionBody;

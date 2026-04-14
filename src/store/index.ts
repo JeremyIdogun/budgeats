@@ -57,10 +57,13 @@ export interface BudgeAtsState {
   setLogismosScore: (score: number | null) => void;
   togglePantryItem: (ingredientId: string) => void;
   setPantryItem: (ingredientId: string, inStock: boolean) => void;
+  setPantryItems: (pantryItems: Record<string, boolean>) => void;
 
   // Weekly budget actions
   setWeekBudgetOverride: (pence: number) => void;
   dismissBudgetNudge: (weekStartDate: string) => void;
+  setBudgetNudgeDismissedForWeek: (weekStartDate: string | null) => void;
+  clearUserSession: () => void;
 }
 
 const storage = createJSONStorage(() => {
@@ -80,6 +83,19 @@ function ensureWeekPlan(state: BudgeAtsState): WeekPlan {
 
   const userId = state.user?.id ?? "anonymous";
   return createEmptyWeekPlan(userId, getCurrentWeekStartDateIso());
+}
+
+function createClearedUserSessionState() {
+  return {
+    currentWeekPlan: null,
+    currentRecommendation: null,
+    energyLevel: null,
+    loavishPoints: 0,
+    logismosScore: null,
+    streakDays: 0,
+    pantryItems: {},
+    budgetNudgeDismissedForWeek: null,
+  } as const;
 }
 
 export const useBudgeAtsStore = create<BudgeAtsState>()(
@@ -102,7 +118,14 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
       // Weekly budget nudge
       budgetNudgeDismissedForWeek: null,
 
-      setUser: (user) => set({ user }),
+      setUser: (user) =>
+        set((state) =>
+          state.user?.id === user.id
+            ? { user }
+            : {
+                ...createClearedUserSessionState(),
+                user,
+              }),
       setCurrentWeekPlan: (currentWeekPlan) => set({ currentWeekPlan }),
       setMeals: (meals) => set({ meals }),
       setIngredients: (ingredients) => set({ ingredients }),
@@ -153,6 +176,7 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
             [ingredientId]: inStock,
           },
         })),
+      setPantryItems: (pantryItems) => set({ pantryItems: { ...pantryItems } }),
 
       // Weekly budget actions
       setWeekBudgetOverride: (pence) =>
@@ -163,6 +187,13 @@ export const useBudgeAtsStore = create<BudgeAtsState>()(
           };
         }),
       dismissBudgetNudge: (weekStartDate) => set({ budgetNudgeDismissedForWeek: weekStartDate }),
+      setBudgetNudgeDismissedForWeek: (weekStartDate) =>
+        set({ budgetNudgeDismissedForWeek: weekStartDate }),
+      clearUserSession: () =>
+        set({
+          ...createClearedUserSessionState(),
+          user: null,
+        }),
     }),
     {
       name: "budgeats-storage",

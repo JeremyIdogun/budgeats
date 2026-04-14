@@ -7,6 +7,10 @@ export interface PlannerPersistState {
   plan: Record<string, string>;
   checkedItems: string[];
   customMeals: unknown[];
+  pantryItems: Record<string, boolean>;
+  budgetNudgeDismissedForWeek: string | null;
+  budgetOverridePence: number | null;
+  budgetOverrideWeekStartDate: string | null;
 }
 
 let _plannerCache: { weekKey: string; userId: string; plan: Record<string, string> } | null = null;
@@ -44,6 +48,10 @@ function clonePersistState(state: PlannerPersistState): PlannerPersistState {
     customMeals: typeof structuredClone === "function"
       ? structuredClone(state.customMeals)
       : JSON.parse(JSON.stringify(state.customMeals)),
+    pantryItems: { ...state.pantryItems },
+    budgetNudgeDismissedForWeek: state.budgetNudgeDismissedForWeek,
+    budgetOverridePence: state.budgetOverridePence,
+    budgetOverrideWeekStartDate: state.budgetOverrideWeekStartDate,
   };
 }
 
@@ -79,6 +87,10 @@ export async function persistPlannerState(state: PlannerPersistState): Promise<v
       plan: state.plan,
       checked_item_keys: state.checkedItems,
       custom_meals: state.customMeals,
+      pantry_items: state.pantryItems,
+      budget_nudge_dismissed_for_week: state.budgetNudgeDismissedForWeek,
+      budget_override_pence: state.budgetOverridePence,
+      budget_override_week_start_date: state.budgetOverrideWeekStartDate,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" },

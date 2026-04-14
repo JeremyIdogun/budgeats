@@ -1,7 +1,7 @@
-import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
-import { describe, it } from "node:test";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, expect, it } from "vitest";
 import { AsdaConnector, parseAsdaHtml } from "./asda/connector";
 import { SainsburysConnector, parseSainsburysHtml } from "./sainsburys/connector";
 import { parseTescoHtml, TescoConnector } from "./tesco/connector";
@@ -21,18 +21,20 @@ class InMemorySnapshotStore implements SnapshotStore {
   }
 }
 
+const fixturesDir = join(dirname(fileURLToPath(import.meta.url)), "__fixtures__");
+
 function fixture(name: string): string {
-  return readFileSync(join(process.cwd(), "packages/retailer-connectors/src/__fixtures__", name), "utf8");
+  return readFileSync(join(fixturesDir, name), "utf8");
 }
 
 describe("tesco connector fixture parsing", () => {
   it("extracts base and clubcard prices separately", () => {
     const rows = parseTescoHtml(fixture("tesco-search.html"));
-    assert.equal(rows.length, 1);
-    assert.equal(rows[0].base_price_pence, 85);
-    assert.equal(rows[0].loyalty_price_pence, 69);
-    assert.equal(rows[0].loyalty_scheme, "clubcard");
-    assert.equal(rows[0].pack_size_raw, "400g");
+    expect(rows).toHaveLength(1);
+    expect(rows[0].base_price_pence).toBe(85);
+    expect(rows[0].loyalty_price_pence).toBe(69);
+    expect(rows[0].loyalty_scheme).toBe("clubcard");
+    expect(rows[0].pack_size_raw).toBe("400g");
   });
 
   it("normalizes raw product payload", async () => {
@@ -40,8 +42,8 @@ describe("tesco connector fixture parsing", () => {
     const context = await connector.bootstrapContext({ retailerId: "tesco" });
     const rows = await connector.searchProducts("tomatoes", context);
     const normalized = connector.normalizeRawProduct(rows[0]);
-    assert.equal(normalized.base_price_pence, 85);
-    assert.equal(normalized.loyalty_price_pence, 69);
+    expect(normalized.base_price_pence).toBe(85);
+    expect(normalized.loyalty_price_pence).toBe(69);
   });
 });
 
@@ -49,26 +51,26 @@ describe("asda connector postcode-aware bootstrap", () => {
   it("requires postcode and stores cookie/header", async () => {
     const connector = new AsdaConnector(new InMemorySnapshotStore(), async () => fixture("asda-search.html"));
     const context = await connector.bootstrapContext({ retailerId: "asda", postcode: "SE1 0AA" });
-    assert.equal(context.cookies?.asda_postcode, "SE1 0AA");
-    assert.equal(context.headers?.["x-asda-postcode"], "SE1 0AA");
+    expect(context.cookies?.asda_postcode).toBe("SE1 0AA");
+    expect(context.headers?.["x-asda-postcode"]).toBe("SE1 0AA");
   });
 
   it("parses standard prices without loyalty", () => {
     const rows = parseAsdaHtml(fixture("asda-search.html"));
-    assert.equal(rows.length, 1);
-    assert.equal(rows[0].base_price_pence, 68);
-    assert.equal(rows[0].loyalty_price_pence, undefined);
-    assert.equal(rows[0].loyalty_scheme, "none");
+    expect(rows).toHaveLength(1);
+    expect(rows[0].base_price_pence).toBe(68);
+    expect(rows[0].loyalty_price_pence).toBeUndefined();
+    expect(rows[0].loyalty_scheme).toBe("none");
   });
 });
 
 describe("sainsburys connector fixture parsing", () => {
   it("extracts base and nectar prices separately", () => {
     const rows = parseSainsburysHtml(fixture("sainsburys-search.html"));
-    assert.equal(rows.length, 1);
-    assert.equal(rows[0].base_price_pence, 120);
-    assert.equal(rows[0].loyalty_price_pence, 100);
-    assert.equal(rows[0].loyalty_scheme, "nectar");
+    expect(rows).toHaveLength(1);
+    expect(rows[0].base_price_pence).toBe(120);
+    expect(rows[0].loyalty_price_pence).toBe(100);
+    expect(rows[0].loyalty_scheme).toBe("nectar");
   });
 
   it("normalizes nectar-backed payload", async () => {
@@ -79,8 +81,8 @@ describe("sainsburys connector fixture parsing", () => {
     const context = await connector.bootstrapContext({ retailerId: "sainsburys" });
     const rows = await connector.searchProducts("penne", context);
     const normalized = connector.normalizeRawProduct(rows[0]);
-    assert.equal(normalized.base_price_pence, 120);
-    assert.equal(normalized.loyalty_price_pence, 100);
-    assert.equal(normalized.loyalty_scheme, "nectar");
+    expect(normalized.base_price_pence).toBe(120);
+    expect(normalized.loyalty_price_pence).toBe(100);
+    expect(normalized.loyalty_scheme).toBe("nectar");
   });
 });

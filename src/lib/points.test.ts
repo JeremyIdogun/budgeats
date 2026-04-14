@@ -12,6 +12,7 @@ function makeEntry(input: Partial<DecisionLogEntry> = {}): DecisionLogEntry {
     meal_id: "meal-1",
     estimated_cost_pence: 450,
     actual_cost_pence: 430,
+    saving_pence: null,
     points_awarded: 15,
     context_signals: {
       calendarEventSoon: false,

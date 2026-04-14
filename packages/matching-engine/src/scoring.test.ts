@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, expect, it } from "vitest";
 import { scoreCandidate } from "./scoring";
 
 describe("matching-engine scoreCandidate", () => {
@@ -24,8 +23,8 @@ describe("matching-engine scoreCandidate", () => {
       },
     );
 
-    assert.ok(result.matchScore >= 0.9);
-    assert.equal(result.status, "auto");
+    expect(result.matchScore).toBeGreaterThanOrEqual(0.9);
+    expect(result.status).toBe("auto");
   });
 
   it("scores different forms in 0.65-0.90 range", () => {
@@ -45,9 +44,9 @@ describe("matching-engine scoreCandidate", () => {
       },
     );
 
-    assert.ok(result.matchScore >= 0.65);
-    assert.ok(result.matchScore < 0.9);
-    assert.equal(result.status, "review");
+    expect(result.matchScore).toBeGreaterThanOrEqual(0.65);
+    expect(result.matchScore).toBeLessThan(0.9);
+    expect(result.status).toBe("review");
   });
 
   it("scores completely different products < 0.65", () => {
@@ -67,7 +66,7 @@ describe("matching-engine scoreCandidate", () => {
       },
     );
 
-    assert.ok(result.matchScore < 0.65);
-    assert.equal(result.status, "unmatched");
+    expect(result.matchScore).toBeLessThan(0.65);
+    expect(result.status).toBe("unmatched");
   });
 });

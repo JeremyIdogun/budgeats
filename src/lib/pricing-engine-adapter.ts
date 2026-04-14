@@ -121,6 +121,8 @@ function optionFromPrice(price: IngredientPrice, ingredient: Ingredient): Ingred
     packSizeBaseUnit: Math.max(ingredient.storageQuantity, 1),
     prices: {
       base_price_pence: price.pricePerStorageUnit,
+      promo_price_pence: price.promoPricePence ?? undefined,
+      loyalty_price_pence: price.loyaltyPricePence ?? undefined,
     },
     isOwnLabel: price.isOwnLabel,
   };

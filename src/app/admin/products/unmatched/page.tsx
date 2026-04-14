@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { launchFlags } from "@/lib/launch-flags";
 import { listUnmatchedProducts } from "@/lib/product-match-review";
 
 interface UnmatchedProduct {
@@ -10,6 +12,10 @@ interface UnmatchedProduct {
 }
 
 export default async function UnmatchedPage() {
+  if (!launchFlags.adminProductReview) {
+    redirect("/admin/runs");
+  }
+
   const products: UnmatchedProduct[] = (listUnmatchedProducts() ?? []).map((item) => ({
     retailerProductId: item.retailerProductId,
     name: item.retailerProductName,

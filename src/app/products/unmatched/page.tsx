@@ -1,5 +1,6 @@
-import { UnmatchedProductsClient } from "@/components/products/UnmatchedProductsClient";
+import { redirect } from "next/navigation";
+import { launchFlags } from "@/lib/launch-flags";
 
 export default function UnmatchedProductsPage() {
-  return <UnmatchedProductsClient />;
+  redirect(launchFlags.adminProductReview ? "/admin/products/unmatched" : "/dashboard");
 }

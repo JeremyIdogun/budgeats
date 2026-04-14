@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { writeDecisionLog, type RecommendationTypeApi } from "@/lib/logismos-ledger";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedApiUser } from "@/lib/server/auth";
 import { captureServerError } from "@/lib/server/observability";
 
 interface DismissBody {
@@ -11,14 +11,12 @@ interface DismissBody {
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const auth = await requireAuthenticatedApiUser();
+    if ("response" in auth) return auth.response;
 
     const body = (await req.json()) as DismissBody;
     const decision = await writeDecisionLog({
-      userId: user?.id ?? "anonymous",
+      userId: auth.user.id,
       mealId:
         typeof (body.recommendationJson as { mealId?: unknown } | null)?.mealId === "string"
           ? ((body.recommendationJson as { mealId: string }).mealId || null)

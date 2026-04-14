@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, expect, it } from "vitest";
 import {
   computeCheapestMixedRetailer,
   computeCheapestSingleRetailer,
@@ -57,8 +56,8 @@ describe("pricing-engine golden cases", () => {
 
     const largeUnitPrice = 300 / 1000;
     const smallUnitPrice = 120 / 250;
-    assert.ok(largeUnitPrice < smallUnitPrice);
-    assert.ok(largePack.totalCostPence > smallPack.totalCostPence);
+    expect(largeUnitPrice).toBeLessThan(smallUnitPrice);
+    expect(largePack.totalCostPence).toBeGreaterThan(smallPack.totalCostPence);
   });
 
   it("loyalty price beats standard price when enabled", () => {
@@ -71,8 +70,8 @@ describe("pricing-engine golden cases", () => {
       true,
     );
 
-    assert.equal(loyalty, 150);
-    assert.ok(loyalty < standard);
+    expect(loyalty).toBe(150);
+    expect(loyalty).toBeLessThan(standard);
   });
 
   it("substitute can beat equivalent on total cost", () => {
@@ -114,8 +113,8 @@ describe("pricing-engine golden cases", () => {
 
     const equivalent = resolveIngredientPrice(equivalentOnly);
     const substitute = resolveIngredientPrice(substituteOnly);
-    assert.ok(substitute.pricePence < equivalent.pricePence);
-    assert.equal(substitute.matchLabel, "substitute");
+    expect(substitute.pricePence).toBeLessThan(equivalent.pricePence);
+    expect(substitute.matchLabel).toBe("substitute");
   });
 
   it("basket single-retailer winner differs from mixed-retailer winner", () => {
@@ -179,8 +178,8 @@ describe("pricing-engine golden cases", () => {
     const single = computeCheapestSingleRetailer(meal, ["tesco", "asda"], {});
     const mixed = computeCheapestMixedRetailer(meal, ["tesco", "asda"], {});
 
-    assert.equal(single.totalCostPence, 450);
-    assert.equal(mixed.totalCostPence, 250);
-    assert.ok(mixed.totalCostPence < single.totalCostPence);
+    expect(single.totalCostPence).toBe(450);
+    expect(mixed.totalCostPence).toBe(250);
+    expect(mixed.totalCostPence).toBeLessThan(single.totalCostPence);
   });
 });

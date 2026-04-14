@@ -1,27 +1,42 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import mealsData from "@/data/meals.json";
-import pricesData from "@/data/prices.json";
-import type { Ingredient, IngredientPrice, Meal, RetailerId } from "@/models";
+import type { Ingredient, Meal, RetailerId } from "@/models";
 import { computeMealPricing, toRetailerId } from "@/lib/pricing-engine-adapter";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
+import { captureServerError } from "@/lib/server/observability";
+import { applyRateLimitHeaders, enforceRateLimit } from "@/lib/server/rate-limit";
 
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-export async function GET(request: Request, context: RouteContext) {
+export async function GET(request: NextRequest, context: RouteContext) {
+  const rateLimit = await enforceRateLimit(request, {
+    name: "meal-cost-preview",
+    limit: 60,
+    windowMs: 5 * 60 * 1000,
+  });
+  if (rateLimit.response) return rateLimit.response;
+
   try {
     const { id } = await context.params;
     const meal = (mealsData as Meal[]).find((row) => row.id === id);
     if (!meal) {
-      return NextResponse.json({ error: `Meal not found for id=${id}` }, { status: 404 });
+      return applyRateLimitHeaders(
+        NextResponse.json({ error: `Meal not found for id=${id}` }, { status: 404 }),
+        rateLimit.state,
+      );
     }
 
     const url = new URL(request.url);
     const retailerId = toRetailerId(url.searchParams.get("retailerId"));
+    const prices = await loadIngredientPrices({
+      ingredientIds: meal.ingredients.map((entry) => entry.ingredientId),
+    });
     const preferredRetailers = Array.from(
       new Set(
-        (pricesData as IngredientPrice[])
+        prices
           .filter((price) => meal.ingredients.some((entry) => entry.ingredientId === price.ingredientId))
           .map((price) => price.retailerId),
       ),
@@ -30,21 +45,22 @@ export async function GET(request: Request, context: RouteContext) {
     const priced = computeMealPricing({
       meal,
       ingredients: ingredientsData as Ingredient[],
-      prices: pricesData as IngredientPrice[],
+      prices,
       preferredRetailers: preferredRetailers.length > 0 ? preferredRetailers : (["tesco"] as RetailerId[]),
       loyaltyEnabled: false,
       householdSize: 2,
       forcedRetailerId: retailerId ?? undefined,
     });
 
-    return NextResponse.json({
+    return applyRateLimitHeaders(NextResponse.json({
       data: priced,
       explanation: priced.explanation,
-    });
+    }), rateLimit.state);
   } catch (error) {
-    return NextResponse.json(
+    captureServerError(error, { event: "api.meal.costs.failed", route: "/api/meals/[id]/costs" });
+    return applyRateLimitHeaders(NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to compute meal costs" },
       { status: 500 },
-    );
+    ), rateLimit.state);
   }
 }

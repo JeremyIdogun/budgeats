@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AppNav } from "@/components/navigation/AppNav";
+import { useDashboardPersistState } from "@/components/dashboard/useDashboardPersistState";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -12,10 +13,7 @@ import { deriveBudgetUtilisationPct, deriveMealCostPence } from "@/lib/budget";
 import { generateShoppingList } from "@/lib/shopping";
 import {
   getPlannerSessionPlan,
-  persistPlannerState,
-  setLatestPlannerPersistState,
   setPlannerSessionPlan,
-  type PlannerPersistState,
 } from "@/lib/planner-persistence";
 import {
   RETAILERS,
@@ -57,6 +55,10 @@ interface DashboardClientProps {
   initialPlan: Record<string, string>;
   initialCheckedItems: string[];
   initialCustomMeals: CustomMeal[];
+  initialPantryItems: Record<string, boolean>;
+  initialBudgetNudgeDismissedForWeek: string | null;
+  initialBudgetOverridePence: number | null;
+  initialBudgetOverrideWeekStartDate: string | null;
   profileRetailers: string[];
   profileWeeklyBudgetPence: number | null;
   profileBudgetPeriod: "weekly" | "monthly" | null;
@@ -210,6 +212,10 @@ export function DashboardClient({
   initialPlan,
   initialCheckedItems,
   initialCustomMeals,
+  initialPantryItems,
+  initialBudgetNudgeDismissedForWeek,
+  initialBudgetOverridePence,
+  initialBudgetOverrideWeekStartDate,
   profileRetailers,
   profileWeeklyBudgetPence,
   profileBudgetPeriod,
@@ -230,6 +236,8 @@ export function DashboardClient({
     user: storedUser,
     setUser,
     setCurrentWeekPlan,
+    setPantryItems,
+    setBudgetNudgeDismissedForWeek,
   } = storeState;
 
   const [activeTab, setActiveTab] = useState<DashboardTab>(initialTab ?? "planner");
@@ -249,6 +257,8 @@ export function DashboardClient({
   const [mealSearchQuery, setMealSearchQuery] = useState("");
   const [activeDietaryFilters, setActiveDietaryFilters] = useState<DietaryTag[]>([]);
   const identifiedUserRef = useRef<string | null>(null);
+  const storeWeekStartDate = useBudgeAtsStore((state) => state.currentWeekPlan?.weekStartDate);
+  const storeBudgetOverridePence = useBudgeAtsStore((state) => state.currentWeekPlan?.budgetOverridePence);
 
   const weekDays = useMemo(
     () => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)),
@@ -337,45 +347,18 @@ export function DashboardClient({
     setPlannerSessionPlan(weekKey, userId, plan);
   }, [plan, weekKey, userId]);
 
-  // Track latest values for the unmount flush without triggering extra renders.
-  const latestDataRef = useRef<PlannerPersistState>({
-    userId,
-    plan,
-    checkedItems,
-    customMeals,
-  });
   useEffect(() => {
-    const latest = {
-      userId,
-      plan,
-      checkedItems,
-      customMeals,
-    };
-    latestDataRef.current = latest;
-    setLatestPlannerPersistState(latest);
-  }, [userId, plan, checkedItems, customMeals]);
+    setPantryItems(initialPantryItems);
+    setBudgetNudgeDismissedForWeek(initialBudgetNudgeDismissedForWeek);
+  }, [
+    initialPantryItems,
+    initialBudgetNudgeDismissedForWeek,
+    setPantryItems,
+    setBudgetNudgeDismissedForWeek,
+  ]);
 
-  // Debounced save to Supabase while the user is actively editing.
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      void persistPlannerState({
-        userId,
-        plan,
-        checkedItems,
-        customMeals,
-      });
-    }, 450);
-
-    return () => clearTimeout(timeout);
-  }, [userId, plan, checkedItems, customMeals]);
-
-  // Best-effort flush on unmount so navigating away before the 450 ms
-  // debounce fires (e.g. clicking Log out) still saves the latest plan.
-  useEffect(() => {
-    return () => {
-      void persistPlannerState(latestDataRef.current);
-    };
-  }, []);
+  const persistedBudgetOverridePence =
+    initialBudgetOverrideWeekStartDate === weekKey ? initialBudgetOverridePence : null;
 
   const dashboardLibraryMeals = useMemo(
     () => storeMeals.filter((meal) => isDashboardMealType(meal.type)),
@@ -518,7 +501,16 @@ export function DashboardClient({
       householdSize,
       defaultRetailer: preferredRetailers[0] ?? "tesco",
     });
-    setCurrentWeekPlan(weekPlanForStore);
+    const nextBudgetOverridePence =
+      weekPlanForStore.weekStartDate === storeWeekStartDate && storeBudgetOverridePence !== undefined
+        ? storeBudgetOverridePence
+        : persistedBudgetOverridePence ?? undefined;
+
+    setCurrentWeekPlan(
+      nextBudgetOverridePence !== undefined
+        ? { ...weekPlanForStore, budgetOverridePence: nextBudgetOverridePence }
+        : weekPlanForStore,
+    );
   }, [
     plan,
     weekDays,
@@ -528,7 +520,31 @@ export function DashboardClient({
     householdSize,
     preferredRetailers,
     setCurrentWeekPlan,
+    storeWeekStartDate,
+    storeBudgetOverridePence,
+    persistedBudgetOverridePence,
   ]);
+
+  useDashboardPersistState({
+    userId,
+    plan,
+    checkedItems,
+    customMeals,
+    pantryItems: storeState.pantryItems,
+    budgetNudgeDismissedForWeek: storeState.budgetNudgeDismissedForWeek,
+    budgetOverridePence:
+      storeWeekStartDate === weekKey
+        ? storeBudgetOverridePence ?? persistedBudgetOverridePence
+        : persistedBudgetOverridePence,
+    budgetOverrideWeekStartDate:
+      (
+        storeWeekStartDate === weekKey
+          ? storeBudgetOverridePence ?? persistedBudgetOverridePence
+          : persistedBudgetOverridePence
+      ) !== null
+        ? weekKey
+        : null,
+  });
 
   const selectorState: BudgeAtsState = {
     ...storeState,
@@ -1017,7 +1033,7 @@ export function DashboardClient({
             </Card>
 
             <Card>
-              <p className="text-sm font-semibold text-navy">This week's budget</p>
+              <p className="text-sm font-semibold text-navy">This week&apos;s budget</p>
               <p className="mt-3 text-3xl font-semibold text-navy">
                 {Math.round(budgetUsedPct)}%
               </p>

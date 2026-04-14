@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useDashboardPersistState } from "@/components/dashboard/useDashboardPersistState";
 import { AppNav } from "@/components/navigation/AppNav";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -70,14 +71,16 @@ export function ShoppingClient({
   initialPlan,
   initialCheckedItems,
   initialCustomMeals,
+  initialPantryItems,
+  initialBudgetNudgeDismissedForWeek,
+  initialBudgetOverridePence,
+  initialBudgetOverrideWeekStartDate,
   profileRetailers,
   profileWeeklyBudgetPence,
   profileBudgetPeriod,
   profileHouseholdSize,
   profileDietaryPreferences,
 }: DashboardClientCommonProps) {
-  void initialCheckedItems;
-
   const { effectiveUser, householdSize, preferredRetailers } = useHydratedProfile({
     userId,
     profileRetailers,
@@ -89,6 +92,12 @@ export function ShoppingClient({
 
   const storeState = useBudgeAtsStore();
   const setCurrentWeekPlan = useBudgeAtsStore((state) => state.setCurrentWeekPlan);
+  const setPantryItems = useBudgeAtsStore((state) => state.setPantryItems);
+  const setBudgetNudgeDismissedForWeek = useBudgeAtsStore(
+    (state) => state.setBudgetNudgeDismissedForWeek,
+  );
+  const storeWeekStartDate = useBudgeAtsStore((state) => state.currentWeekPlan?.weekStartDate);
+  const storeBudgetOverridePence = useBudgeAtsStore((state) => state.currentWeekPlan?.budgetOverridePence);
 
   const weekStart = useMemo(() => startOfWeek(new Date()), []);
   const weekDays = useMemo(
@@ -96,6 +105,18 @@ export function ShoppingClient({
     [weekStart],
   );
   const weekKey = isoDate(weekStart);
+  const persistedBudgetOverridePence =
+    initialBudgetOverrideWeekStartDate === weekKey ? initialBudgetOverridePence : null;
+
+  useEffect(() => {
+    setPantryItems(initialPantryItems);
+    setBudgetNudgeDismissedForWeek(initialBudgetNudgeDismissedForWeek);
+  }, [
+    initialPantryItems,
+    initialBudgetNudgeDismissedForWeek,
+    setPantryItems,
+    setBudgetNudgeDismissedForWeek,
+  ]);
 
   const dashboardLibraryMeals = useMemo(
     () => storeState.meals.filter((meal) => isDashboardMealType(meal.type)),
@@ -130,8 +151,23 @@ export function ShoppingClient({
   );
 
   useEffect(() => {
-    setCurrentWeekPlan(libraryWeekPlan);
-  }, [libraryWeekPlan, setCurrentWeekPlan]);
+    const nextBudgetOverridePence =
+      storeWeekStartDate === libraryWeekPlan.weekStartDate && storeBudgetOverridePence !== undefined
+        ? storeBudgetOverridePence
+        : persistedBudgetOverridePence ?? undefined;
+
+    setCurrentWeekPlan(
+      nextBudgetOverridePence !== undefined
+        ? { ...libraryWeekPlan, budgetOverridePence: nextBudgetOverridePence }
+        : libraryWeekPlan,
+    );
+  }, [
+    libraryWeekPlan,
+    setCurrentWeekPlan,
+    storeWeekStartDate,
+    storeBudgetOverridePence,
+    persistedBudgetOverridePence,
+  ]);
 
   const generatedShoppingList = useMemo(
     () =>
@@ -220,10 +256,31 @@ export function ShoppingClient({
     return safeA - safeB;
   });
 
-  const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  const [checkedItems, setCheckedItems] = useState<string[]>(initialCheckedItems);
   const [copied, setCopied] = useState(false);
   const basketComparedTrackedRef = useRef(false);
   const checkedSet = useMemo(() => new Set(checkedItems), [checkedItems]);
+
+  useDashboardPersistState({
+    userId,
+    plan: initialPlan,
+    checkedItems,
+    customMeals: initialCustomMeals,
+    pantryItems: storeState.pantryItems,
+    budgetNudgeDismissedForWeek: storeState.budgetNudgeDismissedForWeek,
+    budgetOverridePence:
+      storeWeekStartDate === weekKey
+        ? storeBudgetOverridePence ?? persistedBudgetOverridePence
+        : persistedBudgetOverridePence,
+    budgetOverrideWeekStartDate:
+      (
+        storeWeekStartDate === weekKey
+          ? storeBudgetOverridePence ?? persistedBudgetOverridePence
+          : persistedBudgetOverridePence
+      ) !== null
+        ? weekKey
+        : null,
+  });
 
   function toggleItem(itemKey: string) {
     setCheckedItems((prev) =>

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { POINTS } from "@/lib/points";
 import { writeDecisionLog, writePointsLedger, type RecommendationTypeApi } from "@/lib/logismos-ledger";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedApiUser } from "@/lib/server/auth";
 import { captureServerError } from "@/lib/server/observability";
 
 interface AcceptBody {
@@ -45,17 +45,15 @@ function buildPointEvents(body: AcceptBody): Array<{ eventType: keyof typeof POI
 
 export async function POST(req: Request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const auth = await requireAuthenticatedApiUser();
+    if ("response" in auth) return auth.response;
 
     const body = (await req.json()) as AcceptBody;
     const events = buildPointEvents(body);
     const pointsAwarded = events.reduce((sum, item) => sum + item.points, 0);
 
     const decision = await writeDecisionLog({
-      userId: user?.id ?? "anonymous",
+      userId: auth.user.id,
       mealId:
         typeof (body.recommendationJson as { mealId?: unknown } | null)?.mealId === "string"
           ? ((body.recommendationJson as { mealId: string }).mealId || null)
@@ -66,7 +64,7 @@ export async function POST(req: Request) {
       accepted: true,
       pointsAwarded,
     });
-    const pointsRows = await writePointsLedger(user?.id ?? "anonymous", decision.id, events);
+    const pointsRows = await writePointsLedger(auth.user.id, decision.id, events);
 
     return NextResponse.json({
       data: {

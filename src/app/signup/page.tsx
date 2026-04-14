@@ -219,6 +219,18 @@ export default function SignupPage() {
                 <p className="mt-3 text-center text-xs text-navy-muted">Redirecting...</p>
               )}
 
+              <p className="mt-5 text-center text-xs leading-relaxed text-navy-muted">
+                By creating an account, you agree to our{" "}
+                <Link href="/terms" className="font-semibold text-navy hover:underline">
+                  Terms
+                </Link>{" "}
+                and{" "}
+                <Link href="/privacy" className="font-semibold text-navy hover:underline">
+                  Privacy Policy
+                </Link>
+                .
+              </p>
+
               <p className="mt-5 text-center text-sm text-navy-muted">
                 Already have an account?{" "}
                 <Link href="/login" className="font-semibold text-navy hover:underline">

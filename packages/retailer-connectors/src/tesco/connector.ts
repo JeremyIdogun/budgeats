@@ -1,7 +1,9 @@
 import { parsePackSize } from "../../../shared/src/units";
+import { runApifyActor, type ApifyFetcherOptions } from "../apify/fetcher";
 import { scrapeWithPlaywright } from "../internal/scraping";
 import { buildRawProduct, extract, parsePriceToPence, splitBlocks } from "../internal/parsing";
-import type { SnapshotStore } from "../runtime";
+import { persistSnapshot, withExponentialBackoff, type SnapshotStore } from "../runtime";
+import { TESCO_ACTOR_ID, mapTescoApifyItems } from "./apify-mapper";
 import type {
   BootstrapInput,
   NormalizedRetailerProduct,
@@ -62,6 +64,7 @@ export class TescoConnector implements RetailerConnector {
   constructor(
     private readonly snapshotStore: SnapshotStore,
     private readonly htmlFetcher?: (url: string, context: RetailerContext) => Promise<string>,
+    private readonly apifyOptions?: ApifyFetcherOptions,
   ) {}
 
   async bootstrapContext(input: BootstrapInput): Promise<RetailerContext> {
@@ -88,19 +91,53 @@ export class TescoConnector implements RetailerConnector {
     });
   }
 
+  private async fetchApify(resourceKey: string, input: Record<string, unknown>): Promise<RawProduct[]> {
+    const items = await withExponentialBackoff(
+      () => runApifyActor(this.apifyOptions!, { actorId: TESCO_ACTOR_ID, input }),
+      { attempts: 3, baseDelayMs: 2000 },
+    );
+
+    await persistSnapshot({
+      retailerId: "tesco",
+      resource: resourceKey,
+      body: JSON.stringify(items),
+      contentType: "application/json",
+      store: this.snapshotStore,
+    });
+
+    return mapTescoApifyItems(items);
+  }
+
   async searchProducts(query: string, context: RetailerContext): Promise<RawProduct[]> {
+    if (this.apifyOptions) {
+      return this.fetchApify(`search/${query}`, { query, maxItems: 50 });
+    }
+
     const url = `https://www.tesco.com/groceries/en-GB/search?query=${encodeURIComponent(query)}`;
     const html = await this.fetchHtml(url, context, `search/${query}`);
     return parseTescoHtml(html);
   }
 
   async fetchCategory(categoryId: string, context: RetailerContext): Promise<RawProduct[]> {
+    if (this.apifyOptions) {
+      const categoryUrl = `https://www.tesco.com/groceries/en-GB/shop/${encodeURIComponent(categoryId)}`;
+      return this.fetchApify(`category/${categoryId}`, { urls: [categoryUrl] });
+    }
+
     const url = `https://www.tesco.com/groceries/en-GB/shop/${encodeURIComponent(categoryId)}`;
     const html = await this.fetchHtml(url, context, `category/${categoryId}`);
     return parseTescoHtml(html);
   }
 
   async fetchProduct(productId: string, context: RetailerContext): Promise<RawProduct> {
+    if (this.apifyOptions) {
+      const productUrl = `https://www.tesco.com/groceries/en-GB/products/${encodeURIComponent(productId)}`;
+      const products = await this.fetchApify(`product/${productId}`, { urls: [productUrl] });
+      const product = products.find((item) => item.retailer_product_id === productId) ?? products[0];
+      if (!product) throw new Error(`Tesco product not found for productId=${productId}`);
+      return product;
+    }
+
     const url = `https://www.tesco.com/groceries/en-GB/products/${encodeURIComponent(productId)}`;
     const html = await this.fetchHtml(url, context, `product/${productId}`);
     const product = parseTescoHtml(html).find((item) => item.retailer_product_id === productId) ?? parseTescoHtml(html)[0];

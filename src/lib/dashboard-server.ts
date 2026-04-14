@@ -14,6 +14,10 @@ export interface DashboardServerData {
   initialPlan: Record<string, string>;
   initialCheckedItems: string[];
   initialCustomMeals: DashboardCustomMeal[];
+  initialPantryItems: Record<string, boolean>;
+  initialBudgetNudgeDismissedForWeek: string | null;
+  initialBudgetOverridePence: number | null;
+  initialBudgetOverrideWeekStartDate: string | null;
   profileRetailers: string[];
   profileWeeklyBudgetPence: number | null;
   profileBudgetPeriod: "weekly" | "monthly" | null;
@@ -94,6 +98,38 @@ function sanitizeRetailerIds(value: unknown): string[] {
   );
 }
 
+function sanitizePantryItems(value: unknown): Record<string, boolean> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+
+  const items: Record<string, boolean> = {};
+  for (const [key, inStock] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof key === "string" && typeof inStock === "boolean") {
+      items[key] = inStock;
+    }
+  }
+
+  return items;
+}
+
+function sanitizeWeekKey(value: unknown): string | null {
+  return typeof value === "string" && value.trim().length > 0 ? value : null;
+}
+
+function sanitizeBudgetOverridePence(value: unknown): number | null {
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string"
+        ? Number(value)
+        : NaN;
+
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return null;
+  }
+
+  return Math.round(parsed);
+}
+
 function sanitizeWeeklyBudgetPence(value: unknown): number | null {
   const parsed =
     typeof value === "number"
@@ -145,7 +181,9 @@ export async function getDashboardServerData(nextPath: string): Promise<Dashboar
   const [{ data: dashboardState }, { data: profile }] = await Promise.all([
     supabase
       .from("user_dashboard_state")
-      .select("plan, checked_item_keys, custom_meals")
+      .select(
+        "plan, checked_item_keys, custom_meals, pantry_items, budget_nudge_dismissed_for_week, budget_override_pence, budget_override_week_start_date",
+      )
       .eq("user_id", user.id)
       .maybeSingle(),
     supabase
@@ -162,6 +200,14 @@ export async function getDashboardServerData(nextPath: string): Promise<Dashboar
     initialPlan: sanitizePlan(dashboardState?.plan),
     initialCheckedItems: sanitizeChecked(dashboardState?.checked_item_keys),
     initialCustomMeals: sanitizeCustomMeals(dashboardState?.custom_meals),
+    initialPantryItems: sanitizePantryItems(dashboardState?.pantry_items),
+    initialBudgetNudgeDismissedForWeek: sanitizeWeekKey(
+      dashboardState?.budget_nudge_dismissed_for_week,
+    ),
+    initialBudgetOverridePence: sanitizeBudgetOverridePence(dashboardState?.budget_override_pence),
+    initialBudgetOverrideWeekStartDate: sanitizeWeekKey(
+      dashboardState?.budget_override_week_start_date,
+    ),
     profileRetailers: sanitizeRetailerIds(profile?.preferred_retailer_ids),
     profileWeeklyBudgetPence: sanitizeWeeklyBudgetPence(profile?.weekly_budget_pence),
     profileBudgetPeriod: sanitizeBudgetPeriod(profile?.budget_period),

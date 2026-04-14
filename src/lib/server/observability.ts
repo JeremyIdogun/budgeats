@@ -7,6 +7,25 @@ export interface ServerErrorContext {
   [key: string]: unknown;
 }
 
+export interface ServerLogContext {
+  event: string;
+  level?: "info" | "warn" | "error";
+  [key: string]: unknown;
+}
+
+function emitStructuredLog(level: "info" | "warn" | "error", payload: Record<string, unknown>): void {
+  const logger =
+    level === "error" ? console.error
+    : level === "warn" ? console.warn
+    : console.log;
+
+  logger(JSON.stringify({
+    level,
+    ...payload,
+    timestamp: new Date().toISOString(),
+  }));
+}
+
 async function captureWithSentry(error: unknown, context: Record<string, unknown>): Promise<void> {
   if (!process.env.SENTRY_DSN) return;
   try {
@@ -28,17 +47,19 @@ async function captureWithSentry(error: unknown, context: Record<string, unknown
 export function captureServerError(error: unknown, context: ServerErrorContext): void {
   const { event, ...restContext } = context;
   const structured = {
-    level: "error",
     event,
     message: error instanceof Error ? error.message : String(error),
     stack: error instanceof Error ? error.stack : undefined,
     ...restContext,
-    timestamp: new Date().toISOString(),
   };
 
-  // Always log structurally
-  console.error(JSON.stringify(structured));
+  emitStructuredLog("error", structured);
   void captureWithSentry(error, structured);
+}
+
+export function logServerEvent(context: ServerLogContext): void {
+  const { level = "info", ...rest } = context;
+  emitStructuredLog(level, rest);
 }
 
 export function logIngestionSummary(summary: {
@@ -52,5 +73,5 @@ export function logIngestionSummary(summary: {
   unmatched: number;
   errors: number;
 }): void {
-  console.log(JSON.stringify({ level: "info", ...summary, timestamp: new Date().toISOString() }));
+  emitStructuredLog("info", summary);
 }

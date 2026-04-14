@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
+import { launchFlags } from "@/lib/launch-flags";
 
 interface ReviewProduct {
   retailerProductId: string;
@@ -11,6 +13,10 @@ interface ReviewProduct {
 }
 
 export default function ReviewQueuePage() {
+  if (!launchFlags.adminProductReview) {
+    redirect("/admin/runs");
+  }
+
   const [products, setProducts] = useState<ReviewProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<Record<string, boolean>>({});

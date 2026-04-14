@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { runLogismos, type CookOption, type ContextSignals as EngineSignals } from "@loavish/logismos";
 import type { ContextSignals, LogismosRecommendation } from "@/models/logismos";
 import { captureServerError } from "@/lib/server/observability";
+import { applyRateLimitHeaders, enforceRateLimit } from "@/lib/server/rate-limit";
 
 interface RecommendationRequestBody {
   contextSignals: ContextSignals;
@@ -83,7 +84,14 @@ function toLegacyRecommendation(
   };
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const rateLimit = await enforceRateLimit(req, {
+    name: "logismos-recommendation",
+    limit: 40,
+    windowMs: 5 * 60 * 1000,
+  });
+  if (rateLimit.response) return rateLimit.response;
+
   try {
     const body = (await req.json()) as RecommendationRequestBody;
     const cookableMeals: CookOption[] = body.cookableMeals.map((meal) => ({
@@ -124,17 +132,17 @@ export async function POST(req: Request) {
 
     const recommendation = toLegacyRecommendation(result, body);
 
-    return NextResponse.json({
+    return applyRateLimitHeaders(NextResponse.json({
       data: recommendation,
       explanation: recommendation.reason,
-    });
+    }), rateLimit.state);
   } catch (error) {
     await captureServerError(error, { event: "api.logismos.recommendation.failed" });
-    return NextResponse.json(
+    return applyRateLimitHeaders(NextResponse.json(
       {
         error: error instanceof Error ? error.message : "Failed to generate recommendation",
       },
       { status: 400 },
-    );
+    ), rateLimit.state);
   }
 }

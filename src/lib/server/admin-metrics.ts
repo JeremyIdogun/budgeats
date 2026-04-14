@@ -3,7 +3,6 @@ import mealsData from "@/data/meals.json";
 import pricesData from "@/data/prices.json";
 import type { Ingredient, IngredientPrice, Meal } from "@/models";
 import { getOptionalPrisma } from "@/lib/server/optional-prisma";
-import { listRetailerContexts } from "@/lib/logismos-ledger";
 
 type MinimalPrisma = {
   ingestionRun: {
@@ -106,18 +105,4 @@ export function listMealCostCoverageRows(): MealCoverageRow[] {
       coveragePercent,
     };
   });
-}
-
-export async function getRetailerContextSummary() {
-  const contexts = await listRetailerContexts();
-  const grouped = contexts.reduce<Record<string, number>>((acc, row) => {
-    acc[row.retailer_id] = (acc[row.retailer_id] ?? 0) + 1;
-    return acc;
-  }, {});
-
-  return {
-    total: contexts.length,
-    byRetailer: grouped,
-    rows: contexts,
-  };
 }

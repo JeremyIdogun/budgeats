@@ -1,10 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import ingredientsData from "@/data/ingredients.json";
 import mealsData from "@/data/meals.json";
-import pricesData from "@/data/prices.json";
-import type { Ingredient, IngredientPrice, Meal, RetailerId } from "@/models";
+import type { Ingredient, Meal, RetailerId } from "@/models";
 import { computeBasketPricing, toRetailerId } from "@/lib/pricing-engine-adapter";
 import { withCache } from "@/lib/server/cache";
+import { loadIngredientPrices } from "@/lib/server/ingredient-prices";
+import { captureServerError } from "@/lib/server/observability";
+import { applyRateLimitHeaders, enforceRateLimit } from "@/lib/server/rate-limit";
 
 interface BasketRequestBody {
   mealIds?: unknown;
@@ -35,34 +37,48 @@ function parseLoyaltyPrefs(input: unknown): Partial<Record<RetailerId, boolean>>
   return prefs;
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const rateLimit = await enforceRateLimit(request, {
+    name: "pricing-basket",
+    limit: 30,
+    windowMs: 5 * 60 * 1000,
+  });
+  if (rateLimit.response) return rateLimit.response;
+
   let body: BasketRequestBody;
   try {
     body = (await request.json()) as BasketRequestBody;
   } catch {
-    return NextResponse.json({ error: "Invalid JSON request body" }, { status: 400 });
+    return applyRateLimitHeaders(
+      NextResponse.json({ error: "Invalid JSON request body" }, { status: 400 }),
+      rateLimit.state,
+    );
   }
 
   const mealIds = parseMealIds(body.mealIds);
   if (mealIds.length === 0) {
-    return NextResponse.json(
+    return applyRateLimitHeaders(NextResponse.json(
       { error: "mealIds must be a non-empty string array" },
       { status: 400 },
-    );
+    ), rateLimit.state);
   }
 
   const meals = (mealsData as Meal[]).filter((meal) => mealIds.includes(meal.id));
   if (meals.length === 0) {
-    return NextResponse.json(
+    return applyRateLimitHeaders(NextResponse.json(
       { error: "No matching meals found for provided mealIds" },
       { status: 404 },
-    );
+    ), rateLimit.state);
   }
+
+  const prices = await loadIngredientPrices({
+    ingredientIds: Array.from(new Set(meals.flatMap((meal) => meal.ingredients.map((entry) => entry.ingredientId)))),
+  });
 
   const requestedRetailers = parseRetailerIds(body.retailerIds);
   const fallbackRetailers = Array.from(
     new Set(
-      (pricesData as IngredientPrice[]).map((price) => price.retailerId),
+      prices.map((price) => price.retailerId),
     ),
   ) as RetailerId[];
   const retailerIds = requestedRetailers.length > 0 ? requestedRetailers : fallbackRetailers;
@@ -80,19 +96,20 @@ export async function POST(request: Request) {
       computeBasketPricing({
         meals,
         ingredients: ingredientsData as Ingredient[],
-        prices: pricesData as IngredientPrice[],
+        prices,
         retailerIds,
         loyaltyPrefs,
       }));
 
-    return NextResponse.json({
+    return applyRateLimitHeaders(NextResponse.json({
       data: priced,
       explanation: `Single retailer ${priced.singleRetailer.totalCostPence}p, mixed retailer ${priced.mixedRetailer.totalCostPence}p.`,
-    });
+    }), rateLimit.state);
   } catch (error) {
-    return NextResponse.json(
+    captureServerError(error, { event: "api.pricing.basket.failed", route: "/api/v1/pricing/basket" });
+    return applyRateLimitHeaders(NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to compute basket price" },
       { status: 400 },
-    );
+    ), rateLimit.state);
   }
 }

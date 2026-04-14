@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { computeAcceptedThisMonth, computeLogismosScore } from "@/lib/points";
 import { toDecisionLogEntry } from "@/lib/decision-mappers";
 import { listDecisionLog, listPointsLedger } from "@/lib/logismos-ledger";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuthenticatedApiUser } from "@/lib/server/auth";
 import { captureServerError } from "@/lib/server/observability";
 
 function buildMonthlyBuckets() {
@@ -19,14 +19,12 @@ function buildMonthlyBuckets() {
 
 export async function GET() {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const auth = await requireAuthenticatedApiUser();
+    if ("response" in auth) return auth.response;
 
     const [decisionRows, ledgerRows] = await Promise.all([
-      listDecisionLog({ userId: user?.id ?? undefined, limit: 500 }),
-      listPointsLedger({ userId: user?.id ?? undefined, limit: 2000 }),
+      listDecisionLog({ userId: auth.user.id, limit: 500 }),
+      listPointsLedger({ userId: auth.user.id, limit: 2000 }),
     ]);
 
     const decisions = decisionRows.map(toDecisionLogEntry);

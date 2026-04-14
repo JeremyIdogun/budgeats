@@ -1,9 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { listIngestionRuns } from "@/lib/server/admin-metrics";
+import { requireAdminApiUser } from "@/lib/server/auth";
 import { captureServerError } from "@/lib/server/observability";
 import { getOptionalPrisma } from "@/lib/server/optional-prisma";
+import { createSnapshotStore } from "@/lib/server/snapshot-store";
+import { applyRateLimitHeaders, enforceRateLimit } from "@/lib/server/rate-limit";
 import { runIngestionJob, createPrismaIngestionPersistence } from "../../../../../apps/worker/src/job-handler";
 import { PrismaIngestionRunSink } from "../../../../../apps/worker/src/ingestion-runs";
+import { createApifyConnector } from "../../../../../packages/retailer-connectors/src";
 import { TescoConnector } from "../../../../../packages/retailer-connectors/src/tesco";
 import { AsdaConnector } from "../../../../../packages/retailer-connectors/src/asda";
 import { SainsburysConnector } from "../../../../../packages/retailer-connectors/src/sainsburys";
@@ -19,24 +23,6 @@ interface TriggerRunBody {
   postcode?: unknown;
   searchQueries?: unknown;
   categoryIds?: unknown;
-}
-
-class InMemorySnapshotStore implements SnapshotStore {
-  private readonly snapshots = new Set<string>();
-
-  async hasSnapshot(hash: string): Promise<boolean> {
-    return this.snapshots.has(hash);
-  }
-
-  async putSnapshot(input: {
-    key: string;
-    body: string;
-    contentType: "text/html" | "application/json";
-  }): Promise<void> {
-    void input.body;
-    void input.contentType;
-    this.snapshots.add(input.key);
-  }
 }
 
 type RetailerSlug = "tesco" | "asda" | "sainsburys";
@@ -69,6 +55,10 @@ async function fixtureFetcherFor(slug: RetailerSlug): Promise<(url: string, cont
 }
 
 async function connectorForRetailer(slug: RetailerSlug, snapshotStore: SnapshotStore): Promise<RetailerConnector> {
+  if (process.env.APIFY_TOKEN) {
+    return createApifyConnector(slug, snapshotStore);
+  }
+
   const htmlFetcher = await fixtureFetcherFor(slug);
   if (slug === "tesco") return new TescoConnector(snapshotStore, htmlFetcher);
   if (slug === "asda") return new AsdaConnector(snapshotStore, htmlFetcher);
@@ -84,6 +74,9 @@ function parseStringArray(input: unknown): string[] | undefined {
 }
 
 export async function GET() {
+  const auth = await requireAdminApiUser();
+  if ("response" in auth) return auth.response;
+
   const runs = await listIngestionRuns(200);
   return NextResponse.json({
     data: runs,
@@ -91,19 +84,31 @@ export async function GET() {
   });
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const auth = await requireAdminApiUser();
+    if ("response" in auth) return auth.response;
+
+    const rateLimit = await enforceRateLimit(request, {
+      name: "admin-ingestion-run",
+      limit: 10,
+      windowMs: 15 * 60 * 1000,
+    }, {
+      identifier: `admin:${auth.user.id}`,
+    });
+    if (rateLimit.response) return rateLimit.response;
+
     const body = (await request.json()) as TriggerRunBody;
     const retailerSlug = parseRetailerSlug(body.retailerSlug);
-    const snapshotStore = new InMemorySnapshotStore();
+    const snapshotStore = createSnapshotStore();
     const connector = await connectorForRetailer(retailerSlug, snapshotStore);
     const prisma = await getOptionalPrisma();
 
     if (!prisma) {
-      return NextResponse.json(
+      return applyRateLimitHeaders(NextResponse.json(
         { error: "Database connection is not configured for ingestion runs." },
         { status: 503 },
-      );
+      ), rateLimit.state);
     }
 
     const result = await runIngestionJob({
@@ -116,10 +121,10 @@ export async function POST(request: Request) {
       categoryIds: parseStringArray(body.categoryIds),
     });
 
-    return NextResponse.json({
+    return applyRateLimitHeaders(NextResponse.json({
       data: result,
       explanation: `Triggered ${retailerSlug} ingestion run with status ${result.status}.`,
-    });
+    }), rateLimit.state);
   } catch (error) {
     captureServerError(error, { event: "api.admin.runs.trigger.failed" });
     return NextResponse.json(
