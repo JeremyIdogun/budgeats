@@ -2,7 +2,7 @@
 
 import { StepHeader } from "@/components/onboarding/StepHeader";
 import { Button } from "@/components/ui/Button";
-import { useOnboardingStore } from "@/stores/onboarding-store";
+import { useOnboardingStore } from "@/store/onboarding";
 
 interface Props {
   onNext: () => void;

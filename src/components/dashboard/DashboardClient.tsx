@@ -23,7 +23,7 @@ import {
   type UserProfile,
   type WeekPlan,
 } from "@/models";
-import { useOnboardingStore } from "@/stores/onboarding-store";
+import { useOnboardingStore } from "@/store/onboarding";
 import { useBudgeAtsStore, type BudgeAtsState } from "@/store";
 import {
   selectBudgetRemainingPence,

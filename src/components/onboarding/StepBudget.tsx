@@ -4,7 +4,7 @@ import { StepHeader } from "@/components/onboarding/StepHeader";
 import { Button } from "@/components/ui/Button";
 import { FieldLabel } from "@/components/ui/FieldLabel";
 import { Input } from "@/components/ui/Input";
-import { useOnboardingStore } from "@/stores/onboarding-store";
+import { useOnboardingStore } from "@/store/onboarding";
 import { BudgetPeriod } from "@/types";
 
 interface Props {

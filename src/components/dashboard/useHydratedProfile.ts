@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useOnboardingStore } from "@/stores/onboarding-store";
+import { useOnboardingStore } from "@/store/onboarding";
 import { useBudgeAtsStore } from "@/store";
 import { useDecisionStore } from "@/store/decisions";
 import { isRetailerId, normalizeKey } from "@/lib/dashboard-client";

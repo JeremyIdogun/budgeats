@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { useOnboardingStore } from "@/stores/onboarding-store";
+import { useOnboardingStore } from "@/store/onboarding";
 
 interface StepSuccessProps {
   onComplete?: () => void;
@@ -38,9 +38,9 @@ export function StepSuccess({ onComplete }: StepSuccessProps) {
       </div>
 
       <header>
-        <h2 className="font-heading text-3xl font-bold text-navy">You're all set</h2>
+        <h2 className="font-heading text-3xl font-bold text-navy">You&apos;re all set</h2>
         <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-navy-muted">
-          Here's what we've configured. You can update these preferences at any time in settings.
+          Here&apos;s what we&apos;ve configured. You can update these preferences at any time in settings.
         </p>
       </header>
 
@@ -60,7 +60,7 @@ export function StepSuccess({ onComplete }: StepSuccessProps) {
       <Card padding="md" className="bg-cream text-left">
         <p className="text-sm font-semibold text-navy">Your Logismos advisor is ready</p>
         <p className="mt-1 text-sm text-navy-muted">
-          Plan at least 3 meals and you'll start getting personalized cook-or-eat-out recommendations.
+          Plan at least 3 meals and you&apos;ll start getting personalized cook-or-eat-out recommendations.
         </p>
       </Card>
 

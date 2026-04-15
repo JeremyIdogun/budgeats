@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { deriveMealCostPence } from "@/lib/budget";
 import { trackEvent } from "@/lib/analytics";
+import { launchFlags } from "@/lib/launch-flags";
 import { generateRecommendation, type CookableMeal } from "@/lib/logismos";
 import { POINTS } from "@/lib/points";
 import { getTodayDayIndex } from "@/lib/planner";
@@ -70,7 +71,7 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
   const budgetRemainingPence = selectBudgetRemainingPence(selectorState);
   const daysRemainingInWeek = selectDaysRemainingInWeek();
   const wasteRiskIngredients = useMemo(
-    () => selectWasteRiskIngredientIds(store),
+    () => (launchFlags.wasteRiskDetection ? selectWasteRiskIngredientIds(store) : []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [store.pantryItems],
   );
@@ -98,8 +99,8 @@ export function LogismosCard({ householdSize, weeklyBudgetPence, cookableMeals }
 
   const contextSignals = useMemo<ContextSignals>(
     () => ({
-      calendarEventSoon: false, // Phase I stub
-      timeWindowMinutes: 120, // Phase I stub: ample time
+      calendarEventSoon: launchFlags.calendarSync ? false : false, // gated by launchFlags.calendarSync
+      timeWindowMinutes: 120, // default until calendar sync lands
       energyLevel: store.energyLevel,
       wasteRiskIngredients,
       budgetRemainingPence,

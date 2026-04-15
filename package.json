@@ -7,7 +7,9 @@
     "build": "prisma generate && next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "test": "pnpm -r --if-present test",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm test:app && pnpm -r --if-present test",
+    "test:app": "vitest run",
     "smoke": "node scripts/smoke-check.mjs",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
@@ -44,6 +46,8 @@
     "eslint-config-next": "16.1.6",
     "prisma": "^7.5.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   }
 }

@@ -13,7 +13,7 @@ import { createClient } from "@/lib/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import { createEmptyWeekPlan, getCurrentWeekStartDateIso } from "@/lib/planner";
 import { poundsToPence } from "@/utils/currency";
-import { useOnboardingStore } from "@/stores/onboarding-store";
+import { useOnboardingStore } from "@/store/onboarding";
 import { useBudgeAtsStore } from "@/store";
 import type { DietaryTag, RetailerId, UserProfile } from "@/models";
 
