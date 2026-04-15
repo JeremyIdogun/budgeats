@@ -263,6 +263,7 @@ export function ShoppingClient({
 
   useDashboardPersistState({
     userId,
+    weekStartDate: weekKey,
     plan: initialPlan,
     checkedItems,
     customMeals: initialCustomMeals,

@@ -4,7 +4,11 @@ import { useEffect, useMemo } from "react";
 import { useDashboardPersistState } from "@/components/dashboard/useDashboardPersistState";
 import { AppNav } from "@/components/navigation/AppNav";
 import { useHydratedProfile } from "@/components/dashboard/useHydratedProfile";
-import type { DashboardClientCommonProps } from "@/lib/dashboard-client";
+import {
+  isoDate,
+  startOfWeek,
+  type DashboardClientCommonProps,
+} from "@/lib/dashboard-client";
 import { useBudgeAtsStore } from "@/store";
 
 const CATEGORY_ORDER = [
@@ -63,6 +67,7 @@ export function PantryClient({
   const setBudgetNudgeDismissedForWeek = useBudgeAtsStore(
     (state) => state.setBudgetNudgeDismissedForWeek,
   );
+  const weekKey = useMemo(() => isoDate(startOfWeek(new Date())), []);
 
   useEffect(() => {
     setPantryItems(initialPantryItems);
@@ -76,6 +81,7 @@ export function PantryClient({
 
   useDashboardPersistState({
     userId,
+    weekStartDate: weekKey,
     plan: initialPlan,
     checkedItems: initialCheckedItems,
     customMeals: initialCustomMeals,
