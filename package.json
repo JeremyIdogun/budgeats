@@ -11,6 +11,7 @@
     "test": "pnpm test:app && pnpm -r --if-present test",
     "test:app": "vitest run",
     "smoke": "node scripts/smoke-check.mjs",
+    "audit:auth": "node scripts/audit-auth.mjs",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:push": "prisma db push"

@@ -5,6 +5,7 @@ import { getPricingReadinessReport } from "@/lib/server/pricing-readiness";
 
 type HealthStatus = "ok" | "warn" | "fail";
 type OverallStatus = "ready" | "degraded" | "blocked";
+const SUPABASE_AUTH_TIMEOUT_MS = 5_000;
 
 interface HealthCheck {
   status: HealthStatus;
@@ -26,6 +27,55 @@ function overallFromChecks(checks: HealthCheck[]): OverallStatus {
   return "ready";
 }
 
+async function getSupabaseAuthHealthCheck(): Promise<HealthCheck> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+
+  if (!supabaseUrl || !anonKey) {
+    return { status: "fail", summary: "Supabase auth environment is missing." };
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), SUPABASE_AUTH_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(new URL("/auth/v1/settings", supabaseUrl), {
+      method: "GET",
+      headers: {
+        apikey: anonKey,
+      },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      return {
+        status: "fail",
+        summary: `Supabase auth settings probe failed: ${response.status} ${response.statusText}.`,
+      };
+    }
+
+    return {
+      status: "ok",
+      summary: "Supabase auth endpoint is reachable.",
+    };
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      return {
+        status: "fail",
+        summary: `Supabase auth settings probe timed out after ${SUPABASE_AUTH_TIMEOUT_MS}ms.`,
+      };
+    }
+
+    return {
+      status: "fail",
+      summary: `Supabase auth settings probe threw: ${err instanceof Error ? err.message : "unknown error"}`,
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function getLaunchHealthReport(): Promise<{
   generatedAt: string;
   overall: OverallStatus;
@@ -39,12 +89,7 @@ export async function getLaunchHealthReport(): Promise<{
 }> {
   const generatedAt = new Date().toISOString();
 
-  const authConfigured =
-    Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()) &&
-    Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim());
-  const auth: HealthCheck = authConfigured
-    ? { status: "ok", summary: "Supabase auth environment is configured." }
-    : { status: "fail", summary: "Supabase auth environment is missing." };
+  const auth = await getSupabaseAuthHealthCheck();
 
   const prisma = (await getOptionalPrisma()) as MinimalPrisma | null;
   let database: HealthCheck;
