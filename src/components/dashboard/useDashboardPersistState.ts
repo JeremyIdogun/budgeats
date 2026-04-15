@@ -11,6 +11,7 @@ export function useDashboardPersistState(state: PlannerPersistState) {
   const latestState = useMemo<PlannerPersistState>(
     () => ({
       userId: state.userId,
+      weekStartDate: state.weekStartDate,
       plan: state.plan,
       checkedItems: state.checkedItems,
       customMeals: state.customMeals,
@@ -21,6 +22,7 @@ export function useDashboardPersistState(state: PlannerPersistState) {
     }),
     [
       state.userId,
+      state.weekStartDate,
       state.plan,
       state.checkedItems,
       state.customMeals,

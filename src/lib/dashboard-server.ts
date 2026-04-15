@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { isDashboardMealType, type DashboardCustomMeal } from "@/lib/dashboard-client";
+import {
+  isDashboardMealType,
+  isoDate,
+  startOfWeek,
+  type DashboardCustomMeal,
+} from "@/lib/dashboard-client";
 
 interface SanitizedIngredient {
   name: string;
@@ -178,7 +183,15 @@ export async function getDashboardServerData(nextPath: string): Promise<Dashboar
     redirect(`/login?next=${nextPath}`);
   }
 
-  const [{ data: dashboardState }, { data: profile }] = await Promise.all([
+  const currentWeekStart = isoDate(startOfWeek(new Date()));
+
+  const [{ data: weeklyPlan }, { data: dashboardState }, { data: profile }] = await Promise.all([
+    supabase
+      .from("weekly_plans")
+      .select("week_start, plan, custom_meals, budget_override_pence")
+      .eq("user_id", user.id)
+      .eq("week_start", currentWeekStart)
+      .maybeSingle(),
     supabase
       .from("user_dashboard_state")
       .select(
@@ -195,19 +208,26 @@ export async function getDashboardServerData(nextPath: string): Promise<Dashboar
       .maybeSingle(),
   ]);
 
+  const planSource = weeklyPlan ?? dashboardState;
+  const weeklyBudgetOverridePence = sanitizeBudgetOverridePence(weeklyPlan?.budget_override_pence);
+  const dashboardBudgetOverridePence = sanitizeBudgetOverridePence(dashboardState?.budget_override_pence);
+  const initialBudgetOverridePence = weeklyBudgetOverridePence ?? dashboardBudgetOverridePence;
+  const initialBudgetOverrideWeekStartDate =
+    initialBudgetOverridePence !== null && weeklyPlan
+      ? currentWeekStart
+      : sanitizeWeekKey(dashboardState?.budget_override_week_start_date);
+
   return {
     userId: user.id,
-    initialPlan: sanitizePlan(dashboardState?.plan),
+    initialPlan: sanitizePlan(planSource?.plan),
     initialCheckedItems: sanitizeChecked(dashboardState?.checked_item_keys),
-    initialCustomMeals: sanitizeCustomMeals(dashboardState?.custom_meals),
+    initialCustomMeals: sanitizeCustomMeals(planSource?.custom_meals),
     initialPantryItems: sanitizePantryItems(dashboardState?.pantry_items),
     initialBudgetNudgeDismissedForWeek: sanitizeWeekKey(
       dashboardState?.budget_nudge_dismissed_for_week,
     ),
-    initialBudgetOverridePence: sanitizeBudgetOverridePence(dashboardState?.budget_override_pence),
-    initialBudgetOverrideWeekStartDate: sanitizeWeekKey(
-      dashboardState?.budget_override_week_start_date,
-    ),
+    initialBudgetOverridePence,
+    initialBudgetOverrideWeekStartDate,
     profileRetailers: sanitizeRetailerIds(profile?.preferred_retailer_ids),
     profileWeeklyBudgetPence: sanitizeWeeklyBudgetPence(profile?.weekly_budget_pence),
     profileBudgetPeriod: sanitizeBudgetPeriod(profile?.budget_period),

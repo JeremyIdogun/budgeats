@@ -527,6 +527,7 @@ export function DashboardClient({
 
   useDashboardPersistState({
     userId,
+    weekStartDate: weekKey,
     plan,
     checkedItems,
     customMeals,

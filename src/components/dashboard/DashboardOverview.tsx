@@ -147,6 +147,7 @@ export function DashboardOverview({
 
   useDashboardPersistState({
     userId,
+    weekStartDate: weekKey,
     plan: initialPlan,
     checkedItems: initialCheckedItems,
     customMeals: initialCustomMeals,

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export interface PlannerPersistState {
   userId: string;
+  weekStartDate: string;
   plan: Record<string, string>;
   checkedItems: string[];
   customMeals: unknown[];
@@ -43,6 +44,7 @@ function summarizePersistError(error: unknown): Record<string, string | number> 
 function clonePersistState(state: PlannerPersistState): PlannerPersistState {
   return {
     userId: state.userId,
+    weekStartDate: state.weekStartDate,
     plan: { ...state.plan },
     checkedItems: [...state.checkedItems],
     customMeals: typeof structuredClone === "function"
@@ -81,7 +83,7 @@ export async function persistPlannerState(state: PlannerPersistState): Promise<v
   if (!_plannerPersistState) return;
 
   const supabase = createClient();
-  const { error } = await supabase.from("user_dashboard_state").upsert(
+  const { error: sessionError } = await supabase.from("user_dashboard_state").upsert(
     {
       user_id: state.userId,
       plan: state.plan,
@@ -96,8 +98,26 @@ export async function persistPlannerState(state: PlannerPersistState): Promise<v
     { onConflict: "user_id" },
   );
 
-  if (error) {
-    console.error("Failed to save planner state", summarizePersistError(error));
+  if (sessionError) {
+    console.error("Failed to save session state", summarizePersistError(sessionError));
+  }
+
+  if (!state.weekStartDate) return;
+
+  const { error: weeklyPlanError } = await supabase.from("weekly_plans").upsert(
+    {
+      user_id: state.userId,
+      week_start: state.weekStartDate,
+      plan: state.plan,
+      custom_meals: state.customMeals,
+      budget_override_pence: state.budgetOverridePence,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id,week_start" },
+  );
+
+  if (weeklyPlanError) {
+    console.error("Failed to save weekly plan", summarizePersistError(weeklyPlanError));
   }
 }
 
